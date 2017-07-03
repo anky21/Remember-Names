@@ -96,12 +96,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         return mConnections;
     }
 
-    // Listens for click events
+    // Can be set to listen for click events
     public void setClickListener(ItemClickListener itemClickListener) {
         this.mClickListener = itemClickListener;
     }
 
-    // Implemented in MovieListActivity to respond to click events
+    // Implemented in other activities to respond to click events
     public interface ItemClickListener {
         void onItemClick(View view, int position);
     }
