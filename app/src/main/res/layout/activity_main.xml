@@ -7,8 +7,11 @@
     tools:context="me.anky.connectid.MainActivity">
 
     <TextView
+        android:id="@+id/debug_tv"
+        tools:text="shrek - met in swamp"
+        android:textSize="24sp"
+        android:layout_gravity="center"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Shrek is green. I met him in the swamp." />
+        android:layout_height="wrap_content" />
 
 </FrameLayout>

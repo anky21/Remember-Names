@@ -16,6 +16,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <provider
+            android:authorities="me.anky.connectid.data.ConnectidProvider"
+            android:name="me.anky.connectid.data.generated.ConnectidProvider"
+            android:exported="false"/>
     </application>
 
 </manifest>
