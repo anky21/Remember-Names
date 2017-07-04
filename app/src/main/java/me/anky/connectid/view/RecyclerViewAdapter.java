@@ -132,4 +132,17 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             mConnections.addAll(data);
         }
     }
+
+//    private class NotifyingDataSetObserver extends DataSetObserver {
+//
+//        @Override
+//        public void onChanged() {
+//            super.onChanged();
+//        }
+//
+//        @Override
+//        public void onInvalidated() {
+//            super.onInvalidated();
+//        }
+//    }
 }

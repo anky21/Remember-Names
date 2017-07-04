@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import me.anky.connectid.data.ConnectidColumns;
 import me.anky.connectid.data.ConnectidConnection;
 import me.anky.connectid.data.ConnectidProvider;
-import me.anky.connectid.view.RecyclerViewAdapter;
+import me.anky.connectid.view.ConnectidCursorAdapter;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -52,17 +52,17 @@ public class MainActivity extends AppCompatActivity {
         if (cursor != null) {
             Log.d("DATABASE_TEST", "cursor count: " + cursor.getCount());
 
-            StringBuilder builder = new StringBuilder();
+//            StringBuilder builder = new StringBuilder();
             ArrayList<ConnectidConnection> connections = new ArrayList<>();
 
             cursor.moveToFirst();
             for (int i = 0; i < cursor.getCount(); i ++) {
                 String name = cursor.getString(cursor.getColumnIndex(ConnectidColumns.NAME));
                 String description = cursor.getString(cursor.getColumnIndex(ConnectidColumns.DESCRIPTION));
-                builder.append(name);
-                builder.append(" - ");
-                builder.append(description);
-                builder.append("\n");
+//                builder.append(name);
+//                builder.append(" - ");
+//                builder.append(description);
+//                builder.append("\n");
 
                 connections.add(new ConnectidConnection(name, description));
                 cursor.moveToNext();
@@ -71,14 +71,21 @@ public class MainActivity extends AppCompatActivity {
 //            TextView debugTv = (TextView) findViewById(R.id.debug_tv);
 //            debugTv.setText(builder.toString());
 
-            RecyclerViewAdapter adapter = new RecyclerViewAdapter(this);
+//            RecyclerViewAdapter adapter = new RecyclerViewAdapter(this);
+//            RecyclerView connectionsListRv = (RecyclerView) findViewById(R.id.connections_list_rv);
+//            connectionsListRv.setHasFixedSize(true);
+//            connectionsListRv.setLayoutManager(new LinearLayoutManager(this));
+//            connectionsListRv.setAdapter(adapter);
+//            adapter.setConnections(connections);
+//            Log.d("DATABASE_TEST", "adapter size " + adapter.getItemCount());
+
+            ConnectidCursorAdapter adapter = new ConnectidCursorAdapter(this, null);
             RecyclerView connectionsListRv = (RecyclerView) findViewById(R.id.connections_list_rv);
             connectionsListRv.setHasFixedSize(true);
             connectionsListRv.setLayoutManager(new LinearLayoutManager(this));
             connectionsListRv.setAdapter(adapter);
-            adapter.setConnections(connections);
-            Log.d("DATABASE_TEST", "adapter size " + adapter.getItemCount());
-
+            Log.d("DATABASE_TEST", "Cursor count: " + cursor.getCount());
+            adapter.swapCursor(cursor);
 
             cursor.close();
         }
