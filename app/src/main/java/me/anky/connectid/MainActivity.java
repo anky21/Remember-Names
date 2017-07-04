@@ -50,10 +50,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private void testSchematic() {
 
         // Clear database
-//        getContentResolver().delete(
-//                ConnectidProvider.Connections.CONTENT_URI,
-//                null,
-//                null);
+        getContentResolver().delete(
+                ConnectidProvider.Connections.CONTENT_URI,
+                null,
+                null);
 
         Cursor cursor = getContentResolver().query(
                 ConnectidProvider.Connections.CONTENT_URI,
@@ -63,47 +63,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 null);
         if (cursor == null || cursor.getCount() == 0) {
             insertTestData();
-        }
-
-        if (cursor != null) {
-            Log.d("DATABASE_TEST", "cursor count: " + cursor.getCount());
-
-//            StringBuilder builder = new StringBuilder();
-            ArrayList<ConnectidConnection> connections = new ArrayList<>();
-
-            cursor.moveToFirst();
-            for (int i = 0; i < cursor.getCount(); i ++) {
-                String name = cursor.getString(cursor.getColumnIndex(ConnectidColumns.NAME));
-                String description = cursor.getString(cursor.getColumnIndex(ConnectidColumns.DESCRIPTION));
-//                builder.append(name);
-//                builder.append(" - ");
-//                builder.append(description);
-//                builder.append("\n");
-
-                connections.add(new ConnectidConnection(name, description));
-                cursor.moveToNext();
-            }
-
-//            TextView debugTv = (TextView) findViewById(R.id.debug_tv);
-//            debugTv.setText(builder.toString());
-
-//            RecyclerViewAdapter adapter = new RecyclerViewAdapter(this);
-//            RecyclerView connectionsListRv = (RecyclerView) findViewById(R.id.connections_list_rv);
-//            connectionsListRv.setHasFixedSize(true);
-//            connectionsListRv.setLayoutManager(new LinearLayoutManager(this));
-//            connectionsListRv.setAdapter(adapter);
-//            adapter.setConnections(connections);
-//            Log.d("DATABASE_TEST", "adapter size " + adapter.getItemCount());
-
-//            ConnectidCursorAdapter adapter = new ConnectidCursorAdapter(this, null);
-//            RecyclerView connectionsListRv = (RecyclerView) findViewById(R.id.connections_list_rv);
-//            connectionsListRv.setHasFixedSize(true);
-//            connectionsListRv.setLayoutManager(new LinearLayoutManager(this));
-//            connectionsListRv.setAdapter(adapter);
-//            Log.d("DATABASE_TEST", "Cursor count: " + cursor.getCount());
-//            adapter.swapCursor(cursor);
-
-            cursor.close();
         }
     }
 
@@ -125,10 +84,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 new ConnectidConnection("Shrek", "met in swamp"),
                 new ConnectidConnection("Donkey", "very talkative"),
                 new ConnectidConnection("Bowser", "has evil laugh"),
+                new ConnectidConnection("Princess Peach", "damsel in distress"),
                 new ConnectidConnection("Mario", "jumps a lot")
         };
-
-        Log.d("DATABASE_TEST", "inserting Data");
 
         ArrayList<ContentProviderOperation> batchOperations =
                 new ArrayList<>(connections.length);
@@ -141,12 +99,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             batchOperations.add(builder.build());
         }
 
-        Log.d("DATABASE_TEST", "batchOperations to apply: " + batchOperations.size());
-
         try {
             getContentResolver().applyBatch(ConnectidProvider.AUTHORITY, batchOperations);
-
-            Log.d("DATABASE_TEST", "applied batch");
 
         } catch (RemoteException | OperationApplicationException e) {
             Log.e("DATABASE_TEST", "Error applying batch insert", e);
@@ -156,7 +110,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     public void onResume() {
         super.onResume();
-        Log.d("DATABASE_TEST", "resume called");
         getLoaderManager().restartLoader(CURSOR_LOADER_ID, null, this);
     }
 
@@ -172,8 +125,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data){
         mCursorAdapter.swapCursor(data);
-
-
     }
 
     @Override
