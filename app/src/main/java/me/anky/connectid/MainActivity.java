@@ -1,6 +1,9 @@
 package me.anky.connectid;
 
+import android.app.LoaderManager;
 import android.content.ContentProviderOperation;
+import android.content.CursorLoader;
+import android.content.Loader;
 import android.content.OperationApplicationException;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -19,7 +22,11 @@ import me.anky.connectid.data.ConnectidConnection;
 import me.anky.connectid.data.ConnectidProvider;
 import me.anky.connectid.view.ConnectidCursorAdapter;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+
+    private static final int CURSOR_LOADER_ID = 0;
+    private ConnectidCursorAdapter mCursorAdapter;
+    private RecyclerView mRecyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +36,15 @@ public class MainActivity extends AppCompatActivity {
         Stetho.initializeWithDefaults(this);
 
         testSchematic();
+
+
+        mCursorAdapter = new ConnectidCursorAdapter(this, null);
+        mRecyclerView = (RecyclerView) findViewById(R.id.connections_list_rv);
+        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mRecyclerView.setAdapter(mCursorAdapter);
+
+        getLoaderManager().initLoader(CURSOR_LOADER_ID, null, this);
     }
 
     private void testSchematic() {
@@ -79,13 +95,13 @@ public class MainActivity extends AppCompatActivity {
 //            adapter.setConnections(connections);
 //            Log.d("DATABASE_TEST", "adapter size " + adapter.getItemCount());
 
-            ConnectidCursorAdapter adapter = new ConnectidCursorAdapter(this, null);
-            RecyclerView connectionsListRv = (RecyclerView) findViewById(R.id.connections_list_rv);
-            connectionsListRv.setHasFixedSize(true);
-            connectionsListRv.setLayoutManager(new LinearLayoutManager(this));
-            connectionsListRv.setAdapter(adapter);
-            Log.d("DATABASE_TEST", "Cursor count: " + cursor.getCount());
-            adapter.swapCursor(cursor);
+//            ConnectidCursorAdapter adapter = new ConnectidCursorAdapter(this, null);
+//            RecyclerView connectionsListRv = (RecyclerView) findViewById(R.id.connections_list_rv);
+//            connectionsListRv.setHasFixedSize(true);
+//            connectionsListRv.setLayoutManager(new LinearLayoutManager(this));
+//            connectionsListRv.setAdapter(adapter);
+//            Log.d("DATABASE_TEST", "Cursor count: " + cursor.getCount());
+//            adapter.swapCursor(cursor);
 
             cursor.close();
         }
@@ -135,5 +151,33 @@ public class MainActivity extends AppCompatActivity {
         } catch (RemoteException | OperationApplicationException e) {
             Log.e("DATABASE_TEST", "Error applying batch insert", e);
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d("DATABASE_TEST", "resume called");
+        getLoaderManager().restartLoader(CURSOR_LOADER_ID, null, this);
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args){
+        return new CursorLoader(this, ConnectidProvider.Connections.CONTENT_URI,
+                null,
+                null,
+                null,
+                null);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data){
+        mCursorAdapter.swapCursor(data);
+
+
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader){
+        mCursorAdapter.swapCursor(null);
     }
 }
