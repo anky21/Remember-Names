@@ -1,6 +1,7 @@
 package me.anky.connectid.view;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.support.v7.widget.RecyclerView;
@@ -10,12 +11,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import me.anky.connectid.ConnectionDetailsActivity;
 import me.anky.connectid.R;
 import me.anky.connectid.data.ConnectidColumns;
 
 public class ConnectidCursorAdapter
         extends CursorRecyclerViewAdapter<ConnectidCursorAdapter.ViewHolder> {
-    
+
     Context mContext;
     ViewHolder mVh;
 
@@ -38,8 +40,14 @@ public class ConnectidCursorAdapter
         @Override
         public void onClick(View v) {
 
-            Log.i("TESTING", "Clicked database item id: " + mListItemTv.getTag());
-            Log.i("TESTING", mListItemTv.getText().toString());
+            Log.i("ONCLICK_TEST", "Clicked database item id: " + mListItemTv.getTag());
+            Log.i("ONCLICK_TEST", mListItemTv.getText().toString());
+
+            // TODO Just testing. Can be moved. ConnectionDetailsActivity can be replaced.
+            Intent intent = new Intent(v.getContext(), ConnectionDetailsActivity.class);
+            intent.putExtra("ID", (int) mListItemTv.getTag());
+            intent.putExtra("DETAILS", mListItemTv.getText().toString());
+            v.getContext().startActivity(intent);
         }
     }
 

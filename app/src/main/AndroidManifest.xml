@@ -18,9 +18,13 @@
         </activity>
 
         <provider
+            android:name=".data.generated.ConnectidProvider"
             android:authorities="me.anky.connectid.data.ConnectidProvider"
-            android:name="me.anky.connectid.data.generated.ConnectidProvider"
-            android:exported="false"/>
+            android:exported="false" />
+
+        <activity
+            android:name=".ConnectionDetailsActivity"
+            android:parentActivityName=".MainActivity" />
     </application>
 
 </manifest>
