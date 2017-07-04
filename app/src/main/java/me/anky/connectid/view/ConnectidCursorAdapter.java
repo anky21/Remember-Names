@@ -15,17 +15,7 @@ import me.anky.connectid.data.ConnectidColumns;
 
 public class ConnectidCursorAdapter
         extends CursorRecyclerViewAdapter<ConnectidCursorAdapter.ViewHolder> {
-
-//    public interface OnItemClickListener {
-//        public void onItemClicked(View view);
-//    }
-//
-//    private OnItemClickListener mListener;
-//
-//    public void setClickListener(OnItemClickListener listener) {
-//        mListener = listener;
-//    }
-
+    
     Context mContext;
     ViewHolder mVh;
 
