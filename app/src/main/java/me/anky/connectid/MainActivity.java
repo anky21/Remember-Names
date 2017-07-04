@@ -70,6 +70,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         ConnectidConnection[] connections = {
                 new ConnectidConnection("Aragorn", "elf lover"),
+                new ConnectidConnection("Aragorn", "elf lover"),
                 new ConnectidConnection("Gandalf", "great with fireworks"),
                 new ConnectidConnection("Bilbo", "misses his ring"),
                 new ConnectidConnection("Frodo", "misses his finger"),
