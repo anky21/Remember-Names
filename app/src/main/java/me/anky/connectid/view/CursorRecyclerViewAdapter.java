@@ -7,7 +7,8 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
 public abstract class CursorRecyclerViewAdapter<VH extends RecyclerView.ViewHolder>
-        extends RecyclerView.Adapter<VH>{
+        extends RecyclerView.Adapter<VH> {
+
     private static final String LOG_TAG = CursorRecyclerViewAdapter.class.getSimpleName();
     private Context mContext;
     private Cursor mCursor;

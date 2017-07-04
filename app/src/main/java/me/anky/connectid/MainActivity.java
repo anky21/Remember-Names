@@ -50,10 +50,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private void testSchematic() {
 
         // Clear database
-        getContentResolver().delete(
-                ConnectidProvider.Connections.CONTENT_URI,
-                null,
-                null);
+//        getContentResolver().delete(
+//                ConnectidProvider.Connections.CONTENT_URI,
+//                null,
+//                null);
 
         Cursor cursor = getContentResolver().query(
                 ConnectidProvider.Connections.CONTENT_URI,
@@ -86,6 +86,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 new ConnectidConnection("Donkey", "very talkative"),
                 new ConnectidConnection("Bowser", "has evil laugh"),
                 new ConnectidConnection("Princess Peach", "damsel in distress"),
+                new ConnectidConnection("Princess Peach", "damsel in distress"),
+                new ConnectidConnection("Princess Peach", "damsel in distress"),
+                new ConnectidConnection("Princess Peach", "damsel in distress"),
+                new ConnectidConnection("Princess Peach", "damsel in distress"),
+                new ConnectidConnection("Princess Zelda", "damsel in distress"),
                 new ConnectidConnection("Mario", "jumps a lot")
         };
 
