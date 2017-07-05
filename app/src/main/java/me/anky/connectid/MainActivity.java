@@ -3,11 +3,13 @@ package me.anky.connectid;
 import android.app.LoaderManager;
 import android.content.ContentProviderOperation;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
 import android.content.OperationApplicationException;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.RemoteException;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,6 +19,9 @@ import com.facebook.stetho.Stetho;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import me.anky.connectid.data.ConnectidColumns;
 import me.anky.connectid.data.ConnectidConnection;
 import me.anky.connectid.data.ConnectidProvider;
@@ -26,12 +31,19 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     private static final int CURSOR_LOADER_ID = 0;
     private ConnectidCursorAdapter mCursorAdapter;
-    private RecyclerView mRecyclerView;
+
+    @BindView(R.id.connections_list_rv)
+    RecyclerView mRecyclerView;
+
+    @BindView(R.id.fab)
+    FloatingActionButton mFab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        ButterKnife.bind(this);
 
         Stetho.initializeWithDefaults(this);
 
@@ -39,7 +51,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
 
         mCursorAdapter = new ConnectidCursorAdapter(this, null);
-        mRecyclerView = (RecyclerView) findViewById(R.id.connections_list_rv);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setAdapter(mCursorAdapter);
@@ -64,6 +75,14 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         if (cursor == null || cursor.getCount() == 0) {
             insertTestData();
         }
+
+
+    }
+
+    // OnclickListener for the FAB
+    @OnClick(R.id.fab)
+    public void fabOnClick(){
+        startActivity(new Intent(this, ConnectionDetailsActivity.class));
     }
 
     public void insertTestData() {

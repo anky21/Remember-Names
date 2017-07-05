@@ -34,9 +34,6 @@ dependencies {
     compile "com.android.support:support-v4:${supportLibVersion}"
     testCompile 'junit:junit:4.12'
     compile 'net.simonvt.schematic:schematic:0.7.0'
-    compile 'com.squareup.retrofit2:retrofit:2.3.0'
-    compile 'com.squareup.okhttp3:okhttp:3.6.0'
-    compile 'com.squareup.retrofit2:converter-gson:2.3.0'
     compile 'com.jakewharton:butterknife:8.6.0'
     compile 'com.facebook.stetho:stetho:1.5.0'
     compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
