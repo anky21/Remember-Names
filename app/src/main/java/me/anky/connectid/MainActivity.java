@@ -54,6 +54,18 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setAdapter(mCursorAdapter);
+        // Automatically hide/show the FAB when recycler view scrolls up/down
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if(dy > 0){
+                    mFab.hide();
+                } else{
+                    mFab.show();
+                }
+                super.onScrolled(recyclerView, dx, dy);
+            }
+        });
 
         getLoaderManager().initLoader(CURSOR_LOADER_ID, null, this);
     }
