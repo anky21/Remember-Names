@@ -12,8 +12,6 @@ import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.squareup.picasso.Picasso;
-
 import java.io.InputStream;
 
 import butterknife.BindView;
@@ -42,7 +40,7 @@ public class ConnectionDetailsActivity extends AppCompatActivity {
 
 
     @OnClick(R.id.portrait_iv)
-    public void changePortraitPhoto(){
+    public void changePortraitPhoto() {
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         ft.addToBackStack(null);
@@ -51,19 +49,35 @@ public class ConnectionDetailsActivity extends AppCompatActivity {
         ft.commit();
     }
 
-    public void changePhoto (Object object){
+    public void changePhoto(Object object) {
         Bitmap bitmap;
         try {
             if (object instanceof Uri) {
                 Uri imageUri = (Uri) object;
-                Picasso.with(this).load(imageUri).into(mPortraitIv);
                 InputStream imageStream = getContentResolver().openInputStream(imageUri);
                 bitmap = BitmapFactory.decodeStream(imageStream);
+                int originalWidth = bitmap.getWidth();
+                int originalHeight = bitmap.getHeight();
+                Log.v(TAG, "original dimensions " + originalHeight + " " + originalWidth);
+
+                final int desiredSize = 1000;
+                int maximumSize = Math.max(originalHeight, originalWidth);
+
+                if (maximumSize > desiredSize){
+                    float ratio = (float) desiredSize / maximumSize;
+                    int newWidth = Math.round(originalWidth * ratio);
+                    int newHeight = Math.round(originalHeight * ratio);
+
+                    bitmap = Bitmap.createScaledBitmap(bitmap, newWidth, newHeight, true);
+                    Log.v(TAG, "resized " + newHeight + " " + newWidth);
+                }
+                mPortraitIv.setImageBitmap(bitmap);
+
             } else {
-                bitmap = (Bitmap)object;
+                bitmap = (Bitmap) object;
                 mPortraitIv.setImageBitmap(bitmap);
             }
-        } catch (Exception e){
+        } catch (Exception e) {
             Log.e(TAG, "error in changing photo");
         }
     }

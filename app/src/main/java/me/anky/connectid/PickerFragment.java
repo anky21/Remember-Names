@@ -58,7 +58,8 @@ public class PickerFragment extends android.app.DialogFragment {
 
     @OnClick(R.id.pickImage_tv)
     public void pickImage(){
-        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+        Intent photoPickerIntent = new Intent(Intent.ACTION_GET_CONTENT,
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         photoPickerIntent.setType("image/*");
         startActivityForResult(photoPickerIntent, PICK_PHOTO);
     }
@@ -70,15 +71,16 @@ public class PickerFragment extends android.app.DialogFragment {
         switch (requestCode) {
             case PICK_PHOTO:
                 if (resultCode == Activity.RESULT_OK) {
-                    Log.d(TAG, "Picked a photo.");
+                    Log.v(TAG, "Picked a photo.");
                     Uri selectedImage = data.getData();
+                    Log.v(TAG, "uri is " + selectedImage.toString());
                     ((ConnectionDetailsActivity)getActivity()).changePhoto(selectedImage);
                     getDialog().dismiss();
                 }
                 break;
             case TAKE_PHOTO:
                 if (resultCode == Activity.RESULT_OK) {
-                    Log.d(TAG, "Took a photo.");
+                    Log.v(TAG, "Took a photo.");
                     Bundle extras = data.getExtras();
                     Bitmap imageBitmap = (Bitmap) extras.get("data");
                     ((ConnectionDetailsActivity)getActivity()).changePhoto(imageBitmap);
