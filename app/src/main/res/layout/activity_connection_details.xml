@@ -22,4 +22,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
+    <ImageView
+        android:id="@+id/new_portrait_iv"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@drawable/portrait"
+        android:scaleType="centerCrop"/>
+
 </LinearLayout>

@@ -73,7 +73,6 @@ public class PickerFragment extends android.app.DialogFragment {
                 if (resultCode == Activity.RESULT_OK) {
                     Log.v(TAG, "Picked a photo.");
                     Uri selectedImage = data.getData();
-                    Log.v(TAG, "uri is " + selectedImage.toString());
                     ((ConnectionDetailsActivity)getActivity()).changePhoto(selectedImage);
                     getDialog().dismiss();
                 }
