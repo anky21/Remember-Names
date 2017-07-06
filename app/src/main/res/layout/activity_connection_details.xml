@@ -1,11 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:source="http://schemas.android.com/apk/res-auto"
     android:gravity="center"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="me.anky.connectid.ConnectionDetailsActivity">
+
+    <ImageView
+        android:id="@+id/portrait_iv"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@drawable/portrait"
+        android:scaleType="centerCrop"/>
 
     <TextView
         android:id="@+id/connection_details_tv"
