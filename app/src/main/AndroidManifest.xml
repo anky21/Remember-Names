@@ -14,7 +14,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name=".connections.ConnectionsActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -23,13 +23,13 @@
         </activity>
 
         <provider
-            android:name=".data.generated.ConnectidProvider"
-            android:authorities="me.anky.connectid.data.ConnectidProvider"
+            android:name=".data.source.local.generated.ConnectidProvider"
+            android:authorities="me.anky.connectid.data.source.local.ConnectidProvider"
             android:exported="false" />
 
         <activity
-            android:name=".ConnectionDetailsActivity"
-            android:parentActivityName=".MainActivity" />
+            android:name=".details.DetailsActivity"
+            android:parentActivityName=".connections.ConnectionsActivity" />
     </application>
 
 </manifest>

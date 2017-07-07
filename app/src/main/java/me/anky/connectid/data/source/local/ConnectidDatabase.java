@@ -1,4 +1,4 @@
-package me.anky.connectid.data;
+package me.anky.connectid.data.source.local;
 
 import net.simonvt.schematic.annotation.Database;
 import net.simonvt.schematic.annotation.Table;
@@ -9,6 +9,6 @@ public final class ConnectidDatabase {
 
     public static final int VERSION = 1;
 
-    @Table(ConnectidColumns.class)
+    @Table(IConnectidColumns.class)
     public static final String CONNECTIONS = "connections";
 }

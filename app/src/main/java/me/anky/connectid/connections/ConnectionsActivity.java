@@ -1,4 +1,4 @@
-package me.anky.connectid;
+package me.anky.connectid.connections;
 
 import android.app.LoaderManager;
 import android.content.ContentProviderOperation;
@@ -22,15 +22,16 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import me.anky.connectid.data.ConnectidColumns;
+import me.anky.connectid.R;
+import me.anky.connectid.data.source.local.IConnectidColumns;
 import me.anky.connectid.data.ConnectidConnection;
-import me.anky.connectid.data.ConnectidProvider;
-import me.anky.connectid.view.ConnectidCursorAdapter;
+import me.anky.connectid.data.source.local.ConnectidProvider;
+import me.anky.connectid.details.DetailsActivity;
 
-public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class ConnectionsActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final int CURSOR_LOADER_ID = 0;
-    private ConnectidCursorAdapter mCursorAdapter;
+    private ConnectionsCursorAdapter mCursorAdapter;
 
     @BindView(R.id.connections_list_rv)
     RecyclerView mRecyclerView;
@@ -41,7 +42,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_list);
 
         ButterKnife.bind(this);
 
@@ -50,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         testSchematic();
 
 
-        mCursorAdapter = new ConnectidCursorAdapter(this, null);
+        mCursorAdapter = new ConnectionsCursorAdapter(this, null);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setAdapter(mCursorAdapter);
@@ -87,20 +88,20 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         if (cursor == null || cursor.getCount() == 0) {
             insertTestData();
         }
-
-
     }
 
     // OnclickListener for the FAB
     @OnClick(R.id.fab)
     public void fabOnClick(){
-        startActivity(new Intent(this, ConnectionDetailsActivity.class));
+        startActivity(new Intent(this, DetailsActivity.class));
     }
 
     public void insertTestData() {
 
         ConnectidConnection[] connections = {
-                new ConnectidConnection("Aragorn", "elf lover"),
+                new ConnectidConnection("Aragorn", "you have my sword"),
+                new ConnectidConnection("Legolas", "and you have my bow"),
+                new ConnectidConnection("Gimli", "and my axe!"),
                 new ConnectidConnection("Aragorn", "elf lover"),
                 new ConnectidConnection("Gandalf", "great with fireworks"),
                 new ConnectidConnection("Bilbo", "misses his ring"),
@@ -131,8 +132,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         for (ConnectidConnection connection : connections) {
             ContentProviderOperation.Builder builder = ContentProviderOperation.newInsert(
                     ConnectidProvider.Connections.CONTENT_URI);
-            builder.withValue(ConnectidColumns.NAME, connection.getName());
-            builder.withValue(ConnectidColumns.DESCRIPTION, connection.getDescription());
+            builder.withValue(IConnectidColumns.NAME, connection.getName());
+            builder.withValue(IConnectidColumns.DESCRIPTION, connection.getDescription());
             batchOperations.add(builder.build());
         }
 

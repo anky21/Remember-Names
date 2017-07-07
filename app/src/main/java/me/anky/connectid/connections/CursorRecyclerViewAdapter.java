@@ -1,4 +1,4 @@
-package me.anky.connectid.view;
+package me.anky.connectid.connections;
 
 import android.content.Context;
 import android.database.Cursor;

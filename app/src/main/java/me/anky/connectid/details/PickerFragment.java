@@ -1,4 +1,4 @@
-package me.anky.connectid;
+package me.anky.connectid.details;
 
 
 import android.app.Activity;
@@ -18,6 +18,8 @@ import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import me.anky.connectid.R;
+import me.anky.connectid.details.DetailsActivity;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -73,7 +75,7 @@ public class PickerFragment extends android.app.DialogFragment {
                 if (resultCode == Activity.RESULT_OK) {
                     Log.v(TAG, "Picked a photo.");
                     Uri selectedImage = data.getData();
-                    ((ConnectionDetailsActivity)getActivity()).changePhoto(selectedImage);
+                    ((DetailsActivity)getActivity()).changePhoto(selectedImage);
                     getDialog().dismiss();
                 }
                 break;
@@ -82,7 +84,7 @@ public class PickerFragment extends android.app.DialogFragment {
                     Log.v(TAG, "Took a photo.");
                     Bundle extras = data.getExtras();
                     Bitmap imageBitmap = (Bitmap) extras.get("data");
-                    ((ConnectionDetailsActivity)getActivity()).changePhoto(imageBitmap);
+                    ((DetailsActivity)getActivity()).changePhoto(imageBitmap);
                     getDialog().dismiss();
                 }
         }

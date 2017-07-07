@@ -1,4 +1,4 @@
-package me.anky.connectid;
+package me.anky.connectid.details;
 
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
@@ -24,9 +24,10 @@ import java.io.InputStream;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import me.anky.connectid.R;
 
-public class ConnectionDetailsActivity extends AppCompatActivity {
-    private final static String TAG = ConnectionDetailsActivity.class.getSimpleName();
+public class DetailsActivity extends AppCompatActivity {
+    private final static String TAG = DetailsActivity.class.getSimpleName();
     private String mImageName = "profile.jpg";
 
     @BindView(R.id.portrait_iv)

@@ -1,4 +1,4 @@
-package me.anky.connectid.data;
+package me.anky.connectid.data.source.local;
 
 import net.simonvt.schematic.annotation.AutoIncrement;
 import net.simonvt.schematic.annotation.ConflictResolutionType;
@@ -7,7 +7,7 @@ import net.simonvt.schematic.annotation.NotNull;
 import net.simonvt.schematic.annotation.PrimaryKey;
 import net.simonvt.schematic.annotation.Unique;
 
-public interface ConnectidColumns {
+public interface IConnectidColumns {
 
     @DataType(DataType.Type.INTEGER) @PrimaryKey @AutoIncrement
     public static final String _ID = "_id";

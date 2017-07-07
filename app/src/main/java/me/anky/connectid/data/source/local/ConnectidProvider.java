@@ -1,4 +1,4 @@
-package me.anky.connectid.data;
+package me.anky.connectid.data.source.local;
 
 
 import android.net.Uri;
@@ -12,7 +12,7 @@ import net.simonvt.schematic.annotation.TableEndpoint;
 public class ConnectidProvider {
 
     public static final String AUTHORITY =
-            "me.anky.connectid.data.ConnectidProvider";
+            "me.anky.connectid.data.source.local.ConnectidProvider";
     static final Uri BASE_CONTENT_URI = Uri.parse("content://" + AUTHORITY);
 
     interface Path {
@@ -35,7 +35,7 @@ public class ConnectidProvider {
         @ContentUri(
                 path = Path.CONNECTIONS,
                 type = "vnd.android.cursor.dir/connection",
-                defaultSort = ConnectidColumns._ID + " ASC")
+                defaultSort = IConnectidColumns._ID + " ASC")
         public static final Uri CONTENT_URI = buildUri(Path.CONNECTIONS);
 
         // TODO: MIME type may become "vnd.android.cursor.dir/contact"
@@ -43,7 +43,7 @@ public class ConnectidProvider {
                 name = "CONNECTION_ID",
                 path = Path.CONNECTIONS + "/#",
                 type = "vnd.android.cursor.item/connection",
-                whereColumn = ConnectidColumns._ID,
+                whereColumn = IConnectidColumns._ID,
                 pathSegment = 1)
         public static Uri withId(long id){
             return buildUri(Path.CONNECTIONS, String.valueOf(id));
