@@ -3,21 +3,21 @@ package me.anky.connectid.connections;
 import java.util.List;
 
 import me.anky.connectid.data.ConnectidConnection;
-import me.anky.connectid.data.ConnectionsRepository;
+import me.anky.connectid.data.ConnectionsDataSource;
 
 public class ConnectionsActivityPresenter {
 
     private ConnectionsActivityView view;
-    private ConnectionsRepository connectionsRepository;
+    private ConnectionsDataSource connectionsDataSource;
 
     public ConnectionsActivityPresenter(ConnectionsActivityView view,
-                                        ConnectionsRepository connectionsRepository) {
+                                        ConnectionsDataSource connectionsDataSource) {
         this.view = view;
-        this.connectionsRepository = connectionsRepository;
+        this.connectionsDataSource = connectionsDataSource;
     }
 
     public void loadConnections() {
-        List<ConnectidConnection> connections = connectionsRepository.getConnections();
+        List<ConnectidConnection> connections = connectionsDataSource.getConnections();
 
         if (connections.isEmpty()) {
             view.displayNoConnections();

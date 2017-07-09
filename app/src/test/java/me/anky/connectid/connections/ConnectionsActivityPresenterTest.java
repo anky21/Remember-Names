@@ -9,7 +9,7 @@ import java.util.Collections;
 import java.util.List;
 
 import me.anky.connectid.data.ConnectidConnection;
-import me.anky.connectid.data.ConnectionsRepository;
+import me.anky.connectid.data.ConnectionsDataSource;
 
 public class ConnectionsActivityPresenterTest {
 
@@ -18,11 +18,11 @@ public class ConnectionsActivityPresenterTest {
 
         // given
         ConnectionsActivityView view = new MockView();
-        ConnectionsRepository connectionsRepository = new MockConnectionsRepository(true);
+        ConnectionsDataSource connectionsDataSource = new MockConnectionsDataSource(true);
 
         // when
         ConnectionsActivityPresenter presenter =
-                new ConnectionsActivityPresenter(view, connectionsRepository);
+                new ConnectionsActivityPresenter(view, connectionsDataSource);
         presenter.loadConnections();
 
         // then
@@ -34,11 +34,11 @@ public class ConnectionsActivityPresenterTest {
 
         // given
         ConnectionsActivityView view = new MockView();
-        ConnectionsRepository connectionsRepository = new MockConnectionsRepository(false);
+        ConnectionsDataSource connectionsDataSource = new MockConnectionsDataSource(false);
 
         // when
         ConnectionsActivityPresenter presenter =
-                new ConnectionsActivityPresenter(view, connectionsRepository);
+                new ConnectionsActivityPresenter(view, connectionsDataSource);
         presenter.loadConnections();
 
         // then
@@ -64,11 +64,11 @@ public class ConnectionsActivityPresenterTest {
         }
     }
 
-    private class MockConnectionsRepository implements ConnectionsRepository {
+    private class MockConnectionsDataSource implements ConnectionsDataSource {
 
         private boolean returnSomeConnections;
 
-        public MockConnectionsRepository(boolean returnSomeConnections) {
+        public MockConnectionsDataSource(boolean returnSomeConnections) {
             this.returnSomeConnections = returnSomeConnections;
         }
 

@@ -2,7 +2,11 @@ package me.anky.connectid.data;
 
 import java.util.List;
 
-public interface ConnectionsRepository {
+public class ConnectionsRepository implements ConnectionsDataSource {
 
-    List<ConnectidConnection> getConnections();
+    @Override
+    public List<ConnectidConnection> getConnections() {
+        return null;
+    }
 }
+
