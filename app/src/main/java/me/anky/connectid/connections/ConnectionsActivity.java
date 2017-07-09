@@ -18,6 +18,7 @@ import android.util.Log;
 import com.facebook.stetho.Stetho;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -28,7 +29,9 @@ import me.anky.connectid.data.ConnectidConnection;
 import me.anky.connectid.data.source.local.ConnectidProvider;
 import me.anky.connectid.details.DetailsActivity;
 
-public class ConnectionsActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class ConnectionsActivity extends AppCompatActivity implements
+        LoaderManager.LoaderCallbacks<Cursor>,
+        ConnectionsActivityView {
 
     private static final int CURSOR_LOADER_ID = 0;
     private ConnectionsCursorAdapter mCursorAdapter;
@@ -39,6 +42,8 @@ public class ConnectionsActivity extends AppCompatActivity implements LoaderMana
     @BindView(R.id.fab)
     FloatingActionButton mFab;
 
+    private Object mPresenter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +52,8 @@ public class ConnectionsActivity extends AppCompatActivity implements LoaderMana
         ButterKnife.bind(this);
 
         Stetho.initializeWithDefaults(this);
+
+        mPresenter = new ConnectionsActivityPresenter(this, null);
 
         testSchematic();
 
@@ -70,6 +77,22 @@ public class ConnectionsActivity extends AppCompatActivity implements LoaderMana
 
         getLoaderManager().initLoader(CURSOR_LOADER_ID, null, this);
     }
+
+    @Override
+    public void displayConnections(List<ConnectidConnection> connections) {
+
+    }
+
+    @Override
+    public void displayNoConnections() {
+
+    }
+
+
+
+
+
+
 
     private void testSchematic() {
 
@@ -169,4 +192,6 @@ public class ConnectionsActivity extends AppCompatActivity implements LoaderMana
     public void onLoaderReset(Loader<Cursor> loader){
         mCursorAdapter.swapCursor(null);
     }
+
+
 }
