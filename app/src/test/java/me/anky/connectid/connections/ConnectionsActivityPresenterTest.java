@@ -13,6 +13,8 @@ import java.util.Collections;
 import java.util.List;
 
 import io.reactivex.Single;
+import io.reactivex.plugins.RxJavaPlugins;
+import io.reactivex.schedulers.Schedulers;
 import me.anky.connectid.data.ConnectidConnection;
 import me.anky.connectid.data.ConnectionsDataSource;
 
@@ -31,7 +33,9 @@ public class ConnectionsActivityPresenterTest {
 
     @Before
     public void setUp() throws Exception {
-        presenter = new ConnectionsActivityPresenter(view, connectionsDataSource);
+        presenter = new ConnectionsActivityPresenter(
+                view, connectionsDataSource, Schedulers.trampoline());
+        RxJavaPlugins.setIoSchedulerHandler(scheduler -> Schedulers.trampoline());
     }
 
     @Test

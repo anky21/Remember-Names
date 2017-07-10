@@ -2,7 +2,7 @@ package me.anky.connectid.connections;
 
 import java.util.List;
 
-import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.Scheduler;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.observers.DisposableSingleObserver;
@@ -14,22 +14,25 @@ public class ConnectionsActivityPresenter {
 
     private ConnectionsActivityView view;
     private ConnectionsDataSource connectionsDataSource;
+    private Scheduler mainScheduler;
 
     // Composite used for RxJava subscriber cleanup
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     public ConnectionsActivityPresenter(ConnectionsActivityView view,
-                                        ConnectionsDataSource connectionsDataSource) {
+                                        ConnectionsDataSource connectionsDataSource,
+                                        Scheduler mainScheduler) {
         this.view = view;
         this.connectionsDataSource = connectionsDataSource;
+        this.mainScheduler = mainScheduler;
     }
 
     public void loadConnections() {
 
         DisposableSingleObserver<List<ConnectidConnection>> disposableSingleObserver =
                 connectionsDataSource.getConnections()
-                        .subscribeOn(Schedulers.newThread())
-                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(mainScheduler)
                         .subscribeWith(new DisposableSingleObserver<List<ConnectidConnection>>() {
                             @Override
                             public void onSuccess(@NonNull List<ConnectidConnection> connections) {

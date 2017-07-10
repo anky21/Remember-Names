@@ -13,6 +13,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import me.anky.connectid.R;
 import me.anky.connectid.data.ConnectidConnection;
 import me.anky.connectid.data.ConnectionsRepository;
@@ -69,7 +70,8 @@ public class ConnectionsActivity extends AppCompatActivity implements
 
 
         ConnectionsRepository repository = new ConnectionsRepository();
-        presenter = new ConnectionsActivityPresenter(this, repository);
+        presenter = new ConnectionsActivityPresenter(
+                this, repository, AndroidSchedulers.mainThread());
 
         presenter.loadConnections();
     }
