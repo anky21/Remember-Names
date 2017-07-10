@@ -7,6 +7,14 @@
     android:layout_height="match_parent"
     tools:context="me.anky.connectid.connections.ConnectionsActivity">
 
+    <TextView
+        android:id="@+id/debug_list_tv"
+        android:textSize="30sp"
+        android:gravity="center"
+        tools:text="Gandalf - fly, you fools!"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/connections_list_rv"
         android:scrollbars="vertical"

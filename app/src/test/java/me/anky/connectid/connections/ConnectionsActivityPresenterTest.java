@@ -1,8 +1,10 @@
 package me.anky.connectid.connections;
 
-import junit.framework.Assert;
-
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -11,14 +13,25 @@ import java.util.List;
 import me.anky.connectid.data.ConnectidConnection;
 import me.anky.connectid.data.ConnectionsDataSource;
 
+@RunWith(MockitoJUnitRunner.class)
 public class ConnectionsActivityPresenterTest {
+
+    @Mock
+    ConnectionsDataSource connectionsDataSource;
+
+    @Mock
+    ConnectionsActivityView view;
 
     @Test
     public void shouldPassConnectionsToView() {
 
         // given
-        ConnectionsActivityView view = new MockView();
-        ConnectionsDataSource connectionsDataSource = new MockConnectionsDataSource(true);
+        List<ConnectidConnection> connections = Arrays.asList(
+                new ConnectidConnection(),
+                new ConnectidConnection(),
+                new ConnectidConnection());
+        Mockito.when(connectionsDataSource.getConnections()).
+                thenReturn(connections);
 
         // when
         ConnectionsActivityPresenter presenter =
@@ -26,15 +39,15 @@ public class ConnectionsActivityPresenterTest {
         presenter.loadConnections();
 
         // then
-        Assert.assertEquals(true, ((MockView) view).displayConnectionsWithConnectionsCalled);
+        Mockito.verify(view).displayConnections(connections);
     }
 
     @Test
     public void shouldHandleNoConnectionsFound() {
 
         // given
-        ConnectionsActivityView view = new MockView();
-        ConnectionsDataSource connectionsDataSource = new MockConnectionsDataSource(false);
+        Mockito.when(connectionsDataSource.getConnections()).
+                thenReturn(Collections.<ConnectidConnection>emptyList());
 
         // when
         ConnectionsActivityPresenter presenter =
@@ -42,49 +55,6 @@ public class ConnectionsActivityPresenterTest {
         presenter.loadConnections();
 
         // then
-        Assert.assertEquals(true, ((MockView) view).displayConnectionsWithNoConnectionsCalled);
-    }
-
-    private class MockView implements ConnectionsActivityView {
-
-        boolean displayConnectionsWithConnectionsCalled;
-        boolean displayConnectionsWithNoConnectionsCalled;
-
-        @Override
-        public void displayConnections(List<ConnectidConnection> connections) {
-
-            if (connections.size() == 3) {
-                displayConnectionsWithConnectionsCalled = true;
-            }
-        }
-
-        @Override
-        public void displayNoConnections() {
-            displayConnectionsWithNoConnectionsCalled = true;
-        }
-    }
-
-    private class MockConnectionsDataSource implements ConnectionsDataSource {
-
-        private boolean returnSomeConnections;
-
-        public MockConnectionsDataSource(boolean returnSomeConnections) {
-            this.returnSomeConnections = returnSomeConnections;
-        }
-
-        @Override
-        public List<ConnectidConnection> getConnections() {
-
-            if (returnSomeConnections) {
-                return Arrays.asList(
-                        new ConnectidConnection(),
-                        new ConnectidConnection(),
-                        new ConnectidConnection()
-                );
-            }
-            else {
-                return Collections.emptyList();
-            }
-        }
+        Mockito.verify(view).displayNoConnections();
     }
 }
