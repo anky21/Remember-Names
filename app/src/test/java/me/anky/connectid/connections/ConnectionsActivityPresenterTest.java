@@ -1,20 +1,25 @@
 package me.anky.connectid.connections;
 
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import io.reactivex.Single;
 import me.anky.connectid.data.ConnectidConnection;
 import me.anky.connectid.data.ConnectionsDataSource;
 
-@RunWith(MockitoJUnitRunner.class)
 public class ConnectionsActivityPresenterTest {
+
+    @Rule
+    public MockitoRule mockitoRule = MockitoJUnit.rule();
 
     @Mock
     ConnectionsDataSource connectionsDataSource;
@@ -22,39 +27,45 @@ public class ConnectionsActivityPresenterTest {
     @Mock
     ConnectionsActivityView view;
 
+    private ConnectionsActivityPresenter presenter;
+
+    @Before
+    public void setUp() throws Exception {
+        presenter = new ConnectionsActivityPresenter(view, connectionsDataSource);
+    }
+
     @Test
     public void shouldPassConnectionsToView() {
 
-        // given
         List<ConnectidConnection> connections = Arrays.asList(
                 new ConnectidConnection(),
                 new ConnectidConnection(),
                 new ConnectidConnection());
-        Mockito.when(connectionsDataSource.getConnections()).
-                thenReturn(connections);
+        Mockito.when(connectionsDataSource.getConnections()).thenReturn(Single.just(connections));
 
-        // when
-        ConnectionsActivityPresenter presenter =
-                new ConnectionsActivityPresenter(view, connectionsDataSource);
         presenter.loadConnections();
 
-        // then
         Mockito.verify(view).displayConnections(connections);
     }
 
     @Test
     public void shouldHandleNoConnectionsFound() {
 
-        // given
-        Mockito.when(connectionsDataSource.getConnections()).
-                thenReturn(Collections.<ConnectidConnection>emptyList());
+        List<ConnectidConnection> connections = Collections.emptyList();
+        Mockito.when(connectionsDataSource.getConnections()).thenReturn(Single.just(connections));
 
-        // when
-        ConnectionsActivityPresenter presenter =
-                new ConnectionsActivityPresenter(view, connectionsDataSource);
         presenter.loadConnections();
 
-        // then
         Mockito.verify(view).displayNoConnections();
+    }
+
+    @Test
+    public void shouldHandleError() {
+
+        Mockito.when(connectionsDataSource.getConnections()).thenReturn(Single.<List<ConnectidConnection>>error(new Throwable("error")));
+
+        presenter.loadConnections();
+
+        Mockito.verify(view).displayError();
     }
 }

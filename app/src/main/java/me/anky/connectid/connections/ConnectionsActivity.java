@@ -92,7 +92,12 @@ public class ConnectionsActivity extends AppCompatActivity implements
 
     @Override
     public void displayNoConnections() {
-        Log.i("MVPTEST", "displayConnections called with no connections size");
+        Log.i("MVPTEST", "displayNoConnections called because list is empty");
+    }
+
+    @Override
+    public void displayError() {
+        Log.i("MVPTEST", "displayError called due to error");
     }
 
 //    private void testSchematic() {

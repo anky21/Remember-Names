@@ -2,8 +2,9 @@ package me.anky.connectid.data;
 
 import java.util.List;
 
+import io.reactivex.Single;
+
 public interface ConnectionsDataSource {
 
-    List<ConnectidConnection> getConnections();
-
+    Single<List<ConnectidConnection>> getConnections();
 }

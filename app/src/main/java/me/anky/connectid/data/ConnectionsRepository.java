@@ -2,21 +2,18 @@ package me.anky.connectid.data;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
+
+import io.reactivex.Single;
 
 public class ConnectionsRepository implements ConnectionsDataSource {
 
-    @Override
-    public List<ConnectidConnection> getConnections() {
+    private final List<ConnectidConnection> connections = new ArrayList<>();
 
-        // Retrieve data from a real database and return it here.
-        // Because I am having trouble wrapping my head around Loaders
-        // and ContentProviders in the Model, I am just returning some fake
-        // data in the List format expected by the Presenter.
-        // There is something called Room which may do this job better.
-        // Room deals with something it calls DAOs (database access objects)
+    public ConnectionsRepository() {
 
+        // Construct a fake database.
 
-        List<ConnectidConnection> connections = new ArrayList<>();
         connections.add(new ConnectidConnection("Aragorn", "you have my sword"));
         connections.add(new ConnectidConnection("Legolas", "and you have my bow"));
         connections.add(new ConnectidConnection("Gimli", "and my axe!"));
@@ -24,8 +21,23 @@ public class ConnectionsRepository implements ConnectionsDataSource {
         connections.add(new ConnectidConnection("Bilbo", "misses his ring"));
         connections.add(new ConnectidConnection("Frodo", "misses his finger"));
         connections.add(new ConnectidConnection("Boromir", "one does not simply"));
+    }
 
-        return connections;
+    @Override
+    public Single<List<ConnectidConnection>> getConnections() {
+
+        // TODO Retrieve data from a real database and return it here.
+        // Loaders do not play well with MVP, not sure about ContentProviders either
+        // Room library with DAOs (database access objects) may be a replacement
+
+        // For now, return this fake database data.
+
+        return Single.fromCallable(new Callable<List<ConnectidConnection>>() {
+            @Override
+            public List<ConnectidConnection> call() throws Exception {
+                return connections;
+            }
+        });
     }
 }
 
