@@ -34,7 +34,6 @@ public class ConnectionsActivity extends AppCompatActivity implements
     private static final int CURSOR_LOADER_ID = 0;
     private ConnectionsCursorAdapter mCursorAdapter;
 
-
     @BindView(R.id.connections_list_rv)
     RecyclerView mRecyclerView;
 
