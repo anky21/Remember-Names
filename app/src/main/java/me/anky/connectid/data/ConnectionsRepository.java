@@ -21,6 +21,7 @@ public class ConnectionsRepository implements ConnectionsDataSource {
         connections.add(new ConnectidConnection("Bilbo", "misses his ring"));
         connections.add(new ConnectidConnection("Frodo", "misses his finger"));
         connections.add(new ConnectidConnection("Boromir", "one does not simply"));
+        connections.add(new ConnectidConnection("Saruman", "don't trust him"));
     }
 
     @Override
@@ -35,6 +36,9 @@ public class ConnectionsRepository implements ConnectionsDataSource {
         return Single.fromCallable(new Callable<List<ConnectidConnection>>() {
             @Override
             public List<ConnectidConnection> call() throws Exception {
+
+                System.out.println("Thread db: " + Thread.currentThread().getId());
+
                 return connections;
             }
         });

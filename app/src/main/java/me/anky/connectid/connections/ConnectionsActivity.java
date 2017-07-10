@@ -33,6 +33,8 @@ public class ConnectionsActivity extends AppCompatActivity implements
     @BindView(R.id.debug_list_tv)
     TextView debug_tv;
 
+    ConnectionsActivityPresenter presenter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,13 +69,15 @@ public class ConnectionsActivity extends AppCompatActivity implements
 
 
         ConnectionsRepository repository = new ConnectionsRepository();
-        ConnectionsActivityPresenter presenter = new ConnectionsActivityPresenter(this, repository);
+        presenter = new ConnectionsActivityPresenter(this, repository);
 
         presenter.loadConnections();
+    }
 
-
-
-
+    @Override
+    protected void onStop() {
+        super.onStop();
+        presenter.unsubscribe();
     }
 
     @Override
