@@ -1,12 +1,13 @@
 package me.anky.connectid.root;
 
-import android.app.Application;
 import android.content.Context;
 
 import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import me.anky.connectid.data.ConnectionsDataSource;
+import me.anky.connectid.data.ConnectionsRepository;
 
 /**
  * Created by Anky An on 10/07/2017.
@@ -15,9 +16,10 @@ import dagger.Provides;
 
 @Module
 public class ApplicationModule {
-    private Application application;
 
-    public ApplicationModule(Application application){
+    private final ConnectidApplication application;
+
+    public ApplicationModule(ConnectidApplication application){
         this.application = application;
     }
 
@@ -25,5 +27,11 @@ public class ApplicationModule {
     @Singleton
     public Context provideContext(){
         return application;
+    }
+
+    @Provides
+    @Singleton
+    ConnectionsDataSource provideConnectionsRepository(Context context) {
+        return new ConnectionsRepository(context);
     }
 }

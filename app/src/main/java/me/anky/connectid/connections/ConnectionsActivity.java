@@ -11,12 +11,15 @@ import com.facebook.stetho.Stetho;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import me.anky.connectid.R;
 import me.anky.connectid.data.ConnectidConnection;
-import me.anky.connectid.data.ConnectionsRepository;
+import me.anky.connectid.data.ConnectionsDataSource;
+import me.anky.connectid.root.ConnectidApplication;
 
 public class ConnectionsActivity extends AppCompatActivity implements
         // LoaderManager.LoaderCallbacks<Cursor>,
@@ -36,12 +39,17 @@ public class ConnectionsActivity extends AppCompatActivity implements
 
     ConnectionsActivityPresenter presenter;
 
+    @Inject
+    ConnectionsDataSource connectionsDataSource;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
 
         ButterKnife.bind(this);
+
+        ((ConnectidApplication) getApplication()).getApplicationComponent().inject(this);
 
         Stetho.initializeWithDefaults(this);
 
@@ -68,10 +76,14 @@ public class ConnectionsActivity extends AppCompatActivity implements
 //
 //        getLoaderManager().initLoader(CURSOR_LOADER_ID, null, this);
 
+    }
 
-        ConnectionsRepository repository = new ConnectionsRepository();
+    @Override
+    protected void onStart() {
+        super.onStart();
+        //ConnectionsRepository connectionsRepository = new ConnectionsRepository();
         presenter = new ConnectionsActivityPresenter(
-                this, repository, AndroidSchedulers.mainThread());
+                this, connectionsDataSource, AndroidSchedulers.mainThread());
 
         presenter.loadConnections();
     }

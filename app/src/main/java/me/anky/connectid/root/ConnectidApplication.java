@@ -7,7 +7,7 @@ import android.app.Application;
  * anky25@gmail.com
  */
 
-public class App extends Application {
+public class ConnectidApplication extends Application {
     private ApplicationComponent component;
 
     @Override
@@ -20,7 +20,7 @@ public class App extends Application {
                 .build();
     }
 
-    public ApplicationComponent getComponent() {
+    public ApplicationComponent getApplicationComponent() {
         return component;
     }
 }
