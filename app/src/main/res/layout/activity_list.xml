@@ -8,15 +8,16 @@
     tools:context="me.anky.connectid.connections.ConnectionsActivity">
 
     <TextView
-        android:id="@+id/debug_list_tv"
-        android:textSize="30sp"
+        android:id="@+id/empty_list_tv"
+        tools:text="Nothing to see here."
+        android:textSize="24sp"
         android:gravity="center"
-        tools:text="Gandalf - fly, you fools!"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/connections_list_rv"
+        android:visibility="invisible"
         android:scrollbars="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
