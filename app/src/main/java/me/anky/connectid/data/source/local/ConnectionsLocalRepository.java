@@ -12,23 +12,26 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 import io.reactivex.Single;
-import me.anky.connectid.R;
 import me.anky.connectid.data.ConnectidConnection;
 import me.anky.connectid.data.ConnectionsDataSource;
 
 public class ConnectionsLocalRepository implements ConnectionsDataSource {
 
     private final List<ConnectidConnection> connections = new ArrayList<>();
+    private Context context;
 
     public ConnectionsLocalRepository(Context context) {
+        this.context = context;
 
-        // Construct a fake database.
+        // Temporarily clear the database when app launches
+        deleteAllEntries();
 
-        String testString = context.getString(R.string.dagger_test);
-        Log.i("DAGGERZ", testString);
+        // Temporarily populate the database with data if it is empty
+        initDatabase();
 
-        testSchematic(context);
-
+        // Prepare connections when the repository is constructed
+        // This is the data the user will see when the app first launches
+        prepareConnectionsList();
     }
 
     @Override
@@ -40,52 +43,81 @@ public class ConnectionsLocalRepository implements ConnectionsDataSource {
 
                 System.out.println("Thread db: " + Thread.currentThread().getId());
 
-                Log.i("MVP", "connections size: " +  connections.size());
+                Log.i("MVP model", "getConnections returned " +  connections.size() + " connections");
 
                 return connections;
             }
         });
     }
 
-    private void testSchematic(Context context) {
+    private void initDatabase() {
 
-        // Clear the database each time the app is launched. Just temporary.
+        Cursor cursor = getAllEntries();
+        if (cursor == null || cursor.getCount() == 0) {
+            insertDummyData();
+            Log.i("MVP model", "initialized database");
+        }
+    }
+
+    private void prepareConnectionsList() {
+        connections.clear();
+
+        String name;
+        String description;
+
+        Cursor cursor = getAllEntries();
+        if (cursor != null && cursor.getCount() != 0) {
+
+            while (cursor.moveToNext()) {
+                name = cursor.getString(cursor.getColumnIndex(ConnectidColumns.NAME));
+                description = cursor.getString(cursor.getColumnIndex(ConnectidColumns.DESCRIPTION));
+                connections.add(new ConnectidConnection(name, description));
+            }
+        }
+    }
+
+    private Cursor getAllEntries() {
+        return context.getContentResolver().query(
+                ConnectidProvider.Connections.CONTENT_URI,
+                null,
+                null,
+                null,
+                null);
+    }
+
+    private void deleteAllEntries() {
         context.getContentResolver().delete(
                 ConnectidProvider.Connections.CONTENT_URI,
                 null,
                 null);
-
-        Cursor cursor = context.getContentResolver().query(
-                ConnectidProvider.Connections.CONTENT_URI,
-                null,
-                null,
-                null,
-                null);
-
-        Log.i("MVP", "cursor size: " +  cursor.getCount());
-
-        if (cursor == null || cursor.getCount() == 0) {
-            insertTestData(context);
-        }
     }
 
-    public void insertTestData(Context context) {
+    private void insertDummyData() {
 
-        connections.add(new ConnectidConnection("Aragorn", "you have my sword"));
-        connections.add(new ConnectidConnection("Legolas", "and you have my bow"));
-        connections.add(new ConnectidConnection("Gimli", "and my axe!"));
-        connections.add(new ConnectidConnection("Gandalf", "fly, you fools!"));
-        connections.add(new ConnectidConnection("Bilbo", "misses his ring"));
-        connections.add(new ConnectidConnection("Frodo", "misses his finger"));
-        connections.add(new ConnectidConnection("Boromir", "one does not simply"));
-        connections.add(new ConnectidConnection("Saruman", "don't trust him"));
+        List<ConnectidConnection> dummyConnections = new ArrayList<>();
 
+        dummyConnections.add(new ConnectidConnection("Aragorn", "you have my sword"));
+        dummyConnections.add(new ConnectidConnection("Legolas", "and you have my bow"));
+        dummyConnections.add(new ConnectidConnection("Gimli", "and my axe!"));
+        dummyConnections.add(new ConnectidConnection("Gandalf", "fly, you fools!"));
+        dummyConnections.add(new ConnectidConnection("Bilbo", "misses his ring"));
+        dummyConnections.add(new ConnectidConnection("Frodo", "misses his finger"));
+        dummyConnections.add(new ConnectidConnection("Sam", "ringbearerbearer"));
+        dummyConnections.add(new ConnectidConnection("Boromir", "one does not simply"));
+        dummyConnections.add(new ConnectidConnection("Saruman", "don't trust him"));
+        dummyConnections.add(new ConnectidConnection("Gollum", "naughty"));
+        dummyConnections.add(new ConnectidConnection("Smeagol", "nice"));
+        dummyConnections.add(new ConnectidConnection("Elrond", "Agent Smith"));
+        dummyConnections.add(new ConnectidConnection("Arwen", "Agent Smith's daughter"));
+
+        // TODO allow attempted duplicate entry to retrieve existing data and merge new data
+        dummyConnections.add(new ConnectidConnection("Legolas", "one legolas, two legoli"));
 
         ArrayList<ContentProviderOperation> batchOperations =
-                new ArrayList<>(connections.size());
+                new ArrayList<>(dummyConnections.size());
 
         for (
-                ConnectidConnection connection : connections)
+                ConnectidConnection connection : dummyConnections)
 
         {
             ContentProviderOperation.Builder builder = ContentProviderOperation.newInsert(
@@ -104,6 +136,7 @@ public class ConnectionsLocalRepository implements ConnectionsDataSource {
                 OperationApplicationException e)
 
         {
+            // TODO Add some sort of Analytics for reporting.
             Log.e("DATABASE_TEST", "Error applying batch insert", e);
         }
     }
