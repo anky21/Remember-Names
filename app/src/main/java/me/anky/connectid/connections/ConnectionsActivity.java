@@ -81,7 +81,7 @@ public class ConnectionsActivity extends AppCompatActivity implements
     @Override
     protected void onStart() {
         super.onStart();
-        //ConnectionsRepository connectionsRepository = new ConnectionsRepository();
+        //ConnectionsLocalRepository connectionsRepository = new ConnectionsLocalRepository();
         presenter = new ConnectionsActivityPresenter(
                 this, connectionsDataSource, AndroidSchedulers.mainThread());
 
@@ -179,8 +179,8 @@ public class ConnectionsActivity extends AppCompatActivity implements
 //        for (ConnectidConnection connection : connections) {
 //            ContentProviderOperation.Builder builder = ContentProviderOperation.newInsert(
 //                    ConnectidProvider.Connections.CONTENT_URI);
-//            builder.withValue(IConnectidColumns.NAME, connection.getName());
-//            builder.withValue(IConnectidColumns.DESCRIPTION, connection.getDescription());
+//            builder.withValue(ConnectidColumns.NAME, connection.getName());
+//            builder.withValue(ConnectidColumns.DESCRIPTION, connection.getDescription());
 //            batchOperations.add(builder.build());
 //        }
 //

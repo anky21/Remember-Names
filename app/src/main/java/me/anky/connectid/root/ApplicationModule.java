@@ -7,7 +7,7 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 import me.anky.connectid.data.ConnectionsDataSource;
-import me.anky.connectid.data.ConnectionsRepository;
+import me.anky.connectid.data.source.local.ConnectionsLocalRepository;
 
 /**
  * Created by Anky An on 10/07/2017.
@@ -32,6 +32,6 @@ public class ApplicationModule {
     @Provides
     @Singleton
     ConnectionsDataSource provideConnectionsRepository(Context context) {
-        return new ConnectionsRepository(context);
+        return new ConnectionsLocalRepository(context);
     }
 }

@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import me.anky.connectid.R;
-import me.anky.connectid.data.source.local.IConnectidColumns;
+import me.anky.connectid.data.source.local.ConnectidColumns;
 import me.anky.connectid.details.DetailsActivity;
 
 public class ConnectionsCursorAdapter
@@ -63,9 +63,9 @@ public class ConnectionsCursorAdapter
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, Cursor cursor){
         DatabaseUtils.dumpCursor(cursor);
-        int id = cursor.getInt(cursor.getColumnIndex(IConnectidColumns._ID));
-        String name = cursor.getString(cursor.getColumnIndex(IConnectidColumns.NAME));
-        String description = cursor.getString(cursor.getColumnIndex(IConnectidColumns.DESCRIPTION));
+        int id = cursor.getInt(cursor.getColumnIndex(ConnectidColumns._ID));
+        String name = cursor.getString(cursor.getColumnIndex(ConnectidColumns.NAME));
+        String description = cursor.getString(cursor.getColumnIndex(ConnectidColumns.DESCRIPTION));
 
         viewHolder.mListItemTv.setTag(id);
         viewHolder.mListItemTv.setText(name + " - " + description);
