@@ -30,6 +30,7 @@
 
         <activity
             android:name=".details.DetailsActivity"
+            android:label=""
             android:parentActivityName=".connections.ConnectionsActivity" />
     </application>
 

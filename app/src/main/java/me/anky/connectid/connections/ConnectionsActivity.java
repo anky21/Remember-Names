@@ -1,5 +1,6 @@
 package me.anky.connectid.connections;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -7,6 +8,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.facebook.stetho.Stetho;
@@ -21,11 +23,12 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import me.anky.connectid.R;
 import me.anky.connectid.data.ConnectidConnection;
 import me.anky.connectid.data.ConnectionsDataSource;
+import me.anky.connectid.details.DetailsActivity;
 import me.anky.connectid.root.ConnectidApplication;
 
 public class ConnectionsActivity extends AppCompatActivity implements
         ConnectionsActivityView,
-        ConnectionsRecyclerViewAdapter.ItemClickListener {
+        ConnectionsRecyclerViewAdapter.RecyclerViewClickListener {
 
     @BindView(R.id.connections_list_rv)
     RecyclerView recyclerView;
@@ -54,32 +57,14 @@ public class ConnectionsActivity extends AppCompatActivity implements
 
         Stetho.initializeWithDefaults(this);
 
-        adapter = new ConnectionsRecyclerViewAdapter(this);
+        adapter = new ConnectionsRecyclerViewAdapter(this, this);
+
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
+        setScrollListener(recyclerView);
 
-        // Automatically hide/show the FAB when recycler view scrolls up/down
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
 
-                if(dy > 0 || dy < 0 && fab.isShown()){
-                    fab.hide();
-                }
-                super.onScrolled(recyclerView, dx, dy);
-            }
-
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-
-                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    fab.show();
-                }
-                super.onScrollStateChanged(recyclerView, newState);
-            }
-
-        });
     }
 
     @Override
@@ -102,31 +87,55 @@ public class ConnectionsActivity extends AppCompatActivity implements
     public void displayConnections(List<ConnectidConnection> connections) {
         Log.i("MVP view", "displayConnections received " + connections.size() + " connections");
 
-        StringBuilder builder = new StringBuilder();
-        for (ConnectidConnection connection : connections) {
-            builder.append(connection.getName());
-            builder.append(" - ");
-            builder.append(connection.getDescription());
-            builder.append("\n");
-        }
-        debug_tv.setText(builder.toString());
-
-        debug_tv.setVisibility(View.GONE);
         adapter.setConnections(connections);
+    }
+
+    private void setScrollListener(RecyclerView recyclerView) {
+        // Automatically hide/show the FAB when recycler view scrolls up/down
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+
+                if(dy > 0 || dy < 0 && fab.isShown()){
+                    fab.hide();
+                }
+                super.onScrolled(recyclerView, dx, dy);
+            }
+
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    fab.show();
+                }
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+        });
     }
 
     @Override
     public void displayNoConnections() {
-        Log.i("MVPTEST", "displayNoConnections called because list is empty");
+        Log.i("MVP view", "displayNoConnections received empty list");
     }
 
     @Override
     public void displayError() {
-        Log.i("MVPTEST", "displayError called due to error");
+        Log.i("MVP view", "displayError called due to error");
     }
 
     @Override
     public void onItemClick(View view, int position) {
+        Log.i("MVP view", "position " + position + " clicked");
 
+        TextView clickedItemTv = (TextView) ((ViewGroup) view).getChildAt(0);
+
+        Intent intent = new Intent(this, DetailsActivity.class);
+        intent.putExtra("ID", (Integer) clickedItemTv.getTag());
+        intent.putExtra("DETAILS", clickedItemTv.getText());
+        startActivity(intent);
+    }
+
+    public void addNewConnection(View view) {
+        Log.i("FAB", "You clicked the fab, good job!");
     }
 }

@@ -23,10 +23,10 @@ public class ConnectionsLocalRepository implements ConnectionsDataSource {
     public ConnectionsLocalRepository(Context context) {
         this.context = context;
 
-        // Temporarily clear the database when app launches
-        deleteAllEntries();
+        // FOR DEBUG: clear the database when app launches
+        // deleteAllEntries();
 
-        // Temporarily populate the database with data if it is empty
+        // FOR DEBUG: populate the database with data if it is empty
         initDatabase();
 
         // Prepare connections when the repository is constructed
@@ -62,6 +62,7 @@ public class ConnectionsLocalRepository implements ConnectionsDataSource {
     private void prepareConnectionsList() {
         connections.clear();
 
+        int databaseId;
         String name;
         String description;
 
@@ -69,9 +70,10 @@ public class ConnectionsLocalRepository implements ConnectionsDataSource {
         if (cursor != null && cursor.getCount() != 0) {
 
             while (cursor.moveToNext()) {
+                databaseId = cursor.getInt(cursor.getColumnIndex(ConnectidColumns._ID));
                 name = cursor.getString(cursor.getColumnIndex(ConnectidColumns.NAME));
                 description = cursor.getString(cursor.getColumnIndex(ConnectidColumns.DESCRIPTION));
-                connections.add(new ConnectidConnection(name, description));
+                connections.add(new ConnectidConnection(databaseId, name, description));
             }
         }
     }

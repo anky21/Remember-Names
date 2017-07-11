@@ -1,9 +1,7 @@
 package me.anky.connectid.connections;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +12,6 @@ import java.util.List;
 
 import me.anky.connectid.R;
 import me.anky.connectid.data.ConnectidConnection;
-import me.anky.connectid.details.DetailsActivity;
 
 public class ConnectionsRecyclerViewAdapter extends
         RecyclerView.Adapter<ConnectionsRecyclerViewAdapter.ViewHolder>  {
@@ -22,13 +19,19 @@ public class ConnectionsRecyclerViewAdapter extends
     private List<ConnectidConnection> connections;
     private LayoutInflater inflater;
     private Context context;
-    private ItemClickListener clickListener;
+    private RecyclerViewClickListener clickListener;
 
+    public interface RecyclerViewClickListener {
+        void onItemClick(View view, int position);
+    }
+
+    // TODO Internal click tracking will probably be removed
     // Track user clicks
     private int clickedPosition = -1;
 
-    public ConnectionsRecyclerViewAdapter(Context context) {
+    public ConnectionsRecyclerViewAdapter(Context context, RecyclerViewClickListener clickListener) {
         this.inflater = LayoutInflater.from(context);
+        this.clickListener = clickListener;
         connections = new ArrayList<>();
     }
 
@@ -46,17 +49,22 @@ public class ConnectionsRecyclerViewAdapter extends
     @Override
     public void onBindViewHolder(ConnectionsRecyclerViewAdapter.ViewHolder holder, int position) {
 
+        int databaseId = connections.get(position).getDatabaseId();
         String name = connections.get(position).getName();
         String description = connections.get(position).getDescription();
 
         holder.listItemTv.setText(name + " - " + description);
+        holder.listItemTv.setTag(databaseId);
 
+
+
+        // TODO Probably unnecessary to track clicks internally
         if (clickedPosition == position) {
-            Log.i("MVP view", "position " + clickedPosition + " clicked");
-            Intent intent = new Intent(holder.listItemTv.getContext(), DetailsActivity.class);
-            intent.putExtra("ID", position);
-            intent.putExtra("DETAILS", holder.listItemTv.getText().toString());
-            holder.listItemTv.getContext().startActivity(intent);
+//            Log.i("MVP view", "position " + clickedPosition + " clicked");
+//            Intent intent = new Intent(holder.listItemTv.getContext(), DetailsActivity.class);
+//            intent.putExtra("ID", databaseId);
+//            intent.putExtra("DETAILS", holder.listItemTv.getText().toString());
+//            holder.listItemTv.getContext().startActivity(intent);
         }
     }
 
@@ -95,11 +103,6 @@ public class ConnectionsRecyclerViewAdapter extends
         return connections.get(position);
     }
 
-
-    public interface ItemClickListener {
-        void onItemClick(View view, int position);
-    }
-
     // Updates the array, allowing for uninterrupted scrolling
     public void setConnections(List<ConnectidConnection> connections) {
         if (connections == null) {
@@ -110,7 +113,6 @@ public class ConnectionsRecyclerViewAdapter extends
             notifyDataSetChanged();
         }
     }
-
 
     public void resetAdapter() {
         if (connections != null) {
