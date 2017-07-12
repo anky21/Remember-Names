@@ -28,8 +28,6 @@ public class ConnectionsLocalRepository implements
 
     private Context context;
 
-    private int resultCode = -1;
-
     public ConnectionsLocalRepository(Context context) {
         this.context = context;
 
@@ -146,7 +144,7 @@ public class ConnectionsLocalRepository implements
     }
 
     @Override
-    public void insertNewConnection(ConnectidConnection newConnection) {
+    public int insertNewConnection(ConnectidConnection newConnection) {
 
         Log.i("MVP model", "insertNewConnection inserting " + newConnection.getName());
 
@@ -158,15 +156,7 @@ public class ConnectionsLocalRepository implements
 
         Log.i("MVP model", "insertNewConnection inserted uri " + uri.toString());
 
-        resultCode = generateResultCode(uri);
-    }
-
-    @Override
-    public int getResultCode() {
-
-        Log.i("MVP model", "getResultCode returned " + resultCode);
-
-        return resultCode;
+        return generateResultCode(uri);
     }
 
     private int generateResultCode(Uri uri) {

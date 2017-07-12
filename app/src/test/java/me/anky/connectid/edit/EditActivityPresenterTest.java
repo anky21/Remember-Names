@@ -46,21 +46,26 @@ public class EditActivityPresenterTest {
 
     @Test
     public void shouldHandleInsertionError() {
+        ConnectidConnection newConnection = new ConnectidConnection();
+        Mockito.when(view.getNewConnection()).thenReturn(newConnection);
 
         int resultCode = -1;
-        Mockito.when(editDataSource.getResultCode()).thenReturn(resultCode);
+        Mockito.when(editDataSource.insertNewConnection(newConnection)).thenReturn(resultCode);
 
-        presenter.deliverError();
+        presenter.deliverNewConnection();
 
         Mockito.verify(view).displayError();
     }
 
     @Test
     public void shouldHandleInsertionSuccess() {
-        int resultCode = 1;
-        Mockito.when(editDataSource.getResultCode()).thenReturn(resultCode);
+        ConnectidConnection newConnection = new ConnectidConnection();
+        Mockito.when(view.getNewConnection()).thenReturn(newConnection);
 
-        presenter.deliverSuccess();
+        int resultCode = 1;
+        Mockito.when(editDataSource.insertNewConnection(newConnection)).thenReturn(resultCode);
+
+        presenter.deliverNewConnection();
 
         Mockito.verify(view).displaySuccess();
     }

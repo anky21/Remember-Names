@@ -24,36 +24,23 @@ public class EditActivityPresenter {
     }
 
     public void deliverNewConnection() {
+
+
+
+
+
+
         ConnectidConnection newConnection = view.getNewConnection();
 
         // TODO Handle threading and callbacks here if we care
-        editDataSource.insertNewConnection(newConnection);
-
-        int resultCode = editDataSource.getResultCode();
+        int resultCode = editDataSource.insertNewConnection(newConnection);
 
         System.out.println("MVP presenter - " + "delivered new connection, resultCode " + resultCode);
+
         if (resultCode == -1) {
-            deliverError();
-        } else {
-            deliverSuccess();
-        }
-    }
-
-    public void deliverSuccess() {
-
-        System.out.println("MVP presenter - " + "delivering success");
-
-        if (editDataSource.getResultCode() == 1) {
-            view.displaySuccess();
-        }
-    }
-
-    public void deliverError() {
-
-        System.out.println("MVP presenter - " + "delivering error");
-
-        if (editDataSource.getResultCode() == -1) {
             view.displayError();
+        } else {
+            view.displaySuccess();
         }
     }
 
