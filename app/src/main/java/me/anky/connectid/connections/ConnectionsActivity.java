@@ -24,6 +24,7 @@ import me.anky.connectid.R;
 import me.anky.connectid.data.ConnectidConnection;
 import me.anky.connectid.data.ConnectionsDataSource;
 import me.anky.connectid.details.DetailsActivity;
+import me.anky.connectid.edit.EditActivity;
 import me.anky.connectid.root.ConnectidApplication;
 
 public class ConnectionsActivity extends AppCompatActivity implements
@@ -148,6 +149,8 @@ public class ConnectionsActivity extends AppCompatActivity implements
     }
 
     public void addNewConnection(View view) {
-        Log.i("FAB", "You clicked the fab, good job!");
+
+        Intent intent = new Intent(this, EditActivity.class);
+        startActivity(intent);
     }
 }

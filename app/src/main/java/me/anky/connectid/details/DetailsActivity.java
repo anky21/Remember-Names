@@ -39,7 +39,7 @@ public class DetailsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_connection_details);
+        setContentView(R.layout.activity_details);
         ButterKnife.bind(this);
 
         Intent intent = getIntent();

@@ -16,7 +16,7 @@ public class ConnectionsActivityPresenter {
     private ConnectionsDataSource connectionsDataSource;
     private Scheduler mainScheduler;
 
-    // Composite used for RxJava subscriber cleanup
+    // Create a composite for RxJava subscriber cleanup
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     public ConnectionsActivityPresenter(ConnectionsActivityView view,
