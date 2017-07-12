@@ -48,6 +48,7 @@ public class ConnectionsActivity extends AppCompatActivity implements
     ConnectionsRecyclerViewAdapter adapter;
 
     private static final int EDIT_ACTIVITY_REQUEST = 100;
+    boolean shouldScrollToBottom;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,21 +67,24 @@ public class ConnectionsActivity extends AppCompatActivity implements
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
         setScrollListener(recyclerView);
+
+        presenter = new ConnectionsActivityPresenter(
+                this, connectionsDataSource, AndroidSchedulers.mainThread());
+        presenter.loadConnections();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
 
-        presenter = new ConnectionsActivityPresenter(
-                this, connectionsDataSource, AndroidSchedulers.mainThread());
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
 
-        presenter.loadConnections();
+
     }
 
     @Override
@@ -96,6 +100,11 @@ public class ConnectionsActivity extends AppCompatActivity implements
         recyclerView.setVisibility(View.VISIBLE);
 
         adapter.setConnections(connections);
+
+        if (shouldScrollToBottom) {
+            recyclerView.smoothScrollToPosition(connections.size() - 1);
+            shouldScrollToBottom = false;
+        }
     }
 
     private void setScrollListener(RecyclerView recyclerView) {
@@ -170,6 +179,8 @@ public class ConnectionsActivity extends AppCompatActivity implements
                 // TODO Inform user of insertion success, perhaps with toast
                 // Another option is to refresh the list here, so that we query the DB only
                 // When it is updated, rather than everytime we return to this list
+                presenter.loadConnections();
+                shouldScrollToBottom = true;
             }
         }
     }
