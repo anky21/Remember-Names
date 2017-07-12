@@ -7,7 +7,7 @@ import net.simonvt.schematic.annotation.NotNull;
 import net.simonvt.schematic.annotation.PrimaryKey;
 import net.simonvt.schematic.annotation.Unique;
 
-public interface IConnectidColumns {
+public interface ConnectidColumns {
 
     @DataType(DataType.Type.INTEGER) @PrimaryKey @AutoIncrement
     public static final String _ID = "_id";

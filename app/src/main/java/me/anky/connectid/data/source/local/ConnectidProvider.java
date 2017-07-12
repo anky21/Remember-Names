@@ -35,7 +35,7 @@ public class ConnectidProvider {
         @ContentUri(
                 path = Path.CONNECTIONS,
                 type = "vnd.android.cursor.dir/connection",
-                defaultSort = IConnectidColumns._ID + " ASC")
+                defaultSort = ConnectidColumns._ID + " ASC")
         public static final Uri CONTENT_URI = buildUri(Path.CONNECTIONS);
 
         // TODO: MIME type may become "vnd.android.cursor.dir/contact"
@@ -43,7 +43,7 @@ public class ConnectidProvider {
                 name = "CONNECTION_ID",
                 path = Path.CONNECTIONS + "/#",
                 type = "vnd.android.cursor.item/connection",
-                whereColumn = IConnectidColumns._ID,
+                whereColumn = ConnectidColumns._ID,
                 pathSegment = 1)
         public static Uri withId(long id){
             return buildUri(Path.CONNECTIONS, String.valueOf(id));

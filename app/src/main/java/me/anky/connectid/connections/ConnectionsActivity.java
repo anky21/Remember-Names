@@ -1,44 +1,53 @@
 package me.anky.connectid.connections;
 
-import android.app.LoaderManager;
-import android.content.ContentProviderOperation;
-import android.content.CursorLoader;
 import android.content.Intent;
-import android.content.Loader;
-import android.content.OperationApplicationException;
-import android.database.Cursor;
 import android.os.Bundle;
-import android.os.RemoteException;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.facebook.stetho.Stetho;
 
-import java.util.ArrayList;
+import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import me.anky.connectid.R;
 import me.anky.connectid.data.ConnectidConnection;
-import me.anky.connectid.data.source.local.ConnectidProvider;
-import me.anky.connectid.data.source.local.IConnectidColumns;
+import me.anky.connectid.data.ConnectionsDataSource;
 import me.anky.connectid.details.DetailsActivity;
+import me.anky.connectid.edit.EditActivity;
+import me.anky.connectid.root.ConnectidApplication;
 
 public class ConnectionsActivity extends AppCompatActivity implements
-        LoaderManager.LoaderCallbacks<Cursor> {
-
-    private static final int CURSOR_LOADER_ID = 0;
-    private ConnectionsCursorAdapter mCursorAdapter;
+        ConnectionsActivityView,
+        ConnectionsRecyclerViewAdapter.RecyclerViewClickListener {
 
     @BindView(R.id.connections_list_rv)
-    RecyclerView mRecyclerView;
+    RecyclerView recyclerView;
 
     @BindView(R.id.fab)
-    FloatingActionButton mFab;
+    FloatingActionButton fab;
+
+    @BindView(R.id.empty_list_tv)
+    TextView emptyListTv;
+
+    ConnectionsActivityPresenter presenter;
+
+    @Inject
+    ConnectionsDataSource connectionsDataSource;
+
+    ConnectionsRecyclerViewAdapter adapter;
+
+    private static final int EDIT_ACTIVITY_REQUEST = 100;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,130 +56,119 @@ public class ConnectionsActivity extends AppCompatActivity implements
 
         ButterKnife.bind(this);
 
+        ((ConnectidApplication) getApplication()).getApplicationComponent().inject(this);
+
         Stetho.initializeWithDefaults(this);
 
-        testSchematic();
+        adapter = new ConnectionsRecyclerViewAdapter(this, this);
 
-        mCursorAdapter = new ConnectionsCursorAdapter(this, null);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(adapter);
+        setScrollListener(recyclerView);
+    }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
 
-        mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mRecyclerView.setAdapter(mCursorAdapter);
+        presenter = new ConnectionsActivityPresenter(
+                this, connectionsDataSource, AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        presenter.loadConnections();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        presenter.unsubscribe();
+    }
+
+    @Override
+    public void displayConnections(List<ConnectidConnection> connections) {
+        Log.i("MVP view", "displayConnections received " + connections.size() + " connections");
+        emptyListTv.setVisibility(View.INVISIBLE);
+        recyclerView.setVisibility(View.VISIBLE);
+
+        adapter.setConnections(connections);
+    }
+
+    private void setScrollListener(RecyclerView recyclerView) {
         // Automatically hide/show the FAB when recycler view scrolls up/down
-        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                if(dy > 0){
-                    mFab.hide();
-                } else{
-                    mFab.show();
+
+                if(dy > 0 || dy < 0 && fab.isShown()){
+                    fab.hide();
                 }
                 super.onScrolled(recyclerView, dx, dy);
             }
+
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    fab.show();
+                }
+                super.onScrollStateChanged(recyclerView, newState);
+            }
         });
-
-        getLoaderManager().initLoader(CURSOR_LOADER_ID, null, this);
     }
 
-    private void testSchematic() {
+    @Override
+    public void displayNoConnections() {
+        Log.i("MVP view", "displayNoConnections received empty list");
 
-        // Clear database
-//        getContentResolver().delete(
-//                ConnectidProvider.Connections.CONTENT_URI,
-//                null,
-//                null);
+        // TODO Make pretty strings sometime.
+        emptyListTv.setText("Need to remember someone?\nClick the button to get started!");
+        recyclerView.setVisibility(View.INVISIBLE);
+        emptyListTv.setVisibility(View.VISIBLE);
+    }
 
-        Cursor cursor = getContentResolver().query(
-                ConnectidProvider.Connections.CONTENT_URI,
-                null,
-                null,
-                null,
-                null);
-        if (cursor == null || cursor.getCount() == 0) {
-            insertTestData();
+    @Override
+    public void displayError() {
+        Log.i("MVP view", "displayError called due to error");
+
+        // TODO Make pretty strings sometime.
+        emptyListTv.setText("Fatal error.\nProbably a database failure.");
+        recyclerView.setVisibility(View.INVISIBLE);
+        emptyListTv.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onItemClick(View view, int position) {
+        Log.i("MVP view", "position " + position + " clicked");
+
+        TextView clickedItemTv = (TextView) ((ViewGroup) view).getChildAt(0);
+
+        Intent intent = new Intent(this, DetailsActivity.class);
+        intent.putExtra("ID", (Integer) clickedItemTv.getTag());
+        intent.putExtra("DETAILS", clickedItemTv.getText());
+        startActivity(intent);
+    }
+
+    public void launchEditActivity(View view) {
+
+        Intent intent = new Intent(this, EditActivity.class);
+        startActivityForResult(intent, EDIT_ACTIVITY_REQUEST);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == EDIT_ACTIVITY_REQUEST) {
+            if (resultCode == RESULT_OK) {
+
+                Log.i("MVP view", "recyclerview is automatically refreshed upon insertion");
+                // TODO Inform user of insertion success, perhaps with toast
+            }
         }
     }
-
-    // OnclickListener for the FAB
-    @OnClick(R.id.fab)
-    public void fabOnClick(){
-        startActivity(new Intent(this, DetailsActivity.class));
-    }
-
-    public void insertTestData() {
-
-        ConnectidConnection[] connections = {
-                new ConnectidConnection("Aragorn", "you have my sword"),
-                new ConnectidConnection("Legolas", "and you have my bow"),
-                new ConnectidConnection("Gimli", "and my axe!"),
-                new ConnectidConnection("Aragorn", "elf lover"),
-                new ConnectidConnection("Gandalf", "great with fireworks"),
-                new ConnectidConnection("Bilbo", "misses his ring"),
-                new ConnectidConnection("Frodo", "misses his finger"),
-                new ConnectidConnection("Ezio", "skilled assassin"),
-                new ConnectidConnection("Tony Stark", "he is Iron Man"),
-                new ConnectidConnection("Captain America", "boring"),
-                new ConnectidConnection("Luke Skywalker", "in denial"),
-                new ConnectidConnection("Darth Vader", "loving father"),
-                new ConnectidConnection("Xenomorph", "saliva is acid"),
-                new ConnectidConnection("GLaDOS", "not even angry"),
-                new ConnectidConnection("Yoda", "met in swamp"),
-                new ConnectidConnection("Shrek", "met in swamp"),
-                new ConnectidConnection("Donkey", "very talkative"),
-                new ConnectidConnection("Bowser", "has evil laugh"),
-                new ConnectidConnection("Princess Peach", "damsel in distress"),
-                new ConnectidConnection("Princess Peach", "damsel in distress"),
-                new ConnectidConnection("Princess Peach", "damsel in distress"),
-                new ConnectidConnection("Princess Peach", "damsel in distress"),
-                new ConnectidConnection("Princess Peach", "damsel in distress"),
-                new ConnectidConnection("Princess Zelda", "damsel in distress"),
-                new ConnectidConnection("Mario", "jumps a lot")
-        };
-
-        ArrayList<ContentProviderOperation> batchOperations =
-                new ArrayList<>(connections.length);
-
-        for (ConnectidConnection connection : connections) {
-            ContentProviderOperation.Builder builder = ContentProviderOperation.newInsert(
-                    ConnectidProvider.Connections.CONTENT_URI);
-            builder.withValue(IConnectidColumns.NAME, connection.getName());
-            builder.withValue(IConnectidColumns.DESCRIPTION, connection.getDescription());
-            batchOperations.add(builder.build());
-        }
-
-        try {
-            getContentResolver().applyBatch(ConnectidProvider.AUTHORITY, batchOperations);
-
-        } catch (RemoteException | OperationApplicationException e) {
-            Log.e("DATABASE_TEST", "Error applying batch insert", e);
-        }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        getLoaderManager().restartLoader(CURSOR_LOADER_ID, null, this);
-    }
-
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args){
-        return new CursorLoader(this, ConnectidProvider.Connections.CONTENT_URI,
-                null,
-                null,
-                null,
-                null);
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data){
-        mCursorAdapter.swapCursor(data);
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader){
-        mCursorAdapter.swapCursor(null);
-    }
-
-
 }

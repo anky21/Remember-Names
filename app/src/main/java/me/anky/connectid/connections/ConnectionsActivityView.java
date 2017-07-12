@@ -9,4 +9,6 @@ public interface ConnectionsActivityView {
     void displayConnections(List<ConnectidConnection> connections);
 
     void displayNoConnections();
+
+    void displayError();
 }

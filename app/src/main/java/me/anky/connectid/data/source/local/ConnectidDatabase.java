@@ -9,6 +9,6 @@ public final class ConnectidDatabase {
 
     public static final int VERSION = 1;
 
-    @Table(IConnectidColumns.class)
+    @Table(ConnectidColumns.class)
     public static final String CONNECTIONS = "connections";
 }
