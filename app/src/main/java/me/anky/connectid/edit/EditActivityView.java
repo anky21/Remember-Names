@@ -1,10 +1,11 @@
 package me.anky.connectid.edit;
 
+import io.reactivex.Single;
 import me.anky.connectid.data.ConnectidConnection;
 
 public interface EditActivityView {
 
-    ConnectidConnection getNewConnection();
+    Single<ConnectidConnection> getNewConnection();
 
     void displayError();
 

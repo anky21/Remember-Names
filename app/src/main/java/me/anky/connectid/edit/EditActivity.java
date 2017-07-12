@@ -7,10 +7,13 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
+import java.util.concurrent.Callable;
+
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import me.anky.connectid.R;
 import me.anky.connectid.data.ConnectidConnection;
@@ -74,10 +77,20 @@ public class EditActivity extends AppCompatActivity implements EditActivityView 
     }
 
     @Override
-    public ConnectidConnection getNewConnection() {
+    public Single<ConnectidConnection> getNewConnection() {
         Log.i("MVP view", "getNewConnection returning " + newConnection.getName());
 
-        return newConnection;
+        //return newConnection;
+
+        return Single.fromCallable(new Callable<ConnectidConnection>() {
+            @Override
+            public ConnectidConnection call() throws Exception {
+
+                System.out.println("Thread db: " + Thread.currentThread().getId());
+
+                return newConnection;
+            }
+        });
     }
 
     @Override

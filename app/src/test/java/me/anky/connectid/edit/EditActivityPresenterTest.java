@@ -8,6 +8,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
+import io.reactivex.Single;
 import io.reactivex.plugins.RxJavaPlugins;
 import io.reactivex.schedulers.Schedulers;
 import me.anky.connectid.data.ConnectidConnection;
@@ -37,7 +38,7 @@ public class EditActivityPresenterTest {
     public void shouldDeliverConnectionToModel() {
 
         ConnectidConnection newConnection = new ConnectidConnection();
-        Mockito.when(view.getNewConnection()).thenReturn(newConnection);
+        Mockito.when(view.getNewConnection()).thenReturn(Single.just(newConnection));
 
         presenter.deliverNewConnection();
 
@@ -47,7 +48,7 @@ public class EditActivityPresenterTest {
     @Test
     public void shouldHandleInsertionError() {
         ConnectidConnection newConnection = new ConnectidConnection();
-        Mockito.when(view.getNewConnection()).thenReturn(newConnection);
+        Mockito.when(view.getNewConnection()).thenReturn(Single.just(newConnection));
 
         int resultCode = -1;
         Mockito.when(editDataSource.insertNewConnection(newConnection)).thenReturn(resultCode);
@@ -60,7 +61,7 @@ public class EditActivityPresenterTest {
     @Test
     public void shouldHandleInsertionSuccess() {
         ConnectidConnection newConnection = new ConnectidConnection();
-        Mockito.when(view.getNewConnection()).thenReturn(newConnection);
+        Mockito.when(view.getNewConnection()).thenReturn(Single.just(newConnection));
 
         int resultCode = 1;
         Mockito.when(editDataSource.insertNewConnection(newConnection)).thenReturn(resultCode);
