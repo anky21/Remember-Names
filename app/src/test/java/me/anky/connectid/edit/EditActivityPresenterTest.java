@@ -41,7 +41,7 @@ public class EditActivityPresenterTest {
 
         presenter.deliverNewConnection();
 
-        Mockito.verify(editDataSource).putNewConnection(newConnection);
+        Mockito.verify(editDataSource).insertNewConnection(newConnection);
     }
 
     @Test

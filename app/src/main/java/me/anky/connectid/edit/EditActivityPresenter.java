@@ -27,7 +27,7 @@ public class EditActivityPresenter {
         ConnectidConnection newConnection = view.getNewConnection();
 
         // TODO Handle threading and callbacks here if we care
-        editDataSource.putNewConnection(newConnection);
+        editDataSource.insertNewConnection(newConnection);
 
         int resultCode = editDataSource.getResultCode();
 

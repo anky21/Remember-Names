@@ -21,7 +21,8 @@ import me.anky.connectid.data.EditDataSource;
 import static android.content.ContentProviderOperation.newInsert;
 
 public class ConnectionsLocalRepository implements
-        ConnectionsDataSource, EditDataSource {
+        ConnectionsDataSource,
+        EditDataSource {
 
     private final List<ConnectidConnection> connections = new ArrayList<>();
 
@@ -145,9 +146,9 @@ public class ConnectionsLocalRepository implements
     }
 
     @Override
-    public void putNewConnection(ConnectidConnection newConnection) {
+    public void insertNewConnection(ConnectidConnection newConnection) {
 
-        Log.i("MVP model", "putNewConnection inserting " + newConnection.getName());
+        Log.i("MVP model", "insertNewConnection inserting " + newConnection.getName());
 
         ContentValues contentValues = new ContentValues();
         contentValues.put(ConnectidColumns.NAME, newConnection.getName());
@@ -155,7 +156,7 @@ public class ConnectionsLocalRepository implements
 
         Uri uri = context.getContentResolver().insert(ConnectidProvider.Connections.CONTENT_URI, contentValues);
 
-        Log.i("MVP model", "putNewConnection inserted uri " + uri.toString());
+        Log.i("MVP model", "insertNewConnection inserted uri " + uri.toString());
 
         resultCode = generateResultCode(uri);
     }
