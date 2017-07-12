@@ -50,7 +50,6 @@ public class DetailsActivity extends AppCompatActivity {
         connectionDetailsTv.setText("Database item id: " + databaseId + "\n" + details);
     }
 
-
     @OnClick(R.id.portrait_iv)
     public void changePortraitPhoto() {
         FragmentManager fm = getFragmentManager();
