@@ -1,9 +1,11 @@
 package me.anky.connectid.data.source.local;
 
 import android.content.ContentProviderOperation;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.OperationApplicationException;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.RemoteException;
 import android.util.Log;
 
@@ -14,11 +16,18 @@ import java.util.concurrent.Callable;
 import io.reactivex.Single;
 import me.anky.connectid.data.ConnectidConnection;
 import me.anky.connectid.data.ConnectionsDataSource;
+import me.anky.connectid.data.EditDataSource;
 
-public class ConnectionsLocalRepository implements ConnectionsDataSource {
+import static android.content.ContentProviderOperation.newInsert;
+
+public class ConnectionsLocalRepository implements
+        ConnectionsDataSource, EditDataSource {
 
     private final List<ConnectidConnection> connections = new ArrayList<>();
+
     private Context context;
+
+    private int resultCode = 1;
 
     public ConnectionsLocalRepository(Context context) {
         this.context = context;
@@ -43,7 +52,7 @@ public class ConnectionsLocalRepository implements ConnectionsDataSource {
 
                 System.out.println("Thread db: " + Thread.currentThread().getId());
 
-                Log.i("MVP model", "getConnections returned " +  connections.size() + " connections");
+                Log.i("MVP model", "getConnections returned " + connections.size() + " connections");
 
                 return connections;
             }
@@ -118,29 +127,44 @@ public class ConnectionsLocalRepository implements ConnectionsDataSource {
         ArrayList<ContentProviderOperation> batchOperations =
                 new ArrayList<>(dummyConnections.size());
 
-        for (
-                ConnectidConnection connection : dummyConnections)
+        for (ConnectidConnection connection : dummyConnections) {
 
-        {
-            ContentProviderOperation.Builder builder = ContentProviderOperation.newInsert(
+            ContentProviderOperation.Builder builder = newInsert(
                     ConnectidProvider.Connections.CONTENT_URI);
             builder.withValue(ConnectidColumns.NAME, connection.getName());
             builder.withValue(ConnectidColumns.DESCRIPTION, connection.getDescription());
             batchOperations.add(builder.build());
         }
 
-        try
-
-        {
+        try {
             context.getContentResolver().applyBatch(ConnectidProvider.AUTHORITY, batchOperations);
+        } catch (RemoteException | OperationApplicationException e) {
 
-        } catch (RemoteException |
-                OperationApplicationException e)
-
-        {
             // TODO Add some sort of Analytics for reporting.
             Log.e("DATABASE_TEST", "Error applying batch insert", e);
         }
+    }
+
+    @Override
+    public void putNewConnection(ConnectidConnection newConnection) {
+
+        Log.i("MVP model", "putNewConnection inserting " + newConnection.getName());
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(ConnectidColumns.NAME, newConnection.getName());
+        contentValues.put(ConnectidColumns.DESCRIPTION, newConnection.getDescription());
+
+        Uri uri = context.getContentResolver().insert(ConnectidProvider.Connections.CONTENT_URI, contentValues);
+
+        Log.i("MVP model", "putNewConnection inserted uri " + uri.toString());
+
+        resultCode = 0;
+
+    }
+
+    @Override
+    public int getResultCode() {
+        return resultCode;
     }
 }
 

@@ -64,8 +64,6 @@ public class ConnectionsActivity extends AppCompatActivity implements
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
         setScrollListener(recyclerView);
-
-
     }
 
     @Override
@@ -74,6 +72,11 @@ public class ConnectionsActivity extends AppCompatActivity implements
 
         presenter = new ConnectionsActivityPresenter(
                 this, connectionsDataSource, AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
 
         presenter.loadConnections();
     }
@@ -148,7 +151,7 @@ public class ConnectionsActivity extends AppCompatActivity implements
         startActivity(intent);
     }
 
-    public void addNewConnection(View view) {
+    public void launchEditActivity(View view) {
 
         Intent intent = new Intent(this, EditActivity.class);
         startActivity(intent);

@@ -39,7 +39,7 @@ public class ConnectionsActivityPresenterTest {
     }
 
     @Test
-    public void shouldPassConnectionsToView() {
+    public void shouldDeliverConnectionsToView() {
 
         List<ConnectidConnection> connections = Arrays.asList(
                 new ConnectidConnection(),
