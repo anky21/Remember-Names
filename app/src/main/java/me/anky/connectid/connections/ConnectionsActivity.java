@@ -168,6 +168,8 @@ public class ConnectionsActivity extends AppCompatActivity implements
 
                 Log.i("MVP view", "recyclerview is automatically refreshed upon insertion");
                 // TODO Inform user of insertion success, perhaps with toast
+                // Another option is to refresh the list here, so that we query the DB only
+                // When it is updated, rather than everytime we return to this list
             }
         }
     }
