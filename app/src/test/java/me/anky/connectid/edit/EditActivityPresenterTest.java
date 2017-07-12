@@ -47,11 +47,21 @@ public class EditActivityPresenterTest {
     @Test
     public void shouldHandleInsertionError() {
 
-        int resultCode = 1;
+        int resultCode = -1;
         Mockito.when(editDataSource.getResultCode()).thenReturn(resultCode);
 
         presenter.deliverError();
 
         Mockito.verify(view).displayError();
+    }
+
+    @Test
+    public void shouldHandleInsertionSuccess() {
+        int resultCode = 1;
+        Mockito.when(editDataSource.getResultCode()).thenReturn(resultCode);
+
+        presenter.deliverSuccess();
+
+        Mockito.verify(view).displaySuccess();
     }
 }

@@ -109,6 +109,7 @@ public class ConnectionsRecyclerViewAdapter extends
             connections = new ArrayList<>();
             this.connections = connections;
         } else {
+            this.connections.clear();
             this.connections.addAll(connections);
             notifyDataSetChanged();
         }

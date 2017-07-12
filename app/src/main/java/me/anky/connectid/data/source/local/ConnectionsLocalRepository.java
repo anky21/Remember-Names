@@ -27,7 +27,7 @@ public class ConnectionsLocalRepository implements
 
     private Context context;
 
-    private int resultCode = 1;
+    private int resultCode = -1;
 
     public ConnectionsLocalRepository(Context context) {
         this.context = context;
@@ -38,13 +38,12 @@ public class ConnectionsLocalRepository implements
         // FOR DEBUG: populate the database with data if it is empty
         initDatabase();
 
-        // Prepare connections when the repository is constructed
-        // This is the data the user will see when the app first launches
-        prepareConnectionsList();
+
     }
 
     @Override
     public Single<List<ConnectidConnection>> getConnections() {
+        prepareConnectionsList();
 
         return Single.fromCallable(new Callable<List<ConnectidConnection>>() {
             @Override
@@ -158,13 +157,25 @@ public class ConnectionsLocalRepository implements
 
         Log.i("MVP model", "putNewConnection inserted uri " + uri.toString());
 
-        resultCode = 0;
-
+        resultCode = generateResultCode(uri);
     }
 
     @Override
     public int getResultCode() {
+
+        Log.i("MVP model", "getResultCode returned " + resultCode);
+
         return resultCode;
+    }
+
+    private int generateResultCode(Uri uri) {
+
+        int lastPathSegment = Integer.parseInt(uri.getLastPathSegment());
+        if (lastPathSegment == -1) {
+            return -1;
+        } else {
+            return 1;
+        }
     }
 }
 

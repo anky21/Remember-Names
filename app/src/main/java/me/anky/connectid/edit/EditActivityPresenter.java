@@ -1,7 +1,5 @@
 package me.anky.connectid.edit;
 
-import android.util.Log;
-
 import io.reactivex.Scheduler;
 import io.reactivex.disposables.CompositeDisposable;
 import me.anky.connectid.data.ConnectidConnection;
@@ -29,22 +27,32 @@ public class EditActivityPresenter {
         ConnectidConnection newConnection = view.getNewConnection();
 
         // TODO Handle threading and callbacks here if we care
-
-        Log.i("MVP presenter", "delivering " + view.getNewConnection().getName());
-
         editDataSource.putNewConnection(newConnection);
 
-        Log.i("MVP presenter", "delivered " + newConnection.getName());
+        int resultCode = editDataSource.getResultCode();
+
+        System.out.println("MVP presenter - " + "delivered new connection, resultCode " + resultCode);
+        if (resultCode == -1) {
+            deliverError();
+        } else {
+            deliverSuccess();
+        }
     }
 
-//    public void deliverSuccess() {
-//        if (editDataSource.getResultCode() == 0) {
-//
-//        }
-//    }
+    public void deliverSuccess() {
+
+        System.out.println("MVP presenter - " + "delivering success");
+
+        if (editDataSource.getResultCode() == 1) {
+            view.displaySuccess();
+        }
+    }
 
     public void deliverError() {
-        if (editDataSource.getResultCode() == 1) {
+
+        System.out.println("MVP presenter - " + "delivering error");
+
+        if (editDataSource.getResultCode() == -1) {
             view.displayError();
         }
     }

@@ -7,4 +7,6 @@ public interface EditActivityView {
     ConnectidConnection getNewConnection();
 
     void displayError();
+
+    void displaySuccess();
 }

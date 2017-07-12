@@ -1,5 +1,6 @@
 package me.anky.connectid.edit;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -69,6 +70,7 @@ public class EditActivity extends AppCompatActivity implements EditActivityView 
 
         presenter.deliverNewConnection();
 
+
     }
 
     @Override
@@ -79,7 +81,16 @@ public class EditActivity extends AppCompatActivity implements EditActivityView 
     }
 
     @Override
+    public void displaySuccess() {
+        Log.i("MVP view", "displaySuccess called - sucessfully inserted into database");
+
+        Intent data = new Intent();
+        setResult(RESULT_OK, data);
+        finish();
+    }
+
+    @Override
     public void displayError() {
-        Log.i("MVP view", "failed to add new connection to database");
+        Log.i("MVP view", "displayError called - failed to insert into database");
     }
 }

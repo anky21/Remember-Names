@@ -47,6 +47,8 @@ public class ConnectionsActivity extends AppCompatActivity implements
 
     ConnectionsRecyclerViewAdapter adapter;
 
+    private static final int EDIT_ACTIVITY_REQUEST = 100;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -154,6 +156,19 @@ public class ConnectionsActivity extends AppCompatActivity implements
     public void launchEditActivity(View view) {
 
         Intent intent = new Intent(this, EditActivity.class);
-        startActivity(intent);
+        startActivityForResult(intent, EDIT_ACTIVITY_REQUEST);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == EDIT_ACTIVITY_REQUEST) {
+            if (resultCode == RESULT_OK) {
+
+                Log.i("MVP view", "recyclerview is automatically refreshed upon insertion");
+                // TODO Inform user of insertion success, perhaps with toast
+            }
+        }
     }
 }
