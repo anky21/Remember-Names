@@ -27,14 +27,14 @@ public class ConnectionsActivityPresenterTest {
     ConnectionsDataSource connectionsDataSource;
 
     @Mock
-    ConnectionsActivityView view;
+    ConnectionsActivityMVP.View view;
 
     private ConnectionsActivityPresenter presenter;
 
     @Before
     public void setUp() throws Exception {
         presenter = new ConnectionsActivityPresenter(
-                view, connectionsDataSource, Schedulers.trampoline());
+                connectionsDataSource, Schedulers.trampoline());
         RxJavaPlugins.setIoSchedulerHandler(scheduler -> Schedulers.trampoline());
     }
 
