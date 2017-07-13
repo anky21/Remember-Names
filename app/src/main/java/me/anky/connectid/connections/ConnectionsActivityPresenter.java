@@ -10,21 +10,25 @@ import io.reactivex.schedulers.Schedulers;
 import me.anky.connectid.data.ConnectidConnection;
 import me.anky.connectid.data.ConnectionsDataSource;
 
-public class ConnectionsActivityPresenter {
+public class ConnectionsActivityPresenter implements ConnectionsActivityMVP.Presenter {
 
-    private ConnectionsActivityView view;
+    private ConnectionsActivityMVP.View view;
     private ConnectionsDataSource connectionsDataSource;
     private Scheduler mainScheduler;
 
     // Create a composite for RxJava subscriber cleanup
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
-    public ConnectionsActivityPresenter(ConnectionsActivityView view,
-                                        ConnectionsDataSource connectionsDataSource,
-                                        Scheduler mainScheduler) {
-        this.view = view;
+    public ConnectionsActivityPresenter(
+            ConnectionsDataSource connectionsDataSource,
+            Scheduler mainScheduler) {
         this.connectionsDataSource = connectionsDataSource;
         this.mainScheduler = mainScheduler;
+    }
+
+    @Override
+    public void setView(ConnectionsActivityMVP.View view) {
+        this.view = view;
     }
 
     public void loadConnections() {

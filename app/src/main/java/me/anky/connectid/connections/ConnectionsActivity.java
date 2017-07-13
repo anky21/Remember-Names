@@ -28,7 +28,7 @@ import me.anky.connectid.edit.EditActivity;
 import me.anky.connectid.root.ConnectidApplication;
 
 public class ConnectionsActivity extends AppCompatActivity implements
-        ConnectionsActivityView,
+        ConnectionsActivityMVP.View,
         ConnectionsRecyclerViewAdapter.RecyclerViewClickListener {
 
     @BindView(R.id.connections_list_rv)
@@ -69,22 +69,19 @@ public class ConnectionsActivity extends AppCompatActivity implements
         setScrollListener(recyclerView);
 
         presenter = new ConnectionsActivityPresenter(
-                this, connectionsDataSource, AndroidSchedulers.mainThread());
+                connectionsDataSource, AndroidSchedulers.mainThread());
         presenter.loadConnections();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-
-
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-
-
+        presenter.setView(this);
     }
 
     @Override
