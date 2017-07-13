@@ -34,13 +34,37 @@ public class DetailsActivityPresenterTest {
 
     @Test
     public void shouldDeliverDatabaseIdToModel() {
-
         int databaseIdFromUri = 1;
         Mockito.when(view.getConnectionToDelete()).thenReturn(databaseIdFromUri);
 
         presenter.deliveDatabaseIdtoDelete();
 
         Mockito.verify(detailsDataSource).deleteConnection(databaseIdFromUri);
+    }
 
+    @Test
+    public void shouldHandleDeletionError() {
+        int databaseIdFromUri = 1;
+        Mockito.when(view.getConnectionToDelete()).thenReturn(databaseIdFromUri);
+
+        int resultCode = -1;
+        Mockito.when(detailsDataSource.deleteConnection(databaseIdFromUri)).thenReturn(resultCode);
+
+        presenter.deliveDatabaseIdtoDelete();
+
+        Mockito.verify(view).displayError();
+    }
+
+    @Test
+    public void shouldHandleDeletionSuccess() {
+        int databaseIdFromUri = 1;
+        Mockito.when(view.getConnectionToDelete()).thenReturn(databaseIdFromUri);
+
+        int resultCode = 1;
+        Mockito.when(detailsDataSource.deleteConnection(databaseIdFromUri)).thenReturn(resultCode);
+
+        presenter.deliveDatabaseIdtoDelete();
+
+        Mockito.verify(view).displaySuccess();
     }
 }

@@ -26,5 +26,10 @@ public class DetailsActivityPresenter {
 
         int resultCode = detailsDataSource.deleteConnection(databaseId);
 
+        if (resultCode == -1) {
+            view.displayError();
+        } else {
+            view.displaySuccess();
+        }
     }
 }
