@@ -16,13 +16,11 @@ import java.util.concurrent.Callable;
 import io.reactivex.Single;
 import me.anky.connectid.data.ConnectidConnection;
 import me.anky.connectid.data.ConnectionsDataSource;
-import me.anky.connectid.data.EditDataSource;
 
 import static android.content.ContentProviderOperation.newInsert;
 
 public class ConnectionsLocalRepository implements
-        ConnectionsDataSource,
-        EditDataSource {
+        ConnectionsDataSource {
 
     private final List<ConnectidConnection> connections = new ArrayList<>();
 
@@ -157,6 +155,13 @@ public class ConnectionsLocalRepository implements
         Log.i("MVP model", "insertNewConnection inserted uri " + uri.toString());
 
         return generateResultCode(uri);
+    }
+
+    @Override
+    public int deleteConnection(int databaseId) {
+
+        // TODO Implement delete. Will need to create a uri from the databaseId
+        return 0;
     }
 
     private int generateResultCode(Uri uri) {

@@ -12,7 +12,7 @@ import io.reactivex.Single;
 import io.reactivex.plugins.RxJavaPlugins;
 import io.reactivex.schedulers.Schedulers;
 import me.anky.connectid.data.ConnectidConnection;
-import me.anky.connectid.data.EditDataSource;
+import me.anky.connectid.data.ConnectionsDataSource;
 
 public class EditActivityPresenterTest {
 
@@ -20,7 +20,7 @@ public class EditActivityPresenterTest {
     public MockitoRule mockitoRule = MockitoJUnit.rule();
 
     @Mock
-    EditDataSource editDataSource;
+    ConnectionsDataSource connectionsDataSource;
 
     @Mock
     EditContract.View view;
@@ -30,7 +30,7 @@ public class EditActivityPresenterTest {
     @Before
     public void setUp() throws Exception {
         presenter = new EditActivityPresenter(
-                view, editDataSource, Schedulers.trampoline());
+                view, connectionsDataSource, Schedulers.trampoline());
         RxJavaPlugins.setIoSchedulerHandler(scheduler -> Schedulers.trampoline());
     }
 
@@ -42,7 +42,7 @@ public class EditActivityPresenterTest {
 
         presenter.deliverNewConnection();
 
-        Mockito.verify(editDataSource).insertNewConnection(newConnection);
+        Mockito.verify(connectionsDataSource).insertNewConnection(newConnection);
     }
 
     @Test
@@ -51,7 +51,7 @@ public class EditActivityPresenterTest {
         Mockito.when(view.getNewConnection()).thenReturn(Single.just(newConnection));
 
         int resultCode = -1;
-        Mockito.when(editDataSource.insertNewConnection(newConnection)).thenReturn(resultCode);
+        Mockito.when(connectionsDataSource.insertNewConnection(newConnection)).thenReturn(resultCode);
 
         presenter.deliverNewConnection();
 
@@ -64,7 +64,7 @@ public class EditActivityPresenterTest {
         Mockito.when(view.getNewConnection()).thenReturn(Single.just(newConnection));
 
         int resultCode = 1;
-        Mockito.when(editDataSource.insertNewConnection(newConnection)).thenReturn(resultCode);
+        Mockito.when(connectionsDataSource.insertNewConnection(newConnection)).thenReturn(resultCode);
 
         presenter.deliverNewConnection();
 

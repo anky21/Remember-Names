@@ -7,7 +7,6 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 import me.anky.connectid.data.ConnectionsDataSource;
-import me.anky.connectid.data.EditDataSource;
 import me.anky.connectid.data.source.local.ConnectionsLocalRepository;
 
 /**
@@ -38,12 +37,6 @@ public class ApplicationModule {
     @Singleton
     ConnectionsDataSource provideConnectionsRepository(Context context) {
         //return new ConnectionsLocalRepository(context);
-        return connectionsLocalRepository;
-    }
-
-    @Provides
-    @Singleton
-    EditDataSource provideEditRepository() {
         return connectionsLocalRepository;
     }
 }

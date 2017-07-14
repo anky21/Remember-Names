@@ -10,7 +10,7 @@ import org.mockito.junit.MockitoRule;
 
 import io.reactivex.plugins.RxJavaPlugins;
 import io.reactivex.schedulers.Schedulers;
-import me.anky.connectid.data.DetailsDataSource;
+import me.anky.connectid.data.ConnectionsDataSource;
 
 public class DetailsActivityPresenterTest {
 
@@ -18,7 +18,7 @@ public class DetailsActivityPresenterTest {
     public MockitoRule mockitoRule = MockitoJUnit.rule();
 
     @Mock
-    DetailsDataSource detailsDataSource;
+    ConnectionsDataSource connectionsDataSource;
 
     @Mock
     DetailsContract.View view;
@@ -28,7 +28,7 @@ public class DetailsActivityPresenterTest {
     @Before
     public void setUp() throws Exception {
         presenter = new DetailsActivityPresenter(
-                view, detailsDataSource, Schedulers.trampoline());
+                view, connectionsDataSource, Schedulers.trampoline());
         RxJavaPlugins.setIoSchedulerHandler(scheduler -> Schedulers.trampoline());
     }
 
@@ -39,7 +39,7 @@ public class DetailsActivityPresenterTest {
 
         presenter.deliverDatabaseIdtoDelete();
 
-        Mockito.verify(detailsDataSource).deleteConnection(databaseIdFromUri);
+        Mockito.verify(connectionsDataSource).deleteConnection(databaseIdFromUri);
     }
 
     @Test
@@ -48,7 +48,7 @@ public class DetailsActivityPresenterTest {
         Mockito.when(view.getConnectionToDelete()).thenReturn(databaseIdFromUri);
 
         int resultCode = -1;
-        Mockito.when(detailsDataSource.deleteConnection(databaseIdFromUri)).thenReturn(resultCode);
+        Mockito.when(connectionsDataSource.deleteConnection(databaseIdFromUri)).thenReturn(resultCode);
 
         presenter.deliverDatabaseIdtoDelete();
 
@@ -61,7 +61,7 @@ public class DetailsActivityPresenterTest {
         Mockito.when(view.getConnectionToDelete()).thenReturn(databaseIdFromUri);
 
         int resultCode = 1;
-        Mockito.when(detailsDataSource.deleteConnection(databaseIdFromUri)).thenReturn(resultCode);
+        Mockito.when(connectionsDataSource.deleteConnection(databaseIdFromUri)).thenReturn(resultCode);
 
         presenter.deliverDatabaseIdtoDelete();
 

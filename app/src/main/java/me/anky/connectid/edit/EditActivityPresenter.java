@@ -6,23 +6,23 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
 import me.anky.connectid.data.ConnectidConnection;
-import me.anky.connectid.data.EditDataSource;
+import me.anky.connectid.data.ConnectionsDataSource;
 
 public class EditActivityPresenter implements EditContract.Presenter {
 
     private EditContract.View view;
-    private EditDataSource editDataSource;
+    private ConnectionsDataSource connectionsDataSource;
     private Scheduler mainScheduler;
 
     // Create a composite for RxJava subscriber cleanup
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     public EditActivityPresenter(EditContract.View view,
-                                 EditDataSource editDataSource,
+                                 ConnectionsDataSource connectionsDataSource,
                                  Scheduler mainScheduler) {
 
         this.view = view;
-        this.editDataSource = editDataSource;
+        this.connectionsDataSource = connectionsDataSource;
         this.mainScheduler = mainScheduler;
     }
 
@@ -39,7 +39,7 @@ public class EditActivityPresenter implements EditContract.Presenter {
                     public void onSuccess(@NonNull ConnectidConnection connection) {
                         System.out.println("Thread subscribe: " + Thread.currentThread().getId());
 
-                        int resultCode = editDataSource.insertNewConnection(connection);
+                        int resultCode = connectionsDataSource.insertNewConnection(connection);
 
                         System.out.println("MVP presenter - " + "delivered new connection, resultCode " + resultCode);
 

@@ -17,7 +17,7 @@ import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import me.anky.connectid.R;
 import me.anky.connectid.data.ConnectidConnection;
-import me.anky.connectid.data.EditDataSource;
+import me.anky.connectid.data.ConnectionsDataSource;
 import me.anky.connectid.root.ConnectidApplication;
 
 public class EditActivity extends AppCompatActivity implements EditContract.View {
@@ -33,7 +33,7 @@ public class EditActivity extends AppCompatActivity implements EditContract.View
     EditActivityPresenter presenter;
 
     @Inject
-    EditDataSource editDataSource;
+    ConnectionsDataSource connectionsDataSource;
 
     ConnectidConnection newConnection;
 
@@ -51,7 +51,7 @@ public class EditActivity extends AppCompatActivity implements EditContract.View
     protected void onStart() {
         super.onStart();
         presenter = new EditActivityPresenter(
-                this, editDataSource, AndroidSchedulers.mainThread());
+                this, connectionsDataSource, AndroidSchedulers.mainThread());
     }
 
     @Override
