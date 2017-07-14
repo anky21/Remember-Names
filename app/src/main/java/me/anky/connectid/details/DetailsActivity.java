@@ -11,8 +11,10 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -21,12 +23,17 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import me.anky.connectid.R;
+import me.anky.connectid.data.ConnectionsDataSource;
+import me.anky.connectid.root.ConnectidApplication;
 
-public class DetailsActivity extends AppCompatActivity {
+public class DetailsActivity extends AppCompatActivity implements DetailsContract.View {
     private final static String TAG = DetailsActivity.class.getSimpleName();
     private String mImageName = "profile.jpg";
 
@@ -36,18 +43,42 @@ public class DetailsActivity extends AppCompatActivity {
     @BindView(R.id.new_portrait_iv)
     ImageView mNewPortraitIv;
 
+    DetailsActivityPresenter presenter;
+
+    @Inject
+    ConnectionsDataSource connectionsDataSource;
+
+    int databaseId;
+    String details;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details);
         ButterKnife.bind(this);
 
+        ((ConnectidApplication) getApplication()).getApplicationComponent().inject(this);
+
         Intent intent = getIntent();
-        int databaseId = intent.getIntExtra("ID", 0);
-        String details = intent.getStringExtra("DETAILS");
+        databaseId = intent.getIntExtra("ID", 0);
+        details = intent.getStringExtra("DETAILS");
 
         TextView connectionDetailsTv = (TextView) findViewById(R.id.connection_details_tv);
         connectionDetailsTv.setText("Database item id: " + databaseId + "\n" + details);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        presenter = new DetailsActivityPresenter(
+                this, connectionsDataSource, AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        presenter.unsubscribe();
     }
 
     @OnClick(R.id.portrait_iv)
@@ -140,5 +171,31 @@ public class DetailsActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         return bitmap;
+    }
+
+    public void handleDeleteConnectionClicked(View view) {
+        presenter.deliverDatabaseIdtoDelete();
+    }
+
+    @Override
+    public int getConnectionToDelete() {
+        return databaseId;
+    }
+
+    @Override
+    public void displayError() {
+        Log.i("MVP view", "delete failed");
+    }
+
+    @Override
+    public void displaySuccess() {
+
+        Log.i("MVP view", "delete succeeded");
+        
+        Toast.makeText(this, details + " deleted!", Toast.LENGTH_SHORT).show();
+
+        Intent data = new Intent();
+        setResult(RESULT_OK, data);
+        finish();
     }
 }

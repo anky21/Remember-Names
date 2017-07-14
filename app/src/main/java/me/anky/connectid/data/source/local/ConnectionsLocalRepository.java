@@ -160,8 +160,11 @@ public class ConnectionsLocalRepository implements
     @Override
     public int deleteConnection(int databaseId) {
 
-        // TODO Implement delete. Will need to create a uri from the databaseId
-        return 0;
+        Uri uri = ConnectidProvider.Connections.withId(databaseId);
+
+        Log.i("MVP model", "deleteConnection deleted " + uri.toString());
+
+        return context.getContentResolver().delete(uri, null, null);
     }
 
     private int generateResultCode(Uri uri) {
