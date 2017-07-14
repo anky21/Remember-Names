@@ -56,52 +56,10 @@ public class EditActivityPresenter {
                     }
                 });
 
-
-
-
-//        ConnectidConnection newConnection = view.getNewConnection();
-//
-//        // TODO Handle threading and callbacks here if we care
-//        int resultCode = editDataSource.insertNewConnection(newConnection);
-//
-//        System.out.println("MVP presenter - " + "delivered new connection, resultCode " + resultCode);
-//
-//        if (resultCode == -1) {
-//            view.displayError();
-//        } else {
-//            view.displaySuccess();
-//        }
+        // Add this subscription to the RxJava cleanup composite
+        compositeDisposable.add(disposableSingleObserver);
     }
 
-//    public void loadConnections() {
-//
-//        DisposableSingleObserver<List<ConnectidConnection>> disposableSingleObserver =
-//                connectionsDataSource.getConnections()
-//                        .subscribeOn(Schedulers.io())
-//                        .observeOn(mainScheduler)
-//                        .subscribeWith(new DisposableSingleObserver<List<ConnectidConnection>>() {
-//                            @Override
-//                            public void onSuccess(@NonNull List<ConnectidConnection> connections) {
-//
-//                                System.out.println("Thread subscribe: " + Thread.currentThread().getId());
-//
-//                                if (connections.isEmpty()) {
-//                                    view.displayNoConnections();
-//                                } else {
-//                                    view.displayConnections(connections);
-//                                }
-//                            }
-//
-//                            @Override
-//                            public void onError(@NonNull Throwable e) {
-//                                view.displayError();
-//                            }
-//                        });
-//
-//        // Add this subscription to the RxJava cleanup composite
-//        compositeDisposable.add(disposableSingleObserver);
-//    }
-//
     public void unsubscribe() {
         compositeDisposable.clear();
     }
