@@ -28,7 +28,7 @@ import me.anky.connectid.edit.EditActivity;
 import me.anky.connectid.root.ConnectidApplication;
 
 public class ConnectionsActivity extends AppCompatActivity implements
-        ConnectionsActivityView,
+        ConnectionsContract.View,
         ConnectionsRecyclerViewAdapter.RecyclerViewClickListener {
 
     @BindView(R.id.connections_list_rv)
