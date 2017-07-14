@@ -4,15 +4,15 @@ import io.reactivex.Scheduler;
 import io.reactivex.disposables.CompositeDisposable;
 import me.anky.connectid.data.DetailsDataSource;
 
-public class DetailsActivityPresenter {
+public class DetailsActivityPresenter implements DetailsContract.Presenter {
 
-    private DetailsActivityView view;
+    private DetailsContract.View view;
     private DetailsDataSource detailsDataSource;
     private Scheduler mainScheduler;
 
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
-    public DetailsActivityPresenter(DetailsActivityView view,
+    public DetailsActivityPresenter(DetailsContract.View view,
                                  DetailsDataSource detailsDataSource,
                                  Scheduler mainScheduler) {
 
@@ -21,7 +21,8 @@ public class DetailsActivityPresenter {
         this.mainScheduler = mainScheduler;
     }
 
-    public void deliveDatabaseIdtoDelete() {
+    @Override
+    public void deliverDatabaseIdtoDelete() {
         int databaseId = view.getConnectionToDelete();
 
         int resultCode = detailsDataSource.deleteConnection(databaseId);
@@ -31,5 +32,10 @@ public class DetailsActivityPresenter {
         } else {
             view.displaySuccess();
         }
+    }
+
+    @Override
+    public void unsubscribe() {
+        compositeDisposable.clear();
     }
 }

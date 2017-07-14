@@ -23,7 +23,7 @@ public class EditActivityPresenterTest {
     EditDataSource editDataSource;
 
     @Mock
-    EditActivityView view;
+    EditContract.View view;
 
     private EditActivityPresenter presenter;
 

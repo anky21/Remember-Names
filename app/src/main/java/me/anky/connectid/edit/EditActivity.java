@@ -20,7 +20,7 @@ import me.anky.connectid.data.ConnectidConnection;
 import me.anky.connectid.data.EditDataSource;
 import me.anky.connectid.root.ConnectidApplication;
 
-public class EditActivity extends AppCompatActivity implements EditActivityView {
+public class EditActivity extends AppCompatActivity implements EditContract.View {
 
     // TODO Allow user clicking outside of EditText to close the soft keyboard
 
