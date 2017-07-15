@@ -22,12 +22,14 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import me.anky.connectid.R;
 import me.anky.connectid.data.ConnectionsDataSource;
@@ -178,8 +180,19 @@ public class DetailsActivity extends AppCompatActivity implements DetailsContrac
     }
 
     @Override
-    public int getConnectionToDelete() {
-        return databaseId;
+    public Single<Integer> getConnectionToDelete() {
+
+        Log.i("MVP view", "getConnectionToDelete returning " + databaseId);
+
+        return Single.fromCallable(new Callable<Integer>() {
+            @Override
+            public Integer call() throws Exception {
+
+                System.out.println("Thread db: " + Thread.currentThread().getId());
+
+                return databaseId;
+            }
+        });
     }
 
     @Override
@@ -191,7 +204,7 @@ public class DetailsActivity extends AppCompatActivity implements DetailsContrac
     public void displaySuccess() {
 
         Log.i("MVP view", "delete succeeded");
-        
+
         Toast.makeText(this, details + " deleted!", Toast.LENGTH_SHORT).show();
 
         Intent data = new Intent();

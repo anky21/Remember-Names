@@ -80,8 +80,6 @@ public class EditActivity extends AppCompatActivity implements EditContract.View
     public Single<ConnectidConnection> getNewConnection() {
         Log.i("MVP view", "getNewConnection returning " + newConnection.getName());
 
-        //return newConnection;
-
         return Single.fromCallable(new Callable<ConnectidConnection>() {
             @Override
             public ConnectidConnection call() throws Exception {

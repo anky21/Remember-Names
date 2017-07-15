@@ -1,10 +1,12 @@
 package me.anky.connectid.details;
 
+import io.reactivex.Single;
+
 public interface DetailsContract {
 
     interface View {
 
-        int getConnectionToDelete();
+        Single<Integer> getConnectionToDelete();
 
         void displayError();
 

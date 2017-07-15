@@ -8,6 +8,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
+import io.reactivex.Single;
 import io.reactivex.plugins.RxJavaPlugins;
 import io.reactivex.schedulers.Schedulers;
 import me.anky.connectid.data.ConnectionsDataSource;
@@ -35,7 +36,7 @@ public class DetailsActivityPresenterTest {
     @Test
     public void shouldDeliverDatabaseIdToDeleteToModel() {
         int databaseIdFromUri = 1;
-        Mockito.when(view.getConnectionToDelete()).thenReturn(databaseIdFromUri);
+        Mockito.when(view.getConnectionToDelete()).thenReturn(Single.just(databaseIdFromUri));
 
         presenter.deliverDatabaseIdtoDelete();
 
@@ -45,7 +46,7 @@ public class DetailsActivityPresenterTest {
     @Test
     public void shouldHandleDeletionError() {
         int databaseIdFromUri = 1;
-        Mockito.when(view.getConnectionToDelete()).thenReturn(databaseIdFromUri);
+        Mockito.when(view.getConnectionToDelete()).thenReturn(Single.just(databaseIdFromUri));
 
         int resultCode = -1;
         Mockito.when(connectionsDataSource.deleteConnection(databaseIdFromUri)).thenReturn(resultCode);
@@ -58,7 +59,7 @@ public class DetailsActivityPresenterTest {
     @Test
     public void shouldHandleDeletionSuccess() {
         int databaseIdFromUri = 1;
-        Mockito.when(view.getConnectionToDelete()).thenReturn(databaseIdFromUri);
+        Mockito.when(view.getConnectionToDelete()).thenReturn(Single.just(databaseIdFromUri));
 
         int resultCode = 1;
         Mockito.when(connectionsDataSource.deleteConnection(databaseIdFromUri)).thenReturn(resultCode);

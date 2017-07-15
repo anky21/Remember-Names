@@ -1,7 +1,10 @@
 package me.anky.connectid.details;
 
 import io.reactivex.Scheduler;
+import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.observers.DisposableSingleObserver;
+import io.reactivex.schedulers.Schedulers;
 import me.anky.connectid.data.ConnectionsDataSource;
 
 public class DetailsActivityPresenter implements DetailsContract.Presenter {
@@ -13,8 +16,8 @@ public class DetailsActivityPresenter implements DetailsContract.Presenter {
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     public DetailsActivityPresenter(DetailsContract.View view,
-                                 ConnectionsDataSource connectionsDataSource,
-                                 Scheduler mainScheduler) {
+                                    ConnectionsDataSource connectionsDataSource,
+                                    Scheduler mainScheduler) {
 
         this.view = view;
         this.connectionsDataSource = connectionsDataSource;
@@ -23,15 +26,34 @@ public class DetailsActivityPresenter implements DetailsContract.Presenter {
 
     @Override
     public void deliverDatabaseIdtoDelete() {
-        int databaseId = view.getConnectionToDelete();
 
-        int resultCode = connectionsDataSource.deleteConnection(databaseId);
+        DisposableSingleObserver<Integer> disposableSingleObserver =
+                view.getConnectionToDelete()
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(mainScheduler)
+                        .subscribeWith(new DisposableSingleObserver<Integer>() {
+                            @Override
+                            public void onSuccess(@NonNull Integer databaseId) {
 
-        if (resultCode == -1) {
-            view.displayError();
-        } else {
-            view.displaySuccess();
-        }
+                                int resultCode = connectionsDataSource.deleteConnection(databaseId);
+
+                                if (resultCode == -1) {
+                                    view.displayError();
+                                } else {
+                                    view.displaySuccess();
+                                }
+                            }
+
+                            @Override
+                            public void onError(@NonNull Throwable e) {
+                                // TODO Add Analytics. This error should never be thrown.
+                                System.out.println("MVP presenter - " + "something went seriously wrong");
+                            }
+                        });
+
+        // Add this subscription to the RxJava cleanup composite
+        compositeDisposable.add(disposableSingleObserver);
+
     }
 
     @Override
