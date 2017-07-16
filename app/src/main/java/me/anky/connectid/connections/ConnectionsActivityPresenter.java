@@ -10,16 +10,16 @@ import io.reactivex.schedulers.Schedulers;
 import me.anky.connectid.data.ConnectidConnection;
 import me.anky.connectid.data.ConnectionsDataSource;
 
-public class ConnectionsActivityPresenter {
-
-    private ConnectionsActivityView view;
+public class ConnectionsActivityPresenter implements ConnectionsContract.Presenter {
+    
+    private ConnectionsContract.View view;
     private ConnectionsDataSource connectionsDataSource;
     private Scheduler mainScheduler;
 
     // Create a composite for RxJava subscriber cleanup
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
-    public ConnectionsActivityPresenter(ConnectionsActivityView view,
+    public ConnectionsActivityPresenter(ConnectionsContract.View view,
                                         ConnectionsDataSource connectionsDataSource,
                                         Scheduler mainScheduler) {
         this.view = view;
@@ -27,6 +27,7 @@ public class ConnectionsActivityPresenter {
         this.mainScheduler = mainScheduler;
     }
 
+    @Override
     public void loadConnections() {
 
         DisposableSingleObserver<List<ConnectidConnection>> disposableSingleObserver =
@@ -56,6 +57,7 @@ public class ConnectionsActivityPresenter {
         compositeDisposable.add(disposableSingleObserver);
     }
 
+    @Override
     public void unsubscribe() {
         compositeDisposable.clear();
     }

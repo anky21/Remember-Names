@@ -6,26 +6,27 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
 import me.anky.connectid.data.ConnectidConnection;
-import me.anky.connectid.data.EditDataSource;
+import me.anky.connectid.data.ConnectionsDataSource;
 
-public class EditActivityPresenter {
+public class EditActivityPresenter implements EditContract.Presenter {
 
-    private EditActivityView view;
-    private EditDataSource editDataSource;
+    private EditContract.View view;
+    private ConnectionsDataSource connectionsDataSource;
     private Scheduler mainScheduler;
 
     // Create a composite for RxJava subscriber cleanup
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
-    public EditActivityPresenter(EditActivityView view,
-                                 EditDataSource editDataSource,
+    public EditActivityPresenter(EditContract.View view,
+                                 ConnectionsDataSource connectionsDataSource,
                                  Scheduler mainScheduler) {
 
         this.view = view;
-        this.editDataSource = editDataSource;
+        this.connectionsDataSource = connectionsDataSource;
         this.mainScheduler = mainScheduler;
     }
 
+    @Override
     public void deliverNewConnection() {
 
         DisposableSingleObserver<ConnectidConnection> disposableSingleObserver =
@@ -38,7 +39,7 @@ public class EditActivityPresenter {
                     public void onSuccess(@NonNull ConnectidConnection connection) {
                         System.out.println("Thread subscribe: " + Thread.currentThread().getId());
 
-                        int resultCode = editDataSource.insertNewConnection(connection);
+                        int resultCode = connectionsDataSource.insertNewConnection(connection);
 
                         System.out.println("MVP presenter - " + "delivered new connection, resultCode " + resultCode);
 
@@ -56,52 +57,11 @@ public class EditActivityPresenter {
                     }
                 });
 
-
-
-
-//        ConnectidConnection newConnection = view.getNewConnection();
-//
-//        // TODO Handle threading and callbacks here if we care
-//        int resultCode = editDataSource.insertNewConnection(newConnection);
-//
-//        System.out.println("MVP presenter - " + "delivered new connection, resultCode " + resultCode);
-//
-//        if (resultCode == -1) {
-//            view.displayError();
-//        } else {
-//            view.displaySuccess();
-//        }
+        // Add this subscription to the RxJava cleanup composite
+        compositeDisposable.add(disposableSingleObserver);
     }
 
-//    public void loadConnections() {
-//
-//        DisposableSingleObserver<List<ConnectidConnection>> disposableSingleObserver =
-//                connectionsDataSource.getConnections()
-//                        .subscribeOn(Schedulers.io())
-//                        .observeOn(mainScheduler)
-//                        .subscribeWith(new DisposableSingleObserver<List<ConnectidConnection>>() {
-//                            @Override
-//                            public void onSuccess(@NonNull List<ConnectidConnection> connections) {
-//
-//                                System.out.println("Thread subscribe: " + Thread.currentThread().getId());
-//
-//                                if (connections.isEmpty()) {
-//                                    view.displayNoConnections();
-//                                } else {
-//                                    view.displayConnections(connections);
-//                                }
-//                            }
-//
-//                            @Override
-//                            public void onError(@NonNull Throwable e) {
-//                                view.displayError();
-//                            }
-//                        });
-//
-//        // Add this subscription to the RxJava cleanup composite
-//        compositeDisposable.add(disposableSingleObserver);
-//    }
-//
+    @Override
     public void unsubscribe() {
         compositeDisposable.clear();
     }

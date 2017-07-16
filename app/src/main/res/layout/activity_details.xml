@@ -28,4 +28,12 @@
         android:src="@drawable/portrait"
         android:scaleType="centerCrop"/>
 
+    <Button
+        android:id="@+id/debug_delete_button"
+        android:layout_marginTop="40dp"
+        android:onClick="handleDeleteConnectionClicked"
+        android:text="Delete Connection (debug)"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
 </LinearLayout>

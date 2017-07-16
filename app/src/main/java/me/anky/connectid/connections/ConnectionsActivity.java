@@ -28,7 +28,7 @@ import me.anky.connectid.edit.EditActivity;
 import me.anky.connectid.root.ConnectidApplication;
 
 public class ConnectionsActivity extends AppCompatActivity implements
-        ConnectionsActivityView,
+        ConnectionsContract.View,
         ConnectionsRecyclerViewAdapter.RecyclerViewClickListener {
 
     @BindView(R.id.connections_list_rv)
@@ -47,7 +47,8 @@ public class ConnectionsActivity extends AppCompatActivity implements
 
     ConnectionsRecyclerViewAdapter adapter;
 
-    private static final int EDIT_ACTIVITY_REQUEST = 100;
+    private static final int DETAILS_ACTIVITY_REQUEST = 100;
+    private static final int EDIT_ACTIVITY_REQUEST = 200;
     boolean shouldScrollToBottom;
 
     @Override
@@ -71,20 +72,6 @@ public class ConnectionsActivity extends AppCompatActivity implements
         presenter = new ConnectionsActivityPresenter(
                 this, connectionsDataSource, AndroidSchedulers.mainThread());
         presenter.loadConnections();
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-
     }
 
     @Override
@@ -159,7 +146,7 @@ public class ConnectionsActivity extends AppCompatActivity implements
         Intent intent = new Intent(this, DetailsActivity.class);
         intent.putExtra("ID", (Integer) clickedItemTv.getTag());
         intent.putExtra("DETAILS", clickedItemTv.getText());
-        startActivity(intent);
+        startActivityForResult(intent, DETAILS_ACTIVITY_REQUEST);
     }
 
     public void launchEditActivity(View view) {
@@ -172,13 +159,22 @@ public class ConnectionsActivity extends AppCompatActivity implements
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+        if (requestCode == DETAILS_ACTIVITY_REQUEST) {
+            if (resultCode == RESULT_OK) {
+
+                Log.i("MVP view", "recyclerview is automatically refreshed upon insertion");
+                // TODO Inform user of insertion success, perhaps with toast
+                // TODO Replace scroll to bottom with alphabetic order (in model)
+                presenter.loadConnections();
+            }
+        }
+
         if (requestCode == EDIT_ACTIVITY_REQUEST) {
             if (resultCode == RESULT_OK) {
 
                 Log.i("MVP view", "recyclerview is automatically refreshed upon insertion");
                 // TODO Inform user of insertion success, perhaps with toast
-                // Another option is to refresh the list here, so that we query the DB only
-                // When it is updated, rather than everytime we return to this list
+                // TODO Replace scroll to bottom with alphabetic order (in model)
                 presenter.loadConnections();
                 shouldScrollToBottom = true;
             }

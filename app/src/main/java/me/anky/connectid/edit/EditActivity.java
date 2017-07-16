@@ -17,10 +17,10 @@ import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import me.anky.connectid.R;
 import me.anky.connectid.data.ConnectidConnection;
-import me.anky.connectid.data.EditDataSource;
+import me.anky.connectid.data.ConnectionsDataSource;
 import me.anky.connectid.root.ConnectidApplication;
 
-public class EditActivity extends AppCompatActivity implements EditActivityView {
+public class EditActivity extends AppCompatActivity implements EditContract.View {
 
     // TODO Allow user clicking outside of EditText to close the soft keyboard
 
@@ -33,7 +33,7 @@ public class EditActivity extends AppCompatActivity implements EditActivityView 
     EditActivityPresenter presenter;
 
     @Inject
-    EditDataSource editDataSource;
+    ConnectionsDataSource connectionsDataSource;
 
     ConnectidConnection newConnection;
 
@@ -51,7 +51,7 @@ public class EditActivity extends AppCompatActivity implements EditActivityView 
     protected void onStart() {
         super.onStart();
         presenter = new EditActivityPresenter(
-                this, editDataSource, AndroidSchedulers.mainThread());
+                this, connectionsDataSource, AndroidSchedulers.mainThread());
     }
 
     @Override
@@ -79,8 +79,6 @@ public class EditActivity extends AppCompatActivity implements EditActivityView 
     @Override
     public Single<ConnectidConnection> getNewConnection() {
         Log.i("MVP view", "getNewConnection returning " + newConnection.getName());
-
-        //return newConnection;
 
         return Single.fromCallable(new Callable<ConnectidConnection>() {
             @Override
