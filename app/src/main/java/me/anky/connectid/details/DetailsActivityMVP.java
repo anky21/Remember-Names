@@ -15,6 +15,8 @@ public interface DetailsActivityMVP {
 
     interface Presenter {
 
+        void setView(DetailsActivityMVP.View view);
+
         void deliverDatabaseIdtoDelete();
 
         void unsubscribe();

@@ -1,6 +1,8 @@
 package me.anky.connectid.details;
 
-import io.reactivex.Scheduler;
+import javax.inject.Inject;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.observers.DisposableSingleObserver;
@@ -11,17 +13,17 @@ public class DetailsActivityPresenter implements DetailsActivityMVP.Presenter {
 
     private DetailsActivityMVP.View view;
     private ConnectionsDataSource connectionsDataSource;
-    private Scheduler mainScheduler;
 
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
-    public DetailsActivityPresenter(DetailsActivityMVP.View view,
-                                    ConnectionsDataSource connectionsDataSource,
-                                    Scheduler mainScheduler) {
-
-        this.view = view;
+    @Inject
+    public DetailsActivityPresenter(ConnectionsDataSource connectionsDataSource) {
         this.connectionsDataSource = connectionsDataSource;
-        this.mainScheduler = mainScheduler;
+    }
+
+    @Override
+    public void setView(DetailsActivityMVP.View view) {
+        this.view = view;
     }
 
     @Override
@@ -30,7 +32,7 @@ public class DetailsActivityPresenter implements DetailsActivityMVP.Presenter {
         DisposableSingleObserver<Integer> disposableSingleObserver =
                 view.getConnectionToDelete()
                         .subscribeOn(Schedulers.io())
-                        .observeOn(mainScheduler)
+                        .observeOn(AndroidSchedulers.mainThread())
                         .subscribeWith(new DisposableSingleObserver<Integer>() {
                             @Override
                             public void onSuccess(@NonNull Integer databaseId) {

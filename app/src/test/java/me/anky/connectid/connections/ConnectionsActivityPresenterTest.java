@@ -33,8 +33,7 @@ public class ConnectionsActivityPresenterTest {
 
     @Before
     public void setUp() throws Exception {
-        presenter = new ConnectionsActivityPresenter(
-                view, connectionsDataSource, Schedulers.trampoline());
+        presenter = new ConnectionsActivityPresenter(connectionsDataSource);
         RxJavaPlugins.setIoSchedulerHandler(scheduler -> Schedulers.trampoline());
     }
 

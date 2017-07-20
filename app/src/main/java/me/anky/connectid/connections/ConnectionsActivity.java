@@ -21,7 +21,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import me.anky.connectid.R;
 import me.anky.connectid.data.ConnectidConnection;
-import me.anky.connectid.data.ConnectionsDataSource;
 import me.anky.connectid.details.DetailsActivity;
 import me.anky.connectid.edit.EditActivity;
 import me.anky.connectid.root.ConnectidApplication;
@@ -39,10 +38,8 @@ public class ConnectionsActivity extends AppCompatActivity implements
     @BindView(R.id.empty_list_tv)
     TextView emptyListTv;
 
-    ConnectionsActivityPresenter presenter;
-
     @Inject
-    ConnectionsDataSource connectionsDataSource;
+    ConnectionsActivityPresenter presenter;
 
     ConnectionsRecyclerViewAdapter adapter;
 
@@ -67,8 +64,6 @@ public class ConnectionsActivity extends AppCompatActivity implements
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
         setScrollListener(recyclerView);
-
-        presenter = new ConnectionsActivityPresenter(connectionsDataSource);
     }
 
     @Override

@@ -14,10 +14,8 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.Single;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import me.anky.connectid.R;
 import me.anky.connectid.data.ConnectidConnection;
-import me.anky.connectid.data.ConnectionsDataSource;
 import me.anky.connectid.root.ConnectidApplication;
 
 public class EditActivity extends AppCompatActivity implements EditActivityMVP.View {
@@ -30,10 +28,8 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
     @BindView(R.id.description_et)
     EditText descriptionEt;
 
-    EditActivityPresenter presenter;
-
     @Inject
-    ConnectionsDataSource connectionsDataSource;
+    EditActivityPresenter presenter;
 
     ConnectidConnection newConnection;
 
@@ -50,8 +46,12 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
     @Override
     protected void onStart() {
         super.onStart();
-        presenter = new EditActivityPresenter(
-                this, connectionsDataSource, AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        presenter.setView(this);
     }
 
     @Override

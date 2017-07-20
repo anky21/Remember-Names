@@ -2,6 +2,8 @@ package me.anky.connectid.connections;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.CompositeDisposable;
@@ -18,6 +20,7 @@ public class ConnectionsActivityPresenter implements ConnectionsActivityMVP.Pres
     // Create a composite for RxJava subscriber cleanup
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
+    @Inject
     public ConnectionsActivityPresenter(ConnectionsDataSource connectionsDataSource) {
         this.connectionsDataSource = connectionsDataSource;
     }

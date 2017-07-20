@@ -1,6 +1,9 @@
 package me.anky.connectid.edit;
 
+import javax.inject.Inject;
+
 import io.reactivex.Scheduler;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.observers.DisposableSingleObserver;
@@ -17,13 +20,15 @@ public class EditActivityPresenter implements EditActivityMVP.Presenter {
     // Create a composite for RxJava subscriber cleanup
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
-    public EditActivityPresenter(EditActivityMVP.View view,
-                                 ConnectionsDataSource connectionsDataSource,
-                                 Scheduler mainScheduler) {
+    @Inject
+    public EditActivityPresenter(ConnectionsDataSource connectionsDataSource) {
 
-        this.view = view;
         this.connectionsDataSource = connectionsDataSource;
-        this.mainScheduler = mainScheduler;
+    }
+
+    @Override
+    public void setView(EditActivityMVP.View view) {
+        this.view = view;
     }
 
     @Override
@@ -32,30 +37,30 @@ public class EditActivityPresenter implements EditActivityMVP.Presenter {
         DisposableSingleObserver<ConnectidConnection> disposableSingleObserver =
                 view.getNewConnection()
                         .subscribeOn(Schedulers.io())
-                        .observeOn(mainScheduler)
+                        .observeOn(AndroidSchedulers.mainThread())
                         .subscribeWith(new DisposableSingleObserver<ConnectidConnection>() {
 
-                    @Override
-                    public void onSuccess(@NonNull ConnectidConnection connection) {
-                        System.out.println("Thread subscribe: " + Thread.currentThread().getId());
+                            @Override
+                            public void onSuccess(@NonNull ConnectidConnection connection) {
+                                System.out.println("Thread subscribe: " + Thread.currentThread().getId());
 
-                        int resultCode = connectionsDataSource.insertNewConnection(connection);
+                                int resultCode = connectionsDataSource.insertNewConnection(connection);
 
-                        System.out.println("MVP presenter - " + "delivered new connection, resultCode " + resultCode);
+                                System.out.println("MVP presenter - " + "delivered new connection, resultCode " + resultCode);
 
-                        if (resultCode == -1) {
-                            view.displayError();
-                        } else {
-                            view.displaySuccess();
-                        }
-                    }
+                                if (resultCode == -1) {
+                                    view.displayError();
+                                } else {
+                                    view.displaySuccess();
+                                }
+                            }
 
-                    @Override
-                    public void onError(@NonNull Throwable e) {
-                        // TODO Add Analytics. This error should never be thrown.
-                        System.out.println("MVP presenter - " + "something went seriously wrong");
-                    }
-                });
+                            @Override
+                            public void onError(@NonNull Throwable e) {
+                                // TODO Add Analytics. This error should never be thrown.
+                                System.out.println("MVP presenter - " + "something went seriously wrong");
+                            }
+                        });
 
         // Add this subscription to the RxJava cleanup composite
         compositeDisposable.add(disposableSingleObserver);

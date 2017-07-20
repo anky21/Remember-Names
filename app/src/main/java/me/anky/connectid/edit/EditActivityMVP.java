@@ -16,6 +16,8 @@ public interface EditActivityMVP {
 
     interface Presenter {
 
+        void setView(EditActivityMVP.View view);
+
         void deliverNewConnection();
 
         void unsubscribe();

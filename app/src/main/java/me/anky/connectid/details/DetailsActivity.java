@@ -30,9 +30,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.reactivex.Single;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import me.anky.connectid.R;
-import me.anky.connectid.data.ConnectionsDataSource;
 import me.anky.connectid.root.ConnectidApplication;
 
 public class DetailsActivity extends AppCompatActivity implements DetailsActivityMVP.View {
@@ -45,10 +43,8 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
     @BindView(R.id.new_portrait_iv)
     ImageView mNewPortraitIv;
 
-    DetailsActivityPresenter presenter;
-
     @Inject
-    ConnectionsDataSource connectionsDataSource;
+    DetailsActivityPresenter presenter;
 
     int databaseId;
     String details;
@@ -72,9 +68,12 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
     @Override
     protected void onStart() {
         super.onStart();
+    }
 
-        presenter = new DetailsActivityPresenter(
-                this, connectionsDataSource, AndroidSchedulers.mainThread());
+    @Override
+    protected void onResume() {
+        super.onResume();
+        presenter.setView(this);
     }
 
     @Override

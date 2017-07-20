@@ -6,8 +6,14 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import me.anky.connectid.connections.ConnectionsActivityMVP;
+import me.anky.connectid.connections.ConnectionsActivityPresenter;
 import me.anky.connectid.data.ConnectionsDataSource;
 import me.anky.connectid.data.source.local.ConnectionsLocalRepository;
+import me.anky.connectid.details.DetailsActivityMVP;
+import me.anky.connectid.details.DetailsActivityPresenter;
+import me.anky.connectid.edit.EditActivityMVP;
+import me.anky.connectid.edit.EditActivityPresenter;
 
 /**
  * Created by Anky An on 10/07/2017.
@@ -34,9 +40,23 @@ public class ApplicationModule {
     }
 
     @Provides
+    public ConnectionsActivityMVP.Presenter provideConnectionsActivityPresenter(ConnectionsDataSource connectionsDataSource){
+        return new ConnectionsActivityPresenter(connectionsDataSource);
+    }
+
+    @Provides
+    public DetailsActivityMVP.Presenter provideDetailsActivityPresenter(ConnectionsDataSource connectionsDataSource){
+        return new DetailsActivityPresenter(connectionsDataSource);
+    }
+
+    @Provides
+    public EditActivityMVP.Presenter provideEditActivityPresenter(ConnectionsDataSource connectionsDataSource){
+        return new EditActivityPresenter(connectionsDataSource);
+    }
+
+    @Provides
     @Singleton
-    ConnectionsDataSource provideConnectionsRepository(Context context) {
-        //return new ConnectionsLocalRepository(context);
+    ConnectionsDataSource provideConnectionsDataSource(Context context) {
         return connectionsLocalRepository;
     }
 }
