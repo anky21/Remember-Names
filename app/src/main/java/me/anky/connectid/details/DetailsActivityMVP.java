@@ -2,7 +2,7 @@ package me.anky.connectid.details;
 
 import io.reactivex.Single;
 
-public interface DetailsContract {
+public interface DetailsActivityMVP {
 
     interface View {
 

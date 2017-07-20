@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">connectID</string>
+    <string name="app_name">Remember Names</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="dagger_test">Injection Successful!</string>

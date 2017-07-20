@@ -3,7 +3,7 @@ package me.anky.connectid.edit;
 import io.reactivex.Single;
 import me.anky.connectid.data.ConnectidConnection;
 
-public interface EditContract {
+public interface EditActivityMVP {
 
     interface View {
 

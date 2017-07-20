@@ -4,7 +4,7 @@ import java.util.List;
 
 import me.anky.connectid.data.ConnectidConnection;
 
-public interface ConnectionsContract {
+public interface ConnectionsActivityMVP {
 
     interface View {
 
@@ -17,7 +17,7 @@ public interface ConnectionsContract {
 
     interface Presenter {
 
-        //void setView(ConnectionsContract.View view);
+        void setView(ConnectionsActivityMVP.View view);
 
         void loadConnections();
 

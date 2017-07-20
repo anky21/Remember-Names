@@ -19,7 +19,6 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import me.anky.connectid.R;
 import me.anky.connectid.data.ConnectidConnection;
 import me.anky.connectid.data.ConnectionsDataSource;
@@ -28,7 +27,7 @@ import me.anky.connectid.edit.EditActivity;
 import me.anky.connectid.root.ConnectidApplication;
 
 public class ConnectionsActivity extends AppCompatActivity implements
-        ConnectionsContract.View,
+        ConnectionsActivityMVP.View,
         ConnectionsRecyclerViewAdapter.RecyclerViewClickListener {
 
     @BindView(R.id.connections_list_rv)
@@ -69,8 +68,13 @@ public class ConnectionsActivity extends AppCompatActivity implements
         recyclerView.setAdapter(adapter);
         setScrollListener(recyclerView);
 
-        presenter = new ConnectionsActivityPresenter(
-                this, connectionsDataSource, AndroidSchedulers.mainThread());
+        presenter = new ConnectionsActivityPresenter(connectionsDataSource);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        presenter.setView(this);
         presenter.loadConnections();
     }
 
@@ -100,7 +104,7 @@ public class ConnectionsActivity extends AppCompatActivity implements
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
 
-                if(dy > 0 || dy < 0 && fab.isShown()){
+                if (dy > 0 || dy < 0 && fab.isShown()) {
                     fab.hide();
                 }
                 super.onScrolled(recyclerView, dx, dy);

@@ -27,7 +27,7 @@ public class ConnectionsActivityPresenterTest {
     ConnectionsDataSource connectionsDataSource;
 
     @Mock
-    ConnectionsContract.View view;
+    ConnectionsActivityMVP.View view;
 
     private ConnectionsActivityPresenter presenter;
 

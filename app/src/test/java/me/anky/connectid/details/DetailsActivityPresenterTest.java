@@ -22,7 +22,7 @@ public class DetailsActivityPresenterTest {
     ConnectionsDataSource connectionsDataSource;
 
     @Mock
-    DetailsContract.View view;
+    DetailsActivityMVP.View view;
 
     private DetailsActivityPresenter presenter;
 

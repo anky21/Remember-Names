@@ -35,7 +35,7 @@ import me.anky.connectid.R;
 import me.anky.connectid.data.ConnectionsDataSource;
 import me.anky.connectid.root.ConnectidApplication;
 
-public class DetailsActivity extends AppCompatActivity implements DetailsContract.View {
+public class DetailsActivity extends AppCompatActivity implements DetailsActivityMVP.View {
     private final static String TAG = DetailsActivity.class.getSimpleName();
     private String mImageName = "profile.jpg";
 

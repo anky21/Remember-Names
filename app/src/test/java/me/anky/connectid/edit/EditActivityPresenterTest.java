@@ -23,7 +23,7 @@ public class EditActivityPresenterTest {
     ConnectionsDataSource connectionsDataSource;
 
     @Mock
-    EditContract.View view;
+    EditActivityMVP.View view;
 
     private EditActivityPresenter presenter;
 

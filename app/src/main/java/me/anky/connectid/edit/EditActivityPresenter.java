@@ -8,16 +8,16 @@ import io.reactivex.schedulers.Schedulers;
 import me.anky.connectid.data.ConnectidConnection;
 import me.anky.connectid.data.ConnectionsDataSource;
 
-public class EditActivityPresenter implements EditContract.Presenter {
+public class EditActivityPresenter implements EditActivityMVP.Presenter {
 
-    private EditContract.View view;
+    private EditActivityMVP.View view;
     private ConnectionsDataSource connectionsDataSource;
     private Scheduler mainScheduler;
 
     // Create a composite for RxJava subscriber cleanup
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
-    public EditActivityPresenter(EditContract.View view,
+    public EditActivityPresenter(EditActivityMVP.View view,
                                  ConnectionsDataSource connectionsDataSource,
                                  Scheduler mainScheduler) {
 

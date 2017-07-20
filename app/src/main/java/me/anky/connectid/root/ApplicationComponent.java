@@ -20,7 +20,7 @@ public interface ApplicationComponent {
 
     void inject(ConnectionsActivity connectionsActivity);
 
-    void inject(EditActivity editActivty);
+    void inject(EditActivity editActivity);
 
     void inject(DetailsActivity detailsActivity);
 }

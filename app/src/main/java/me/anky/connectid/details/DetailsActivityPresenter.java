@@ -7,15 +7,15 @@ import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
 import me.anky.connectid.data.ConnectionsDataSource;
 
-public class DetailsActivityPresenter implements DetailsContract.Presenter {
+public class DetailsActivityPresenter implements DetailsActivityMVP.Presenter {
 
-    private DetailsContract.View view;
+    private DetailsActivityMVP.View view;
     private ConnectionsDataSource connectionsDataSource;
     private Scheduler mainScheduler;
 
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
-    public DetailsActivityPresenter(DetailsContract.View view,
+    public DetailsActivityPresenter(DetailsActivityMVP.View view,
                                     ConnectionsDataSource connectionsDataSource,
                                     Scheduler mainScheduler) {
 

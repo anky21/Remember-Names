@@ -2,7 +2,7 @@ package me.anky.connectid.connections;
 
 import java.util.List;
 
-import io.reactivex.Scheduler;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.observers.DisposableSingleObserver;
@@ -10,21 +10,21 @@ import io.reactivex.schedulers.Schedulers;
 import me.anky.connectid.data.ConnectidConnection;
 import me.anky.connectid.data.ConnectionsDataSource;
 
-public class ConnectionsActivityPresenter implements ConnectionsContract.Presenter {
-    
-    private ConnectionsContract.View view;
+public class ConnectionsActivityPresenter implements ConnectionsActivityMVP.Presenter {
+
+    private ConnectionsActivityMVP.View view;
     private ConnectionsDataSource connectionsDataSource;
-    private Scheduler mainScheduler;
 
     // Create a composite for RxJava subscriber cleanup
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
-    public ConnectionsActivityPresenter(ConnectionsContract.View view,
-                                        ConnectionsDataSource connectionsDataSource,
-                                        Scheduler mainScheduler) {
-        this.view = view;
+    public ConnectionsActivityPresenter(ConnectionsDataSource connectionsDataSource) {
         this.connectionsDataSource = connectionsDataSource;
-        this.mainScheduler = mainScheduler;
+    }
+
+    @Override
+    public void setView(ConnectionsActivityMVP.View view) {
+        this.view = view;
     }
 
     @Override
@@ -33,7 +33,7 @@ public class ConnectionsActivityPresenter implements ConnectionsContract.Present
         DisposableSingleObserver<List<ConnectidConnection>> disposableSingleObserver =
                 connectionsDataSource.getConnections()
                         .subscribeOn(Schedulers.io())
-                        .observeOn(mainScheduler)
+                        .observeOn(AndroidSchedulers.mainThread())
                         .subscribeWith(new DisposableSingleObserver<List<ConnectidConnection>>() {
                             @Override
                             public void onSuccess(@NonNull List<ConnectidConnection> connections) {
