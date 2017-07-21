@@ -28,8 +28,7 @@ public class DetailsActivityPresenterTest {
 
     @Before
     public void setUp() throws Exception {
-        presenter = new DetailsActivityPresenter(
-                view, connectionsDataSource, Schedulers.trampoline());
+        presenter = new DetailsActivityPresenter(connectionsDataSource);
         RxJavaPlugins.setIoSchedulerHandler(scheduler -> Schedulers.trampoline());
     }
 

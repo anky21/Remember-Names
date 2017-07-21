@@ -2,7 +2,6 @@ package me.anky.connectid.edit;
 
 import javax.inject.Inject;
 
-import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.CompositeDisposable;
@@ -15,7 +14,6 @@ public class EditActivityPresenter implements EditActivityMVP.Presenter {
 
     private EditActivityMVP.View view;
     private ConnectionsDataSource connectionsDataSource;
-    private Scheduler mainScheduler;
 
     // Create a composite for RxJava subscriber cleanup
     private CompositeDisposable compositeDisposable = new CompositeDisposable();

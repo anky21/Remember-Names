@@ -29,8 +29,7 @@ public class EditActivityPresenterTest {
 
     @Before
     public void setUp() throws Exception {
-        presenter = new EditActivityPresenter(
-                view, connectionsDataSource, Schedulers.trampoline());
+        presenter = new EditActivityPresenter(connectionsDataSource);
         RxJavaPlugins.setIoSchedulerHandler(scheduler -> Schedulers.trampoline());
     }
 
