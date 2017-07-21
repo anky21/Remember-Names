@@ -1,5 +1,4 @@
-package me.anky.connectid.details;
-
+package me.anky.connectid.edit;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -19,7 +18,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import me.anky.connectid.R;
-import me.anky.connectid.details.DetailsActivity;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -38,7 +36,6 @@ public class PickerFragment extends android.app.DialogFragment {
     public PickerFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -66,6 +63,19 @@ public class PickerFragment extends android.app.DialogFragment {
         startActivityForResult(photoPickerIntent, PICK_PHOTO);
     }
 
+    @OnClick(R.id.cancel_tv)
+    public void closeDialog(){
+        // Remove the fragment
+        getActivity().getFragmentManager().beginTransaction().remove(this).commit();
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        // Remove the fragment from back stack
+        getActivity().getFragmentManager().popBackStack();
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -75,7 +85,7 @@ public class PickerFragment extends android.app.DialogFragment {
                 if (resultCode == Activity.RESULT_OK) {
                     Log.v(TAG, "Picked a photo.");
                     Uri selectedImage = data.getData();
-                    ((DetailsActivity)getActivity()).changePhoto(selectedImage);
+                    ((EditActivity)getActivity()).changePhoto(selectedImage);
                     getDialog().dismiss();
                 }
                 break;
@@ -84,7 +94,7 @@ public class PickerFragment extends android.app.DialogFragment {
                     Log.v(TAG, "Took a photo.");
                     Bundle extras = data.getExtras();
                     Bitmap imageBitmap = (Bitmap) extras.get("data");
-                    ((DetailsActivity)getActivity()).changePhoto(imageBitmap);
+                    ((EditActivity)getActivity()).changePhoto(imageBitmap);
                     getDialog().dismiss();
                 }
         }

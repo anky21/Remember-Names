@@ -2,15 +2,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="16dp">
+    android:padding="@dimen/margin_16dp">
 
     <TextView
         android:id="@+id/change_photo_tv"
         style="@style/Base.TextAppearance.AppCompat.Large"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingBottom="16dp"
-        android:text="Change Photo" />
+        android:paddingBottom="@dimen/margin_16dp"
+        android:text="@string/change_photo" />
 
     <TextView
         android:id="@+id/pickImage_tv"
@@ -18,9 +18,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/change_photo_tv"
-        android:paddingBottom="16dp"
-        android:paddingLeft="8dp"
-        android:text="Pick a photo" />
+        android:paddingBottom="@dimen/margin_16dp"
+        android:paddingLeft="@dimen/margin_8dp"
+        android:text="@string/pick_a_photo" />
 
     <TextView
         android:id="@+id/takeImage_tv"
@@ -28,14 +28,23 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/pickImage_tv"
-        android:paddingBottom="16dp"
-        android:paddingLeft="8dp"
-        android:text="Take a photo" />
+        android:paddingBottom="@dimen/margin_8dp"
+        android:paddingLeft="@dimen/margin_8dp"
+        android:text="@string/take_a_photo" />
 
-    <TextView
+    <FrameLayout
+        android:id="@+id/cancel_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_below="@id/takeImage_tv"
-        android:text="Cancel" />
+        android:padding="4dp">
+
+        <TextView
+            android:id="@+id/cancel_tv"
+            style="@style/TextAppearance.AppCompat.Medium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/cancel_portrait_change" />
+    </FrameLayout>
 </RelativeLayout>

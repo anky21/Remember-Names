@@ -3,4 +3,10 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="dagger_test">Injection Successful!</string>
+
+    <!-- Picker Fragment -->
+    <string name="cancel_portrait_change">Cancel</string>
+    <string name="take_a_photo">Take a photo</string>
+    <string name="pick_a_photo">Pick a photo</string>
+    <string name="change_photo">Change Photo</string>
 </resources>
