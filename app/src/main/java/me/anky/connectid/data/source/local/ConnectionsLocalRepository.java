@@ -19,8 +19,7 @@ import me.anky.connectid.data.ConnectionsDataSource;
 
 import static android.content.ContentProviderOperation.newInsert;
 
-public class ConnectionsLocalRepository implements
-        ConnectionsDataSource {
+public class ConnectionsLocalRepository implements ConnectionsDataSource {
 
     private final List<ConnectidConnection> connections = new ArrayList<>();
 
@@ -68,7 +67,13 @@ public class ConnectionsLocalRepository implements
         connections.clear();
 
         int databaseId;
-        String name;
+        String firstName;
+        String lastName;
+        String imageName;
+        String meetVenue;
+        String appearance;
+        String feature;
+        String commonFriends;
         String description;
 
         Cursor cursor = getAllEntries();
@@ -76,9 +81,16 @@ public class ConnectionsLocalRepository implements
 
             while (cursor.moveToNext()) {
                 databaseId = cursor.getInt(cursor.getColumnIndex(ConnectidColumns._ID));
-                name = cursor.getString(cursor.getColumnIndex(ConnectidColumns.NAME));
+                firstName = cursor.getString(cursor.getColumnIndex(ConnectidColumns.FIRST_NAME));
+                lastName = cursor.getString(cursor.getColumnIndex(ConnectidColumns.LAST_NAME));
+                imageName = cursor.getString(cursor.getColumnIndex(ConnectidColumns.IMAGE_NAME));
+                meetVenue = cursor.getString(cursor.getColumnIndex(ConnectidColumns.MEET_WHERE));
+                appearance = cursor.getString(cursor.getColumnIndex(ConnectidColumns.APPEARANCE));
+                feature = cursor.getString(cursor.getColumnIndex(ConnectidColumns.FEATURE));
+                commonFriends = cursor.getString(cursor.getColumnIndex(ConnectidColumns.COMMON_FRIENDS));
                 description = cursor.getString(cursor.getColumnIndex(ConnectidColumns.DESCRIPTION));
-                connections.add(new ConnectidConnection(databaseId, name, description));
+
+                connections.add(new ConnectidConnection(databaseId, firstName, lastName, imageName, meetVenue, appearance, feature, commonFriends, description));
             }
         }
     }
@@ -103,22 +115,9 @@ public class ConnectionsLocalRepository implements
 
         List<ConnectidConnection> dummyConnections = new ArrayList<>();
 
-        dummyConnections.add(new ConnectidConnection("Aragorn", "you have my sword"));
-        dummyConnections.add(new ConnectidConnection("Legolas", "and you have my bow"));
-        dummyConnections.add(new ConnectidConnection("Gimli", "and my axe!"));
-        dummyConnections.add(new ConnectidConnection("Gandalf", "fly, you fools!"));
-        dummyConnections.add(new ConnectidConnection("Bilbo", "misses his ring"));
-        dummyConnections.add(new ConnectidConnection("Frodo", "misses his finger"));
-        dummyConnections.add(new ConnectidConnection("Sam", "ringbearerbearer"));
-        dummyConnections.add(new ConnectidConnection("Boromir", "one does not simply"));
-        dummyConnections.add(new ConnectidConnection("Saruman", "don't trust him"));
-        dummyConnections.add(new ConnectidConnection("Gollum", "naughty"));
-        dummyConnections.add(new ConnectidConnection("Smeagol", "nice"));
-        dummyConnections.add(new ConnectidConnection("Elrond", "Agent Smith"));
-        dummyConnections.add(new ConnectidConnection("Arwen", "Agent Smith's daughter"));
-
-        // TODO allow attempted duplicate entry to retrieve existing data and merge new data
-        dummyConnections.add(new ConnectidConnection("Legolas", "one legolas, two legoli"));
+        dummyConnections.add(new ConnectidConnection("Yoda", "M", "", "met in swamp", "", "", "", "total stranger"));
+        dummyConnections.add(new ConnectidConnection("Donkey", "Who", "", "met in swamp", "", "", "", "Cute"));
+        dummyConnections.add(new ConnectidConnection("Snow", "White", "", "met in swamp", "", "", "", "she's pretty"));
 
         ArrayList<ContentProviderOperation> batchOperations =
                 new ArrayList<>(dummyConnections.size());
@@ -127,7 +126,13 @@ public class ConnectionsLocalRepository implements
 
             ContentProviderOperation.Builder builder = newInsert(
                     ConnectidProvider.Connections.CONTENT_URI);
-            builder.withValue(ConnectidColumns.NAME, connection.getName());
+            builder.withValue(ConnectidColumns.FIRST_NAME, connection.getFirstName());
+            builder.withValue(ConnectidColumns.LAST_NAME, connection.getLastName());
+            builder.withValue(ConnectidColumns.IMAGE_NAME, connection.getImageName());
+            builder.withValue(ConnectidColumns.MEET_WHERE, connection.getMeetVenue());
+            builder.withValue(ConnectidColumns.APPEARANCE, connection.getAppearance());
+            builder.withValue(ConnectidColumns.FEATURE, connection.getFeature());
+            builder.withValue(ConnectidColumns.COMMON_FRIENDS, connection.getCommonFriends());
             builder.withValue(ConnectidColumns.DESCRIPTION, connection.getDescription());
             batchOperations.add(builder.build());
         }
@@ -144,10 +149,10 @@ public class ConnectionsLocalRepository implements
     @Override
     public int insertNewConnection(ConnectidConnection newConnection) {
 
-        Log.i("MVP model", "insertNewConnection inserting " + newConnection.getName());
+        Log.i("MVP model", "insertNewConnection inserting " + newConnection.getFirstName());
 
         ContentValues contentValues = new ContentValues();
-        contentValues.put(ConnectidColumns.NAME, newConnection.getName());
+        contentValues.put(ConnectidColumns.FIRST_NAME, newConnection.getFirstName());
         contentValues.put(ConnectidColumns.DESCRIPTION, newConnection.getDescription());
 
         Uri uri = context.getContentResolver().insert(ConnectidProvider.Connections.CONTENT_URI, contentValues);

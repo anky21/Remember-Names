@@ -50,10 +50,11 @@ public class ConnectionsRecyclerViewAdapter extends
     public void onBindViewHolder(ConnectionsRecyclerViewAdapter.ViewHolder holder, int position) {
 
         int databaseId = connections.get(position).getDatabaseId();
-        String name = connections.get(position).getName();
+        String firstName = connections.get(position).getFirstName();
+        String lastName = connections.get(position).getLastName();
         String description = connections.get(position).getDescription();
 
-        holder.listItemTv.setText(name + " - " + description);
+        holder.listItemTv.setText(firstName + " - " + lastName + " " + description);
         holder.listItemTv.setTag(databaseId);
 
 

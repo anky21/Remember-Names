@@ -99,19 +99,12 @@ public class ConnectionsActivity extends AppCompatActivity implements
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
 
-                if (dy > 0 || dy < 0 && fab.isShown()) {
+                if (dy > 0) {
                     fab.hide();
-                }
-                super.onScrolled(recyclerView, dx, dy);
-            }
-
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-
-                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                } else {
                     fab.show();
                 }
-                super.onScrollStateChanged(recyclerView, newState);
+                super.onScrolled(recyclerView, dx, dy);
             }
         });
     }

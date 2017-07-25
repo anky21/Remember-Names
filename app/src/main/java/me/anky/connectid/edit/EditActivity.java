@@ -181,7 +181,7 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
                 descriptionEt.getText().toString());
 
         Log.i("MVP view", "clicked Add Connection\n" +
-                newConnection.getName() + " - " +
+                newConnection.getFirstName() + " - " +
                 newConnection.getDescription());
 
         presenter.deliverNewConnection();
@@ -191,7 +191,7 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
 
     @Override
     public Single<ConnectidConnection> getNewConnection() {
-        Log.i("MVP view", "getNewConnection returning " + newConnection.getName());
+        Log.i("MVP view", "getNewConnection returning " + newConnection.getFirstName());
 
         return Single.fromCallable(new Callable<ConnectidConnection>() {
             @Override
