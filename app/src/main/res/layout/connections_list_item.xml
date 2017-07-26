@@ -1,17 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
-    android:gravity="center"
+    android:id="@+id/list_item_container"
     android:layout_width="match_parent"
-    android:layout_height="100dp">
+    android:layout_height="100dp"
+    android:gravity="center"
+    android:orientation="horizontal">
+
+    <FrameLayout
+        android:id="@+id/list_image_container"
+        android:layout_width="108dp"
+        android:layout_height="108dp"
+        android:focusable="false"
+        android:padding="@dimen/margin_8dp">
+
+        <ImageView
+            android:id="@+id/list_item_iv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/blank_profile_picture" />
+    </FrameLayout>
 
     <TextView
-        android:id="@+id/list_item_tv"
-        android:gravity="center"
-        android:textSize="30sp"
-        tools:text="Shrek - met in swamp"
+        android:id="@+id/list_name_tv"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:focusable="false"
+        android:gravity="center"
+        android:maxLines="1"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        tools:text="Shrek - met in swamp" />
 
 </LinearLayout>

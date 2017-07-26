@@ -53,7 +53,7 @@ public class ConnectionsActivityTest {
         appCompatImageButton.perform(click());
 
         ViewInteraction textView = onView(
-                allOf(withId(R.id.list_item_tv), withText("Gimli - and my axe!"),
+                allOf(withId(R.id.list_name_tv), withText("Gimli - and my axe!"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(R.id.connections_list_rv),

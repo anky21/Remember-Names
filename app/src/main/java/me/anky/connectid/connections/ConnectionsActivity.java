@@ -8,11 +8,11 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.facebook.stetho.Stetho;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -28,6 +28,8 @@ import me.anky.connectid.root.ConnectidApplication;
 public class ConnectionsActivity extends AppCompatActivity implements
         ConnectionsActivityMVP.View,
         ConnectionsRecyclerViewAdapter.RecyclerViewClickListener {
+
+    public List<ConnectidConnection> data = new ArrayList<>();
 
     @BindView(R.id.connections_list_rv)
     RecyclerView recyclerView;
@@ -58,7 +60,7 @@ public class ConnectionsActivity extends AppCompatActivity implements
 
         Stetho.initializeWithDefaults(this);
 
-        adapter = new ConnectionsRecyclerViewAdapter(this, this);
+        adapter = new ConnectionsRecyclerViewAdapter(this, data, this);
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -133,16 +135,14 @@ public class ConnectionsActivity extends AppCompatActivity implements
     public void onItemClick(View view, int position) {
         Log.i("MVP view", "position " + position + " clicked");
 
-        TextView clickedItemTv = (TextView) ((ViewGroup) view).getChildAt(0);
-
+        String firstName = data.get(position).getFirstName();
         Intent intent = new Intent(this, DetailsActivity.class);
-        intent.putExtra("ID", (Integer) clickedItemTv.getTag());
-        intent.putExtra("DETAILS", clickedItemTv.getText());
+        intent.putExtra("ID", position);
+        intent.putExtra("DETAILS", firstName);
         startActivityForResult(intent, DETAILS_ACTIVITY_REQUEST);
     }
 
     public void launchEditActivity(View view) {
-
         Intent intent = new Intent(this, EditActivity.class);
         startActivityForResult(intent, EDIT_ACTIVITY_REQUEST);
     }

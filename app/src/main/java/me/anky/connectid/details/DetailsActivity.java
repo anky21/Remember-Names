@@ -45,7 +45,7 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
         details = intent.getStringExtra("DETAILS");
 
         TextView connectionDetailsTv = (TextView) findViewById(R.id.connection_details_tv);
-        connectionDetailsTv.setText("Database item id: " + databaseId + "\n" + details);
+        connectionDetailsTv.setText("Database item id: " + databaseId + " " + details);
     }
 
     @Override

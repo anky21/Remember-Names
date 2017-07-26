@@ -5,18 +5,21 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import me.anky.connectid.R;
 import me.anky.connectid.data.ConnectidConnection;
 
 public class ConnectionsRecyclerViewAdapter extends
         RecyclerView.Adapter<ConnectionsRecyclerViewAdapter.ViewHolder>  {
 
-    private List<ConnectidConnection> connections;
+    private List<ConnectidConnection> connections = new ArrayList<>();
     private LayoutInflater inflater;
     private Context context;
     private RecyclerViewClickListener clickListener;
@@ -29,10 +32,11 @@ public class ConnectionsRecyclerViewAdapter extends
     // Track user clicks
     private int clickedPosition = -1;
 
-    public ConnectionsRecyclerViewAdapter(Context context, RecyclerViewClickListener clickListener) {
+    public ConnectionsRecyclerViewAdapter(Context context, List<ConnectidConnection> connections,
+                                          RecyclerViewClickListener clickListener) {
         this.inflater = LayoutInflater.from(context);
+        this.connections = connections;
         this.clickListener = clickListener;
-        connections = new ArrayList<>();
     }
 
     // Inflates the item layout and returns the holder
@@ -42,6 +46,12 @@ public class ConnectionsRecyclerViewAdapter extends
         ViewHolder viewHolder = new ViewHolder(view);
 
         context = parent.getContext();
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                clickListener.onItemClick(v, viewHolder.getAdapterPosition());
+            }
+        });
 
         return viewHolder;
     }
@@ -54,18 +64,15 @@ public class ConnectionsRecyclerViewAdapter extends
         String lastName = connections.get(position).getLastName();
         String description = connections.get(position).getDescription();
 
-        holder.listItemTv.setText(firstName + " - " + lastName + " " + description);
-        holder.listItemTv.setTag(databaseId);
-
-
+        holder.listNameTv.setText(firstName + " - " + lastName + " " + description);
 
         // TODO Probably unnecessary to track clicks internally
         if (clickedPosition == position) {
 //            Log.i("MVP view", "position " + clickedPosition + " clicked");
-//            Intent intent = new Intent(holder.listItemTv.getContext(), DetailsActivity.class);
+//            Intent intent = new Intent(holder.listNameTv.getContext(), DetailsActivity.class);
 //            intent.putExtra("ID", databaseId);
-//            intent.putExtra("DETAILS", holder.listItemTv.getText().toString());
-//            holder.listItemTv.getContext().startActivity(intent);
+//            intent.putExtra("DETAILS", holder.listNameTv.getText().toString());
+//            holder.listNameTv.getContext().startActivity(intent);
         }
     }
 
@@ -78,23 +85,13 @@ public class ConnectionsRecyclerViewAdapter extends
         }
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        public TextView listItemTv;
+    class ViewHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.list_item_iv) ImageView listItemIv;
+        @BindView(R.id.list_name_tv) TextView listNameTv;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            listItemTv = (TextView) itemView.findViewById(R.id.list_item_tv);
-            itemView.setOnClickListener(this);
-        }
-
-        @Override
-        public void onClick(View view) {
-            if (clickListener != null) {
-                clickListener.onItemClick(view, getAdapterPosition());
-            }
-
-            clickedPosition = getAdapterPosition();
-            notifyItemChanged(clickedPosition);
+            ButterKnife.bind(this, itemView);
         }
     }
 
