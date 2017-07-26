@@ -65,6 +65,9 @@ public class ConnectionsActivity extends AppCompatActivity implements
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
+        RecyclerView.ItemDecoration dividerItemDecoration = new DividerItemDecoration(this,
+                DividerItemDecoration.VERTICAL_LIST);
+        recyclerView.addItemDecoration(dividerItemDecoration);
         setScrollListener(recyclerView);
     }
 
