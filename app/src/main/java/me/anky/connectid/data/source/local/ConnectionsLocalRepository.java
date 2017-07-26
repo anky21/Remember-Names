@@ -115,9 +115,9 @@ public class ConnectionsLocalRepository implements ConnectionsDataSource {
 
         List<ConnectidConnection> dummyConnections = new ArrayList<>();
 
-        dummyConnections.add(new ConnectidConnection("Yoda", "M", "", "met in swamp", "", "", "", "total stranger"));
-        dummyConnections.add(new ConnectidConnection("Donkey", "Who", "", "met in swamp", "", "", "", "Cute"));
-        dummyConnections.add(new ConnectidConnection("Snow", "White", "", "met in swamp", "", "", "", "she's pretty"));
+        dummyConnections.add(new ConnectidConnection("Yoda", "M", "", "met in swamp", "good looking", "good person", "no common friends", "total stranger"));
+        dummyConnections.add(new ConnectidConnection("Donkey", "Who", "", "met in swamp", "looks like a donkey", "grumpy", "Shrek", "Cute"));
+        dummyConnections.add(new ConnectidConnection("Snow", "White", "", "met in swamp", "looks like a princess", "easy going", "7 dwarfs", "she's pretty"));
 
         ArrayList<ContentProviderOperation> batchOperations =
                 new ArrayList<>(dummyConnections.size());

@@ -59,12 +59,12 @@ public class ConnectionsRecyclerViewAdapter extends
     @Override
     public void onBindViewHolder(ConnectionsRecyclerViewAdapter.ViewHolder holder, int position) {
 
-        int databaseId = connections.get(position).getDatabaseId();
         String firstName = connections.get(position).getFirstName();
         String lastName = connections.get(position).getLastName();
-        String description = connections.get(position).getDescription();
+        String feature = connections.get(position).getFeature();
 
-        holder.listNameTv.setText(firstName + " - " + lastName + " " + description);
+        holder.listNameTv.setText(firstName + " " + lastName);
+        holder.listFeatureTv.setText(feature);
 
         // TODO Probably unnecessary to track clicks internally
         if (clickedPosition == position) {
@@ -88,6 +88,7 @@ public class ConnectionsRecyclerViewAdapter extends
     class ViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.list_item_iv) ImageView listItemIv;
         @BindView(R.id.list_name_tv) TextView listNameTv;
+        @BindView(R.id.list_feature_tv) TextView listFeatureTv;
 
         public ViewHolder(View itemView) {
             super(itemView);

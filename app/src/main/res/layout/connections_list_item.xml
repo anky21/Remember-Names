@@ -11,7 +11,6 @@
         android:id="@+id/list_image_container"
         android:layout_width="108dp"
         android:layout_height="108dp"
-        android:focusable="false"
         android:padding="@dimen/margin_8dp">
 
         <ImageView
@@ -22,15 +21,28 @@
             android:src="@drawable/blank_profile_picture" />
     </FrameLayout>
 
-    <TextView
-        android:id="@+id/list_name_tv"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ellipsize="end"
-        android:focusable="false"
-        android:gravity="center"
-        android:maxLines="1"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        tools:text="Shrek - met in swamp" />
+        android:layout_gravity="center_vertical"
+        android:orientation="vertical">
 
+        <TextView
+            android:id="@+id/list_name_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:paddingBottom="@dimen/margin_8dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            tools:text="Shrek - met in swamp" />
+
+        <TextView
+            android:id="@+id/list_feature_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:ellipsize="end"
+            tools:text="special feature"/>
+    </LinearLayout>
 </LinearLayout>

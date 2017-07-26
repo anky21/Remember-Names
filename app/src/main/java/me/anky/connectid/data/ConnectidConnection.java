@@ -1,6 +1,9 @@
 package me.anky.connectid.data;
 
-public class ConnectidConnection {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class ConnectidConnection implements Parcelable {
     private int databaseId = -1;
     private String firstName;
     private String lastName;
@@ -11,9 +14,18 @@ public class ConnectidConnection {
     private String commonFriends;
     private String description;
 
-    public ConnectidConnection() {
-
+    public ConnectidConnection(Parcel in) {
+        databaseId = in.readInt();
+        firstName = in.readString();
+        lastName = in.readString();
+        imageName = in.readString();
+        meetVenue = in.readString();
+        appearance = in.readString();
+        feature = in.readString();
+        commonFriends = in.readString();
+        description = in.readString();
     }
+
 
     public ConnectidConnection(String firstName, String lastName, String imageName, String meetVenue,
                                String appearance, String feature, String commonFriends, String description) {
@@ -117,4 +129,35 @@ public class ConnectidConnection {
     public void setCommonFriends(String commonFriends) {
         this.commonFriends = commonFriends;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(databaseId);
+        dest.writeString(firstName);
+        dest.writeString(lastName);
+        dest.writeString(imageName);
+        dest.writeString(meetVenue);
+        dest.writeString(appearance);
+        dest.writeString(feature);
+        dest.writeString(commonFriends);
+        dest.writeString(description);
+    }
+
+    public static final Parcelable.Creator<ConnectidConnection> CREATOR =
+            new Parcelable.Creator<ConnectidConnection>(){
+                @Override
+                public ConnectidConnection createFromParcel(Parcel source) {
+                    return new ConnectidConnection(source);
+                }
+
+                @Override
+                public ConnectidConnection[] newArray(int size) {
+                    return new ConnectidConnection[size];
+                }
+            };
 }

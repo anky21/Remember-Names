@@ -17,6 +17,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.Single;
 import me.anky.connectid.R;
+import me.anky.connectid.data.ConnectidConnection;
 import me.anky.connectid.root.ConnectidApplication;
 
 public class DetailsActivity extends AppCompatActivity implements DetailsActivityMVP.View {
@@ -30,8 +31,7 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
     DetailsActivityPresenter presenter;
 
     int databaseId;
-    String details;
-
+    ConnectidConnection connection;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,11 +41,12 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
         ((ConnectidApplication) getApplication()).getApplicationComponent().inject(this);
 
         Intent intent = getIntent();
-        databaseId = intent.getIntExtra("ID", 0);
-        details = intent.getStringExtra("DETAILS");
+        connection = intent.getParcelableExtra("DETAILS");
+        databaseId = connection.getDatabaseId();
+        String feature = connection.getFeature();
 
         TextView connectionDetailsTv = (TextView) findViewById(R.id.connection_details_tv);
-        connectionDetailsTv.setText("Database item id: " + databaseId + " " + details);
+        connectionDetailsTv.setText("Database item id: " + databaseId + " " + feature);
     }
 
     @Override
@@ -95,7 +96,7 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
 
         Log.i("MVP view", "delete succeeded");
 
-        Toast.makeText(this, details + " deleted!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, databaseId + " deleted!", Toast.LENGTH_SHORT).show();
 
         Intent data = new Intent();
         setResult(RESULT_OK, data);

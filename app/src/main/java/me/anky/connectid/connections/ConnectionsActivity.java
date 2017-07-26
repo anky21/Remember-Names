@@ -135,10 +135,8 @@ public class ConnectionsActivity extends AppCompatActivity implements
     public void onItemClick(View view, int position) {
         Log.i("MVP view", "position " + position + " clicked");
 
-        String firstName = data.get(position).getFirstName();
         Intent intent = new Intent(this, DetailsActivity.class);
-        intent.putExtra("ID", position);
-        intent.putExtra("DETAILS", firstName);
+        intent.putExtra("DETAILS", data.get(position));
         startActivityForResult(intent, DETAILS_ACTIVITY_REQUEST);
     }
 
