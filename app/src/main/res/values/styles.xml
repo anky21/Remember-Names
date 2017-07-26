@@ -8,4 +8,29 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="DetailsTheme" parent="@style/Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="ExpandedToolbarTitle" parent="@style/TextAppearance.AppCompat.Headline"></style>
+
+    <style name="CollapsedToolbarTitle" parent="@style/TextAppearance.AppCompat.Title"></style>
+
+    <!-- Linear Layout Style -->
+    <style name="LinearLayoutStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingBottom">@dimen/margin_8dp</item>
+        <item name="android:orientation">vertical</item>
+    </style>
+
+    <!-- Description TextView style -->
+    <style name="DescriptionTvStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:paddingBottom">@dimen/margin_8dp</item>
+    </style>
 </resources>

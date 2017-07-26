@@ -33,6 +33,7 @@
         <activity
             android:name=".details.DetailsActivity"
             android:label=""
+            android:theme="@style/DetailsTheme"
             android:parentActivityName=".connections.ConnectionsActivity" />
 
         <activity

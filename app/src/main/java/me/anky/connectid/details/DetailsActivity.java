@@ -3,6 +3,7 @@ package me.anky.connectid.details;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -24,8 +25,14 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
     private final static String TAG = DetailsActivity.class.getSimpleName();
     private String mImageName = "profile.jpg";
 
+    @BindView(R.id.toolbar_1)
+    Toolbar mToolbar;
+
     @BindView(R.id.portrait_iv)
     ImageView mPortraitIv;
+
+    @BindView(R.id.description_tv)
+    TextView mDescriptionTv;
 
     @Inject
     DetailsActivityPresenter presenter;
@@ -40,13 +47,21 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
 
         ((ConnectidApplication) getApplication()).getApplicationComponent().inject(this);
 
+        // Set a Toolbar to act as the ActionBar for this Activity window
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+
+
         Intent intent = getIntent();
         connection = intent.getParcelableExtra("DETAILS");
         databaseId = connection.getDatabaseId();
         String feature = connection.getFeature();
+        String firstName = connection.getFirstName();
+        String lastName = connection.getLastName();
+        getSupportActionBar().setTitle(firstName + " " + lastName);
 
-        TextView connectionDetailsTv = (TextView) findViewById(R.id.connection_details_tv);
-        connectionDetailsTv.setText("Database item id: " + databaseId + " " + feature);
+        mDescriptionTv.setText("Database item id: " + databaseId + " " + feature);
     }
 
     @Override
