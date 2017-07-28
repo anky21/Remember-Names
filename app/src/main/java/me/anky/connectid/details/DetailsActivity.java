@@ -16,14 +16,17 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import io.reactivex.Single;
 import me.anky.connectid.R;
 import me.anky.connectid.data.ConnectidConnection;
+import me.anky.connectid.edit.EditActivity;
 import me.anky.connectid.root.ConnectidApplication;
 
 public class DetailsActivity extends AppCompatActivity implements DetailsActivityMVP.View {
     private final static String TAG = DetailsActivity.class.getSimpleName();
     private String mImageName = "profile.jpg";
+    private static final int EDIT_CONNECTION_REQUEST = 300;
 
     @BindView(R.id.toolbar_1)
     Toolbar mToolbar;
@@ -39,6 +42,7 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
 
     int databaseId;
     ConnectidConnection connection;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -116,5 +120,25 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
         Intent data = new Intent();
         setResult(RESULT_OK, data);
         finish();
+    }
+
+    @OnClick(R.id.edit_fab)
+    public void launchEditActivity(View view) {
+        Intent intent = new Intent(this, EditActivity.class);
+        startActivityForResult(intent, EDIT_CONNECTION_REQUEST);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == EDIT_CONNECTION_REQUEST) {
+            if (resultCode == RESULT_OK) {
+
+                // Update the UI
+                ConnectidConnection connection = data.getParcelableExtra("edit_activity_result");
+                Toast.makeText(this, "first name is " + connection.getFirstName(), Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 }

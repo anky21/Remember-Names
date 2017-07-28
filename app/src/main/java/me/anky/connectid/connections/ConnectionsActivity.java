@@ -19,6 +19,7 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import me.anky.connectid.R;
 import me.anky.connectid.data.ConnectidConnection;
 import me.anky.connectid.details.DetailsActivity;
@@ -46,7 +47,7 @@ public class ConnectionsActivity extends AppCompatActivity implements
     ConnectionsRecyclerViewAdapter adapter;
 
     private static final int DETAILS_ACTIVITY_REQUEST = 100;
-    private static final int EDIT_ACTIVITY_REQUEST = 200;
+    private static final int NEW_CONNECTION_REQUEST = 200;
     boolean shouldScrollToBottom;
 
     @Override
@@ -143,9 +144,10 @@ public class ConnectionsActivity extends AppCompatActivity implements
         startActivityForResult(intent, DETAILS_ACTIVITY_REQUEST);
     }
 
+    @OnClick(R.id.fab)
     public void launchEditActivity(View view) {
         Intent intent = new Intent(this, EditActivity.class);
-        startActivityForResult(intent, EDIT_ACTIVITY_REQUEST);
+        startActivityForResult(intent, NEW_CONNECTION_REQUEST);
     }
 
     @Override
@@ -162,7 +164,7 @@ public class ConnectionsActivity extends AppCompatActivity implements
             }
         }
 
-        if (requestCode == EDIT_ACTIVITY_REQUEST) {
+        if (requestCode == NEW_CONNECTION_REQUEST) {
             if (resultCode == RESULT_OK) {
 
                 Log.i("MVP view", "recyclerview is automatically refreshed upon insertion");

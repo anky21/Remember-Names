@@ -10,6 +10,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -39,14 +40,17 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
     private String mImageName = "profile.jpg";
 
     // TODO Allow user clicking outside of EditText to close the soft keyboard
+    @BindView(R.id.toolbar_edit)
+    Toolbar mToolbar;
+
     @BindView(R.id.edit_portrait_iv)
     ImageView mPortraitIv;
 
-    @BindView(R.id.name_et)
-    EditText nameEt;
+    @BindView(R.id.first_name_et)
+    EditText mFirstNameEt;
 
     @BindView(R.id.description_et)
-    EditText descriptionEt;
+    EditText mDescriptionEt;
 
     @Inject
     EditActivityPresenter presenter;
@@ -57,10 +61,16 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit);
-
         ButterKnife.bind(this);
 
         ((ConnectidApplication) getApplication()).getApplicationComponent().inject(this);
+
+        // Set a Toolbar to act as the ActionBar for this Activity window
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+
+        getSupportActionBar().setTitle("Add new connection");
     }
 
     @Override
@@ -173,12 +183,12 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
         return bitmap;
     }
 
-
+    @OnClick(R.id.add_connection_button)
     public void handleAddConnectionClicked(View view) {
 
         newConnection = new ConnectidConnection(
-                nameEt.getText().toString(),
-                descriptionEt.getText().toString());
+                mFirstNameEt.getText().toString(),
+                mDescriptionEt.getText().toString());
 
         Log.i("MVP view", "clicked Add Connection\n" +
                 newConnection.getFirstName() + " - " +
@@ -206,9 +216,10 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
 
     @Override
     public void displaySuccess() {
-        Log.i("MVP view", "displaySuccess called - sucessfully inserted into database");
+        Log.i("MVP view", "displaySuccess called - successfully inserted into database");
 
         Intent data = new Intent();
+        data.putExtra("edit_activity_result", newConnection);
         setResult(RESULT_OK, data);
         finish();
     }

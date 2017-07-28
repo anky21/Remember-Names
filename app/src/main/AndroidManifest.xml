@@ -33,13 +33,14 @@
         <activity
             android:name=".details.DetailsActivity"
             android:label=""
-            android:theme="@style/DetailsTheme"
-            android:parentActivityName=".connections.ConnectionsActivity" />
+            android:parentActivityName=".connections.ConnectionsActivity"
+            android:theme="@style/DetailsTheme" />
 
         <activity
             android:name=".edit.EditActivity"
             android:label=""
-            android:parentActivityName=".connections.ConnectionsActivity" />
+            android:parentActivityName=".connections.ConnectionsActivity"
+            android:theme="@style/DetailsTheme" />
 
     </application>
 
