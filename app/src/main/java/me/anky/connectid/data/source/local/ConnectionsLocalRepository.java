@@ -115,9 +115,9 @@ public class ConnectionsLocalRepository implements ConnectionsDataSource {
 
         List<ConnectidConnection> dummyConnections = new ArrayList<>();
 
-        dummyConnections.add(new ConnectidConnection("Yoda", "M", "", "met in swamp", "good looking", "good person", "no common friends", "total stranger"));
-        dummyConnections.add(new ConnectidConnection("Donkey", "Who", "", "met in swamp", "looks like a donkey", "grumpy", "Shrek", "Cute"));
-        dummyConnections.add(new ConnectidConnection("Snow", "White", "", "met in swamp", "looks like a princess", "easy going", "7 dwarfs", "she's pretty"));
+        dummyConnections.add(new ConnectidConnection("Yoda", "M", "blank_profile.jpg", "met in swamp", "good looking", "good person", "no common friends", "total stranger"));
+        dummyConnections.add(new ConnectidConnection("Donkey", "Who", "blank_profile.jpg", "met in swamp", "looks like a donkey", "grumpy", "Shrek", "Cute"));
+        dummyConnections.add(new ConnectidConnection("Snow", "White", "blank_profile.jpg", "met in swamp", "looks like a princess", "easy going", "7 dwarfs", "she's pretty"));
 
         ArrayList<ContentProviderOperation> batchOperations =
                 new ArrayList<>(dummyConnections.size());
@@ -153,6 +153,12 @@ public class ConnectionsLocalRepository implements ConnectionsDataSource {
 
         ContentValues contentValues = new ContentValues();
         contentValues.put(ConnectidColumns.FIRST_NAME, newConnection.getFirstName());
+        contentValues.put(ConnectidColumns.LAST_NAME, newConnection.getLastName());
+        contentValues.put(ConnectidColumns.IMAGE_NAME, newConnection.getImageName());
+        contentValues.put(ConnectidColumns.MEET_WHERE, newConnection.getMeetVenue());
+        contentValues.put(ConnectidColumns.APPEARANCE, newConnection.getAppearance());
+        contentValues.put(ConnectidColumns.FEATURE, newConnection.getFeature());
+        contentValues.put(ConnectidColumns.COMMON_FRIENDS, newConnection.getCommonFriends());
         contentValues.put(ConnectidColumns.DESCRIPTION, newConnection.getDescription());
 
         Uri uri = context.getContentResolver().insert(ConnectidProvider.Connections.CONTENT_URI, contentValues);

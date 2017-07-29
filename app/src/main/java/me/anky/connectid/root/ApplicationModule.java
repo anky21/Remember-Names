@@ -1,6 +1,7 @@
 package me.anky.connectid.root;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 
 import javax.inject.Singleton;
 
@@ -58,5 +59,10 @@ public class ApplicationModule {
     @Singleton
     ConnectionsDataSource provideConnectionsDataSource(Context context) {
         return connectionsLocalRepository;
+    }
+
+    @Provides
+    SharedPreferences provideSharedPrefs() {
+        return application.getSharedPreferences("shared-prefs", Context.MODE_PRIVATE);
     }
 }

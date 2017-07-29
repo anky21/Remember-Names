@@ -2,8 +2,6 @@ package me.anky.connectid.edit;
 
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.content.Context;
-import android.content.ContextWrapper;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -16,11 +14,6 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.concurrent.Callable;
 
@@ -31,13 +24,17 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.reactivex.Single;
 import me.anky.connectid.R;
+import me.anky.connectid.Utilities;
 import me.anky.connectid.data.ConnectidConnection;
 import me.anky.connectid.root.ConnectidApplication;
+
+import static me.anky.connectid.Utilities.resizeBitmap;
 
 public class EditActivity extends AppCompatActivity implements EditActivityMVP.View {
     private final static String TAG = EditActivity.class.getSimpleName();
 
-    private String mImageName = "profile.jpg";
+    private Bitmap mBitmap;
+    private String mImageName = "blank_profile.jpg";
 
     // TODO Allow user clicking outside of EditText to close the soft keyboard
     @BindView(R.id.toolbar_edit)
@@ -48,6 +45,21 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
 
     @BindView(R.id.first_name_et)
     EditText mFirstNameEt;
+
+    @BindView(R.id.last_name_et)
+    EditText mLastNameEt;
+
+    @BindView(R.id.meet_venue_et)
+    EditText mMeetVenueEt;
+
+    @BindView(R.id.appearance_et)
+    EditText mAppearanceEt;
+
+    @BindView(R.id.feature_et)
+    EditText mFeatureEt;
+
+    @BindView(R.id.common_friends_et)
+    EditText mCommonFriendsEt;
 
     @BindView(R.id.description_et)
     EditText mDescriptionEt;
@@ -102,92 +114,41 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
     }
 
     public void changePhoto(Object object) {
-        Bitmap bitmap;
         try {
             if (object instanceof Uri) {
                 Uri imageUri = (Uri) object;
                 InputStream imageStream = getContentResolver().openInputStream(imageUri);
-                bitmap = BitmapFactory.decodeStream(imageStream);
-                int originalWidth = bitmap.getWidth();
-                int originalHeight = bitmap.getHeight();
+                mBitmap = BitmapFactory.decodeStream(imageStream);
+                mBitmap = resizeBitmap(mBitmap);
 
-                final int desiredSize = 1000;
-                int maximumSize = Math.max(originalHeight, originalWidth);
+                mImageName = Utilities.generateImageName();
 
-                if (maximumSize > desiredSize) {
-                    float ratio = (float) desiredSize / maximumSize;
-                    int newWidth = Math.round(originalWidth * ratio);
-                    int newHeight = Math.round(originalHeight * ratio);
-
-                    bitmap = Bitmap.createScaledBitmap(bitmap, newWidth, newHeight, true);
-                }
-
-                // Save bitmap internally and return its path
-                String internalPath = saveToInternalStorage(bitmap);
-
-//                mNewPortraitIv.setImageBitmap(loadImageFromStorage(mImageName, internalPath));
-                mPortraitIv.setImageBitmap(bitmap);
+                mPortraitIv.setImageBitmap(mBitmap);
 
             } else {
-                bitmap = (Bitmap) object;
-                // Save bitmap internally and return its path
-                String internalPath = saveToInternalStorage(bitmap);
+                mBitmap = (Bitmap) object;
+                mBitmap = resizeBitmap(mBitmap);
+                mImageName = Utilities.generateImageName();
 
-//                mNewPortraitIv.setImageBitmap(loadImageFromStorage(mImageName, internalPath));
-                mPortraitIv.setImageBitmap(bitmap);
-                mPortraitIv.setImageBitmap(bitmap);
+                mPortraitIv.setImageBitmap(mBitmap);
             }
         } catch (Exception e) {
             Log.e(TAG, "error in changing photo");
         }
     }
 
-    // Save Bitmap to internal storage
-    private String saveToInternalStorage(Bitmap bitmapImage) {
-        ContextWrapper cw = new ContextWrapper(getApplicationContext());
-        // path to /data/data/yourapp/app_data/imageDir
-        File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
-        // Create imageDir
-        File file = new File(directory, mImageName);
-
-        FileOutputStream fos = null;
-        try {
-            fos = new FileOutputStream(file);
-            // Use the compress method on the BitMap object to write image to the OutputStream
-            bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, fos);
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                fos.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        return  directory.getAbsolutePath();
-    }
-
-    // Load image from internal storage
-    private Bitmap loadImageFromStorage(String imageName, String path)
-    {
-        Bitmap bitmap = null;
-        try {
-            File f=new File(path, imageName);
-            bitmap = BitmapFactory.decodeStream(new FileInputStream(f));
-        }
-        catch (FileNotFoundException e)
-        {
-            e.printStackTrace();
-        }
-        return bitmap;
-    }
-
     @OnClick(R.id.add_connection_button)
     public void handleAddConnectionClicked(View view) {
+        Utilities.saveToInternalStorage(this, mBitmap, mImageName);
 
         newConnection = new ConnectidConnection(
                 mFirstNameEt.getText().toString(),
+                mLastNameEt.getText().toString(),
+                mImageName,
+                mMeetVenueEt.getText().toString(),
+                mAppearanceEt.getText().toString(),
+                mFeatureEt.getText().toString(),
+                mCommonFriendsEt.getText().toString(),
                 mDescriptionEt.getText().toString());
 
         Log.i("MVP view", "clicked Add Connection\n" +
@@ -195,8 +156,6 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
                 newConnection.getDescription());
 
         presenter.deliverNewConnection();
-
-
     }
 
     @Override

@@ -1,6 +1,8 @@
 package me.anky.connectid.connections;
 
 import android.content.Context;
+import android.content.ContextWrapper;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +10,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,6 +67,15 @@ public class ConnectionsRecyclerViewAdapter extends
         String firstName = connections.get(position).getFirstName();
         String lastName = connections.get(position).getLastName();
         String feature = connections.get(position).getFeature();
+        String imageName = connections.get(position).getImageName();
+
+        ContextWrapper cw = new ContextWrapper(context);
+        // path to /data/data/yourapp/app_data/imageDir
+        File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
+        String path = directory.getAbsolutePath() + "/" + imageName;
+        Glide.with(context)
+                .load(Uri.fromFile(new File(path)))
+                .into(holder.listItemIv);
 
         holder.listNameTv.setText(firstName + " " + lastName);
         holder.listFeatureTv.setText(feature);

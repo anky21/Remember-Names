@@ -22,7 +22,6 @@ public interface ConnectidColumns {
     public static final String LAST_NAME = "last_name";
 
     @DataType(DataType.Type.TEXT)
-    @DefaultValue("null")
     public static final String IMAGE_NAME = "image_name";
 
     @DataType(DataType.Type.TEXT)

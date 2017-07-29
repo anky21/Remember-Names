@@ -1,6 +1,8 @@
 package me.anky.connectid.connections;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -21,7 +23,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import me.anky.connectid.R;
+import me.anky.connectid.Utilities;
 import me.anky.connectid.data.ConnectidConnection;
+import me.anky.connectid.data.SharedPrefsHelper;
 import me.anky.connectid.details.DetailsActivity;
 import me.anky.connectid.edit.EditActivity;
 import me.anky.connectid.root.ConnectidApplication;
@@ -42,6 +46,9 @@ public class ConnectionsActivity extends AppCompatActivity implements
     TextView emptyListTv;
 
     @Inject
+    SharedPrefsHelper sharedPrefsHelper;
+
+    @Inject
     ConnectionsActivityPresenter presenter;
 
     ConnectionsRecyclerViewAdapter adapter;
@@ -60,6 +67,12 @@ public class ConnectionsActivity extends AppCompatActivity implements
         ((ConnectidApplication) getApplication()).getApplicationComponent().inject(this);
 
         Stetho.initializeWithDefaults(this);
+
+        if (!sharedPrefsHelper.get("profile_saved", false)) {
+            Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.profile_picture);
+            Utilities.saveToInternalStorage(this, bitmap, "blank_profile.jpg");
+            sharedPrefsHelper.put("profile_saved", true);
+        }
 
         adapter = new ConnectionsRecyclerViewAdapter(this, data, this);
 

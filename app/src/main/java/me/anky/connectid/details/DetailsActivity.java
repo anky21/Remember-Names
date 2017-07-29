@@ -1,5 +1,7 @@
 package me.anky.connectid.details;
 
+import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -10,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
 import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
@@ -19,13 +22,13 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.reactivex.Single;
 import me.anky.connectid.R;
+import me.anky.connectid.Utilities;
 import me.anky.connectid.data.ConnectidConnection;
 import me.anky.connectid.edit.EditActivity;
 import me.anky.connectid.root.ConnectidApplication;
 
 public class DetailsActivity extends AppCompatActivity implements DetailsActivityMVP.View {
     private final static String TAG = DetailsActivity.class.getSimpleName();
-    private String mImageName = "profile.jpg";
     private static final int EDIT_CONNECTION_REQUEST = 300;
 
     @BindView(R.id.toolbar_1)
@@ -64,6 +67,15 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
         String firstName = connection.getFirstName();
         String lastName = connection.getLastName();
         getSupportActionBar().setTitle(firstName + " " + lastName);
+        String imageName = connection.getImageName();
+
+        ContextWrapper cw = new ContextWrapper(getApplicationContext());
+        // path to /data/data/yourapp/app_data/imageDir
+        File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
+        if (imageName != null && !imageName.equals("")) {
+            mPortraitIv.setImageBitmap(Utilities.loadImageFromStorage(imageName,
+                    directory.getAbsolutePath()));
+        }
 
         mDescriptionTv.setText("Database item id: " + databaseId + " " + feature);
     }

@@ -39,11 +39,6 @@ public class ConnectidConnection implements Parcelable {
         this.description = description;
     }
 
-    public ConnectidConnection(String firstName, String description) {
-        this.firstName = firstName;
-        this.description = description;
-    }
-
     public ConnectidConnection(int databaseId, String firstName, String lastName, String imageName,
                                String meetVenue, String appearance, String feature,
                                String commonFriends, String description) {

@@ -5,6 +5,7 @@ import javax.inject.Singleton;
 import dagger.Component;
 import me.anky.connectid.connections.ConnectionsActivity;
 import me.anky.connectid.connections.ConnectionsActivityPresenter;
+import me.anky.connectid.data.SharedPrefsHelper;
 import me.anky.connectid.details.DetailsActivity;
 import me.anky.connectid.edit.EditActivity;
 
@@ -26,4 +27,6 @@ public interface ApplicationComponent {
     void inject(EditActivity editActivity);
 
     void inject(DetailsActivity detailsActivity);
+
+    SharedPrefsHelper getPreferenceHelper();
 }

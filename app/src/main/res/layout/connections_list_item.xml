@@ -18,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
-            android:src="@drawable/blank_profile_picture" />
+            android:src="@drawable/profile_picture" />
     </FrameLayout>
 
     <LinearLayout
