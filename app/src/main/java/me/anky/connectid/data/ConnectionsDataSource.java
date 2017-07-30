@@ -11,4 +11,6 @@ public interface ConnectionsDataSource {
     int insertNewConnection(ConnectidConnection newConnection);
 
     int deleteConnection(int databaseId);
+
+    int updateConnection(ConnectidConnection connection);
 }

@@ -3,6 +3,7 @@ package me.anky.connectid.details;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -11,6 +12,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.bumptech.glide.Glide;
 
 import java.io.File;
 import java.util.concurrent.Callable;
@@ -30,6 +33,9 @@ import me.anky.connectid.root.ConnectidApplication;
 public class DetailsActivity extends AppCompatActivity implements DetailsActivityMVP.View {
     private final static String TAG = DetailsActivity.class.getSimpleName();
     private static final int EDIT_CONNECTION_REQUEST = 300;
+    int databaseId;
+    ConnectidConnection connection;
+    private Intent intent;
 
     @BindView(R.id.toolbar_1)
     Toolbar mToolbar;
@@ -37,14 +43,23 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
     @BindView(R.id.portrait_iv)
     ImageView mPortraitIv;
 
+    @BindView(R.id.meet_venue_tv)
+    TextView mMeetVenueTv;
+
+    @BindView(R.id.appearance_tv)
+    TextView mappearanceTv;
+
+    @BindView(R.id.feature_tv)
+    TextView mFeatureTv;
+
+    @BindView(R.id.common_friends_tv)
+    TextView mCommonFriendsTv;
+
     @BindView(R.id.description_tv)
     TextView mDescriptionTv;
 
     @Inject
     DetailsActivityPresenter presenter;
-
-    int databaseId;
-    ConnectidConnection connection;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,25 +74,29 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
-
-        Intent intent = getIntent();
+        intent = getIntent();
         connection = intent.getParcelableExtra("DETAILS");
         databaseId = connection.getDatabaseId();
-        String feature = connection.getFeature();
         String firstName = connection.getFirstName();
         String lastName = connection.getLastName();
         getSupportActionBar().setTitle(firstName + " " + lastName);
         String imageName = connection.getImageName();
+        String meetVenue = connection.getMeetVenue();
+        String appearance = connection.getAppearance();
+        String feature = connection.getFeature();
+        String commonFriends = connection.getCommonFriends();
+        String description = connection.getDescription();
 
         ContextWrapper cw = new ContextWrapper(getApplicationContext());
         // path to /data/data/yourapp/app_data/imageDir
         File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
-        if (imageName != null && !imageName.equals("")) {
-            mPortraitIv.setImageBitmap(Utilities.loadImageFromStorage(imageName,
-                    directory.getAbsolutePath()));
-        }
-
-        mDescriptionTv.setText("Database item id: " + databaseId + " " + feature);
+        mPortraitIv.setImageBitmap(Utilities.loadImageFromStorage(imageName,
+                directory.getAbsolutePath()));
+        mMeetVenueTv.setText(meetVenue);
+        mappearanceTv.setText(appearance);
+        mFeatureTv.setText(feature);
+        mCommonFriendsTv.setText(commonFriends);
+        mDescriptionTv.setText(description);
     }
 
     @Override
@@ -137,6 +156,7 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
     @OnClick(R.id.edit_fab)
     public void launchEditActivity(View view) {
         Intent intent = new Intent(this, EditActivity.class);
+        intent.putExtra("DETAILS", connection);
         startActivityForResult(intent, EDIT_CONNECTION_REQUEST);
     }
 
@@ -148,8 +168,33 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
             if (resultCode == RESULT_OK) {
 
                 // Update the UI
+                intent = data;
                 ConnectidConnection connection = data.getParcelableExtra("edit_activity_result");
-                Toast.makeText(this, "first name is " + connection.getFirstName(), Toast.LENGTH_SHORT).show();
+                String firstName = connection.getFirstName();
+                Log.v("testing", firstName);
+                String lastName = connection.getLastName();
+
+                getSupportActionBar().setTitle(firstName + " " + lastName);
+                String imageName = connection.getImageName();
+                String meetVenue = connection.getMeetVenue();
+                String appearance = connection.getAppearance();
+                String feature = connection.getFeature();
+                String commonFriends = connection.getCommonFriends();
+                String description = connection.getDescription();
+
+                ContextWrapper cw = new ContextWrapper(getApplicationContext());
+                // path to /data/data/yourapp/app_data/imageDir
+                File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
+                String path = directory.getAbsolutePath() + "/" + imageName;
+                Glide.with(this)
+                        .load(Uri.fromFile(new File(path)))
+                        .into(mPortraitIv);
+                mMeetVenueTv.setText(meetVenue);
+                mappearanceTv.setText(appearance);
+                mFeatureTv.setText(feature);
+                mCommonFriendsTv.setText(commonFriends);
+                mDescriptionTv.setText(description);
+                getSupportActionBar().setTitle(firstName + " " + lastName);
             }
         }
     }

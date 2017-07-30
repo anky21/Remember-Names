@@ -178,6 +178,23 @@ public class ConnectionsLocalRepository implements ConnectionsDataSource {
         return context.getContentResolver().delete(uri, null, null);
     }
 
+    @Override
+    public int updateConnection(ConnectidConnection connection) {
+        Uri uri = ConnectidProvider.Connections.withId(connection.getDatabaseId());
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(ConnectidColumns.FIRST_NAME, connection.getFirstName());
+        contentValues.put(ConnectidColumns.LAST_NAME, connection.getLastName());
+        contentValues.put(ConnectidColumns.IMAGE_NAME, connection.getImageName());
+        contentValues.put(ConnectidColumns.MEET_WHERE, connection.getMeetVenue());
+        contentValues.put(ConnectidColumns.APPEARANCE, connection.getAppearance());
+        contentValues.put(ConnectidColumns.FEATURE, connection.getFeature());
+        contentValues.put(ConnectidColumns.COMMON_FRIENDS, connection.getCommonFriends());
+        contentValues.put(ConnectidColumns.DESCRIPTION, connection.getDescription());
+
+        return context.getContentResolver().update(uri, contentValues, null, null);
+    }
+
     private int generateResultCode(Uri uri) {
 
         int lastPathSegment = Integer.parseInt(uri.getLastPathSegment());

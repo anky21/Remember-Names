@@ -34,6 +34,6 @@
     <!-- Description TextView style -->
     <style name="DescriptionTvStyle" parent="EditTvStyle">
         <item name="android:layout_width">wrap_content</item>
-        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@android:color/black</item>
     </style>
 </resources>

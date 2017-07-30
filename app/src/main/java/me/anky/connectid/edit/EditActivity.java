@@ -2,6 +2,8 @@ package me.anky.connectid.edit;
 
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -14,6 +16,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import java.io.File;
 import java.io.InputStream;
 import java.util.concurrent.Callable;
 
@@ -35,6 +38,11 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
 
     private Bitmap mBitmap;
     private String mImageName = "blank_profile.jpg";
+    private ConnectidConnection connection;
+    private ConnectidConnection newConnection;
+    private ConnectidConnection updatedConnection;
+    private boolean intentHasExtra = false;
+    private int mDatabaseId;
 
     // TODO Allow user clicking outside of EditText to close the soft keyboard
     @BindView(R.id.toolbar_edit)
@@ -67,8 +75,6 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
     @Inject
     EditActivityPresenter presenter;
 
-    ConnectidConnection newConnection;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,7 +88,37 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
-        getSupportActionBar().setTitle("Add new connection");
+        Intent intent = getIntent();
+        if (intent.hasExtra("DETAILS")) {
+            intentHasExtra = true;
+            connection = intent.getParcelableExtra("DETAILS");
+            mDatabaseId = connection.getDatabaseId();
+            String firstName = connection.getFirstName();
+            String lastName = connection.getLastName();
+            mImageName = connection.getImageName();
+            String meetVenue = connection.getMeetVenue();
+            String appearance = connection.getAppearance();
+            String feature = connection.getFeature();
+            String commonFriends = connection.getCommonFriends();
+            String description = connection.getDescription();
+
+            mFirstNameEt.setText(firstName);
+            mLastNameEt.setText(lastName);
+            ContextWrapper cw = new ContextWrapper(getApplicationContext());
+            // path to /data/data/yourapp/app_data/imageDir
+            File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
+            mPortraitIv.setImageBitmap(Utilities.loadImageFromStorage(mImageName,
+                    directory.getAbsolutePath()));
+            mMeetVenueEt.setText(meetVenue);
+            mAppearanceEt.setText(appearance);
+            mFeatureEt.setText(feature);
+            mCommonFriendsEt.setText(commonFriends);
+            mDescriptionEt.setText(description);
+
+            getSupportActionBar().setTitle("Edit connection");
+        } else {
+            getSupportActionBar().setTitle("Add new connection");
+        }
     }
 
     @Override
@@ -141,21 +177,41 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
     public void handleAddConnectionClicked(View view) {
         Utilities.saveToInternalStorage(this, mBitmap, mImageName);
 
-        newConnection = new ConnectidConnection(
-                mFirstNameEt.getText().toString(),
-                mLastNameEt.getText().toString(),
-                mImageName,
-                mMeetVenueEt.getText().toString(),
-                mAppearanceEt.getText().toString(),
-                mFeatureEt.getText().toString(),
-                mCommonFriendsEt.getText().toString(),
-                mDescriptionEt.getText().toString());
+        String firstName = mFirstNameEt.getText().toString();
+        String lastName = mLastNameEt.getText().toString();
+        String meetVenue = mMeetVenueEt.getText().toString();
+        String appearance = mAppearanceEt.getText().toString();
+        String feature = mFeatureEt.getText().toString();
+        String commonFriends = mCommonFriendsEt.getText().toString();
+        String description = mDescriptionEt.getText().toString();
 
-        Log.i("MVP view", "clicked Add Connection\n" +
-                newConnection.getFirstName() + " - " +
-                newConnection.getDescription());
+        if (intentHasExtra) {
+            updatedConnection = new ConnectidConnection(
+                    mDatabaseId,
+                    firstName,
+                    lastName,
+                    mImageName,
+                    meetVenue,
+                    appearance,
+                    feature,
+                    commonFriends,
+                    description);
+            presenter.updateConnection();
+        } else {
+            newConnection = new ConnectidConnection(
+                    firstName,
+                    lastName,
+                    mImageName,
+                    meetVenue,
+                    appearance,
+                    feature,
+                    commonFriends,
+                    description);
 
-        presenter.deliverNewConnection();
+            Log.i("MVP view", "clicked Add Connection");
+
+            presenter.deliverNewConnection();
+        }
     }
 
     @Override
@@ -174,11 +230,28 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
     }
 
     @Override
+    public Single<ConnectidConnection> getUpdatedConnection() {
+        return Single.fromCallable(new Callable<ConnectidConnection>() {
+            @Override
+            public ConnectidConnection call() throws Exception {
+
+                System.out.println("Thread db: " + Thread.currentThread().getId());
+
+                return updatedConnection;
+            }
+        });
+    }
+
+    @Override
     public void displaySuccess() {
         Log.i("MVP view", "displaySuccess called - successfully inserted into database");
 
         Intent data = new Intent();
-        data.putExtra("edit_activity_result", newConnection);
+        if (intentHasExtra) {
+            data.putExtra("edit_activity_result", updatedConnection);
+        } else {
+            data.putExtra("edit_activity_result", newConnection);
+        }
         setResult(RESULT_OK, data);
         finish();
     }

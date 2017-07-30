@@ -9,6 +9,8 @@ public interface EditActivityMVP {
 
         Single<ConnectidConnection> getNewConnection();
 
+        Single<ConnectidConnection> getUpdatedConnection();
+
         void displayError();
 
         void displaySuccess();
@@ -21,5 +23,7 @@ public interface EditActivityMVP {
         void deliverNewConnection();
 
         void unsubscribe();
+
+        void updateConnection();
     }
 }

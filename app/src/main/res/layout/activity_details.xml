@@ -75,6 +75,7 @@
                     android:text="Where did you meet?" />
 
                 <TextView
+                    android:id="@+id/meet_venue_tv"
                     style="@style/DescriptionTvStyle"
                     android:text="On Facebook" />
 
@@ -89,6 +90,7 @@
                     android:text="Anything significant about his/her looks?" />
 
                 <TextView
+                    android:id="@+id/appearance_tv"
                     style="@style/DescriptionTvStyle"
                     android:text="He's very tall, like a beast" />
 
@@ -103,6 +105,7 @@
                     android:text="What's special about him/her?" />
 
                 <TextView
+                    android:id="@+id/feature_tv"
                     style="@style/DescriptionTvStyle"
                     android:text="He made the WeChat app." />
 
@@ -117,6 +120,7 @@
                     android:text="Common friends" />
 
                 <TextView
+                    android:id="@+id/common_friends_tv"
                     style="@style/DescriptionTvStyle"
                     android:text="John Miller, Chris Harold" />
 

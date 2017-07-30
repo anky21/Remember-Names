@@ -27,18 +27,15 @@ public class ConnectidProvider {
         return builder.build();
     }
 
-
     @TableEndpoint(table = ConnectidDatabase.CONNECTIONS)
     public static class Connections {
 
-        // TODO: MIME type may become "vnd.android.cursor.dir/contact"
         @ContentUri(
                 path = Path.CONNECTIONS,
                 type = "vnd.android.cursor.dir/connection",
                 defaultSort = ConnectidColumns._ID + " ASC")
         public static final Uri CONTENT_URI = buildUri(Path.CONNECTIONS);
 
-        // TODO: MIME type may become "vnd.android.cursor.dir/contact"
         @InexactContentUri(
                 name = "CONNECTION_ID",
                 path = Path.CONNECTIONS + "/#",

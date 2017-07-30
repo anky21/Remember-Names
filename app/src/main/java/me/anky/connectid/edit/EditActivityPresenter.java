@@ -65,6 +65,40 @@ public class EditActivityPresenter implements EditActivityMVP.Presenter {
     }
 
     @Override
+    public void updateConnection() {
+        DisposableSingleObserver<ConnectidConnection> disposableSingleObserver =
+                view.getUpdatedConnection()
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeWith(new DisposableSingleObserver<ConnectidConnection>() {
+
+                            @Override
+                            public void onSuccess(@NonNull ConnectidConnection connection) {
+                                System.out.println("Thread subscribe: " + Thread.currentThread().getId());
+
+                                int resultCode = connectionsDataSource.updateConnection(connection);
+
+                                System.out.println("MVP presenter - " + "delivered new connection, resultCode " + resultCode);
+
+                                if (resultCode == -1) {
+                                    view.displayError();
+                                } else {
+                                    view.displaySuccess();
+                                }
+                            }
+
+                            @Override
+                            public void onError(@NonNull Throwable e) {
+                                // TODO Add Analytics. This error should never be thrown.
+                                System.out.println("MVP presenter - " + "something went seriously wrong");
+                            }
+                        });
+
+        // Add this subscription to the RxJava cleanup composite
+        compositeDisposable.add(disposableSingleObserver);
+    }
+
+    @Override
     public void unsubscribe() {
         compositeDisposable.clear();
     }
