@@ -5,6 +5,7 @@ import android.content.ContextWrapper;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -31,10 +32,12 @@ import me.anky.connectid.root.ConnectidApplication;
 
 public class DetailsActivity extends AppCompatActivity implements DetailsActivityMVP.View {
     private final static String TAG = DetailsActivity.class.getSimpleName();
-    private static final int EDIT_CONNECTION_REQUEST = 300;
     int databaseId;
     ConnectidConnection connection;
     private Intent intent;
+
+    @BindView(R.id.collapsing_toolbar_layout)
+    CollapsingToolbarLayout mCollapsingToolbarLayout;
 
     @BindView(R.id.toolbar_1)
     Toolbar mToolbar;
@@ -102,7 +105,7 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
         String firstName = connection.getFirstName();
         String lastName = connection.getLastName();
 
-        getSupportActionBar().setTitle(firstName + " " + lastName);
+        mCollapsingToolbarLayout.setTitle(firstName + " " + lastName);
         String imageName = connection.getImageName();
         String meetVenue = connection.getMeetVenue();
         String appearance = connection.getAppearance();
@@ -165,17 +168,6 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
     public void launchEditActivity(View view) {
         Intent intent = new Intent(this, EditActivity.class);
         intent.putExtra("DETAILS", connection);
-        startActivityForResult(intent, EDIT_CONNECTION_REQUEST);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == EDIT_CONNECTION_REQUEST) {
-            if (resultCode == RESULT_OK) {
-
-            }
-        }
+        startActivity(intent);
     }
 }

@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -47,6 +48,9 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
     private int mDatabaseId;
 
     // TODO Allow user clicking outside of EditText to close the soft keyboard
+    @BindView(R.id.collapsing_toolbar_layout)
+    CollapsingToolbarLayout mCollapsingToolbarLayout;
+
     @BindView(R.id.toolbar_edit)
     Toolbar mToolbar;
 
@@ -119,9 +123,9 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
             mCommonFriendsEt.setText(commonFriends);
             mDescriptionEt.setText(description);
 
-            getSupportActionBar().setTitle("Edit connection");
+            mCollapsingToolbarLayout.setTitle(getString(R.string.title_edit_connection));
         } else {
-            getSupportActionBar().setTitle("Add new connection");
+            mCollapsingToolbarLayout.setTitle(getString(R.string.title_add_new_connection));
         }
     }
 

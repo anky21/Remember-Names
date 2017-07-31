@@ -9,4 +9,6 @@
     <string name="take_a_photo">Take a photo</string>
     <string name="pick_a_photo">Pick a photo</string>
     <string name="change_photo">Change Photo</string>
+    <string name="title_edit_connection">Edit connection</string>
+    <string name="title_add_new_connection">Add new connection</string>
 </resources>
