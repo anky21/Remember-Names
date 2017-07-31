@@ -16,6 +16,8 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
+
 import java.io.File;
 import java.io.InputStream;
 import java.util.concurrent.Callable;
@@ -107,8 +109,10 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
             ContextWrapper cw = new ContextWrapper(getApplicationContext());
             // path to /data/data/yourapp/app_data/imageDir
             File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
-            mPortraitIv.setImageBitmap(Utilities.loadImageFromStorage(mImageName,
-                    directory.getAbsolutePath()));
+            String path = directory.getAbsolutePath() + "/" + mImageName;
+            Glide.with(this)
+                    .load(Uri.fromFile(new File(path)))
+                    .into(mPortraitIv);
             mMeetVenueEt.setText(meetVenue);
             mAppearanceEt.setText(appearance);
             mFeatureEt.setText(feature);

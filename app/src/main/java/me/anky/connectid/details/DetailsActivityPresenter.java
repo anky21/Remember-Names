@@ -7,6 +7,7 @@ import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
+import me.anky.connectid.data.ConnectidConnection;
 import me.anky.connectid.data.ConnectionsDataSource;
 
 public class DetailsActivityPresenter implements DetailsActivityMVP.Presenter {
@@ -24,6 +25,25 @@ public class DetailsActivityPresenter implements DetailsActivityMVP.Presenter {
     @Override
     public void setView(DetailsActivityMVP.View view) {
         this.view = view;
+    }
+
+    @Override
+    public void loadConnection(int data_id) {
+        DisposableSingleObserver<ConnectidConnection> disposableConnectionSingleObserver =
+                connectionsDataSource.getOneConnection(data_id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new DisposableSingleObserver<ConnectidConnection>() {
+                    @Override
+                    public void onSuccess(@NonNull ConnectidConnection connection) {
+                        view.displayConnection(connection);
+                    }
+
+                    @Override
+                    public void onError(@NonNull Throwable e) {
+
+                    }
+                });
     }
 
     @Override

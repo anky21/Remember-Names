@@ -25,7 +25,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.reactivex.Single;
 import me.anky.connectid.R;
-import me.anky.connectid.Utilities;
 import me.anky.connectid.data.ConnectidConnection;
 import me.anky.connectid.edit.EditActivity;
 import me.anky.connectid.root.ConnectidApplication;
@@ -47,7 +46,7 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
     TextView mMeetVenueTv;
 
     @BindView(R.id.appearance_tv)
-    TextView mappearanceTv;
+    TextView mAppearanceTv;
 
     @BindView(R.id.feature_tv)
     TextView mFeatureTv;
@@ -75,28 +74,8 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
         getSupportActionBar().setHomeButtonEnabled(true);
 
         intent = getIntent();
-        connection = intent.getParcelableExtra("DETAILS");
-        databaseId = connection.getDatabaseId();
-        String firstName = connection.getFirstName();
-        String lastName = connection.getLastName();
-        getSupportActionBar().setTitle(firstName + " " + lastName);
-        String imageName = connection.getImageName();
-        String meetVenue = connection.getMeetVenue();
-        String appearance = connection.getAppearance();
-        String feature = connection.getFeature();
-        String commonFriends = connection.getCommonFriends();
-        String description = connection.getDescription();
-
-        ContextWrapper cw = new ContextWrapper(getApplicationContext());
-        // path to /data/data/yourapp/app_data/imageDir
-        File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
-        mPortraitIv.setImageBitmap(Utilities.loadImageFromStorage(imageName,
-                directory.getAbsolutePath()));
-        mMeetVenueTv.setText(meetVenue);
-        mappearanceTv.setText(appearance);
-        mFeatureTv.setText(feature);
-        mCommonFriendsTv.setText(commonFriends);
-        mDescriptionTv.setText(description);
+        ConnectidConnection intentConnection = intent.getParcelableExtra("DETAILS");
+        databaseId = intentConnection.getDatabaseId();
     }
 
     @Override
@@ -108,12 +87,41 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
     protected void onResume() {
         super.onResume();
         presenter.setView(this);
+        presenter.loadConnection(databaseId);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         presenter.unsubscribe();
+    }
+
+    @Override
+    public void displayConnection(ConnectidConnection connection) {
+        this.connection = connection;
+        String firstName = connection.getFirstName();
+        String lastName = connection.getLastName();
+
+        getSupportActionBar().setTitle(firstName + " " + lastName);
+        String imageName = connection.getImageName();
+        String meetVenue = connection.getMeetVenue();
+        String appearance = connection.getAppearance();
+        String feature = connection.getFeature();
+        String commonFriends = connection.getCommonFriends();
+        String description = connection.getDescription();
+
+        ContextWrapper cw = new ContextWrapper(getApplicationContext());
+        // path to /data/data/yourapp/app_data/imageDir
+        File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
+        String path = directory.getAbsolutePath() + "/" + imageName;
+        Glide.with(this)
+                .load(Uri.fromFile(new File(path)))
+                .into(mPortraitIv);
+        mMeetVenueTv.setText(meetVenue);
+        mAppearanceTv.setText(appearance);
+        mFeatureTv.setText(feature);
+        mCommonFriendsTv.setText(commonFriends);
+        mDescriptionTv.setText(description);
     }
 
     public void handleDeleteConnectionClicked(View view) {
@@ -167,34 +175,6 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
         if (requestCode == EDIT_CONNECTION_REQUEST) {
             if (resultCode == RESULT_OK) {
 
-                // Update the UI
-                intent = data;
-                ConnectidConnection connection = data.getParcelableExtra("edit_activity_result");
-                String firstName = connection.getFirstName();
-                Log.v("testing", firstName);
-                String lastName = connection.getLastName();
-
-                getSupportActionBar().setTitle(firstName + " " + lastName);
-                String imageName = connection.getImageName();
-                String meetVenue = connection.getMeetVenue();
-                String appearance = connection.getAppearance();
-                String feature = connection.getFeature();
-                String commonFriends = connection.getCommonFriends();
-                String description = connection.getDescription();
-
-                ContextWrapper cw = new ContextWrapper(getApplicationContext());
-                // path to /data/data/yourapp/app_data/imageDir
-                File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
-                String path = directory.getAbsolutePath() + "/" + imageName;
-                Glide.with(this)
-                        .load(Uri.fromFile(new File(path)))
-                        .into(mPortraitIv);
-                mMeetVenueTv.setText(meetVenue);
-                mappearanceTv.setText(appearance);
-                mFeatureTv.setText(feature);
-                mCommonFriendsTv.setText(commonFriends);
-                mDescriptionTv.setText(description);
-                getSupportActionBar().setTitle(firstName + " " + lastName);
             }
         }
     }

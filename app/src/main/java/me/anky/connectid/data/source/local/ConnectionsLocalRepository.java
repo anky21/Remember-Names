@@ -22,6 +22,7 @@ import static android.content.ContentProviderOperation.newInsert;
 public class ConnectionsLocalRepository implements ConnectionsDataSource {
 
     private final List<ConnectidConnection> connections = new ArrayList<>();
+    private ConnectidConnection connection;
 
     private Context context;
 
@@ -54,6 +55,37 @@ public class ConnectionsLocalRepository implements ConnectionsDataSource {
         });
     }
 
+    @Override
+    public Single<ConnectidConnection> getOneConnection(int data_id) {
+        Uri uri = ConnectidProvider.Connections.withId(data_id);
+
+        Cursor cursor = context.getContentResolver().query(uri, null, null, null, null);
+
+        if (cursor != null && cursor.getColumnCount() != 0){
+            if (cursor.moveToFirst()){
+//                int databaseId = cursor.getInt(cursor.getColumnIndex(ConnectidColumns._ID));
+                String firstName = cursor.getString(cursor.getColumnIndex(ConnectidColumns.FIRST_NAME));
+                String lastName = cursor.getString(cursor.getColumnIndex(ConnectidColumns.LAST_NAME));
+                String imageName = cursor.getString(cursor.getColumnIndex(ConnectidColumns.IMAGE_NAME));
+                String meetVenue = cursor.getString(cursor.getColumnIndex(ConnectidColumns.MEET_WHERE));
+                String appearance = cursor.getString(cursor.getColumnIndex(ConnectidColumns.APPEARANCE));
+                String feature = cursor.getString(cursor.getColumnIndex(ConnectidColumns.FEATURE));
+                String commonFriends = cursor.getString(cursor.getColumnIndex(ConnectidColumns.COMMON_FRIENDS));
+                String description = cursor.getString(cursor.getColumnIndex(ConnectidColumns.DESCRIPTION));
+
+                connection = new ConnectidConnection(data_id, firstName, lastName, imageName,
+                        meetVenue, appearance, feature, commonFriends, description);
+            }
+        }
+
+            return Single.fromCallable(new Callable<ConnectidConnection>() {
+                @Override
+                public ConnectidConnection call() throws Exception {
+                    return connection;
+                }
+            });
+    }
+
     private void initDatabase() {
 
         Cursor cursor = getAllEntries();
@@ -66,29 +98,19 @@ public class ConnectionsLocalRepository implements ConnectionsDataSource {
     private void prepareConnectionsList() {
         connections.clear();
 
-        int databaseId;
-        String firstName;
-        String lastName;
-        String imageName;
-        String meetVenue;
-        String appearance;
-        String feature;
-        String commonFriends;
-        String description;
-
         Cursor cursor = getAllEntries();
         if (cursor != null && cursor.getCount() != 0) {
 
             while (cursor.moveToNext()) {
-                databaseId = cursor.getInt(cursor.getColumnIndex(ConnectidColumns._ID));
-                firstName = cursor.getString(cursor.getColumnIndex(ConnectidColumns.FIRST_NAME));
-                lastName = cursor.getString(cursor.getColumnIndex(ConnectidColumns.LAST_NAME));
-                imageName = cursor.getString(cursor.getColumnIndex(ConnectidColumns.IMAGE_NAME));
-                meetVenue = cursor.getString(cursor.getColumnIndex(ConnectidColumns.MEET_WHERE));
-                appearance = cursor.getString(cursor.getColumnIndex(ConnectidColumns.APPEARANCE));
-                feature = cursor.getString(cursor.getColumnIndex(ConnectidColumns.FEATURE));
-                commonFriends = cursor.getString(cursor.getColumnIndex(ConnectidColumns.COMMON_FRIENDS));
-                description = cursor.getString(cursor.getColumnIndex(ConnectidColumns.DESCRIPTION));
+                int databaseId = cursor.getInt(cursor.getColumnIndex(ConnectidColumns._ID));
+                String firstName = cursor.getString(cursor.getColumnIndex(ConnectidColumns.FIRST_NAME));
+                String lastName = cursor.getString(cursor.getColumnIndex(ConnectidColumns.LAST_NAME));
+                String imageName = cursor.getString(cursor.getColumnIndex(ConnectidColumns.IMAGE_NAME));
+                String meetVenue = cursor.getString(cursor.getColumnIndex(ConnectidColumns.MEET_WHERE));
+                String appearance = cursor.getString(cursor.getColumnIndex(ConnectidColumns.APPEARANCE));
+                String feature = cursor.getString(cursor.getColumnIndex(ConnectidColumns.FEATURE));
+                String commonFriends = cursor.getString(cursor.getColumnIndex(ConnectidColumns.COMMON_FRIENDS));
+                String description = cursor.getString(cursor.getColumnIndex(ConnectidColumns.DESCRIPTION));
 
                 connections.add(new ConnectidConnection(databaseId, firstName, lastName, imageName, meetVenue, appearance, feature, commonFriends, description));
             }

@@ -1,12 +1,15 @@
 package me.anky.connectid.details;
 
 import io.reactivex.Single;
+import me.anky.connectid.data.ConnectidConnection;
 
 public interface DetailsActivityMVP {
 
     interface View {
 
         Single<Integer> getConnectionToDelete();
+
+        void displayConnection(ConnectidConnection connection);
 
         void displayError();
 
@@ -16,6 +19,8 @@ public interface DetailsActivityMVP {
     interface Presenter {
 
         void setView(DetailsActivityMVP.View view);
+
+        void loadConnection(int data_id);
 
         void deliverDatabaseIdtoDelete();
 
