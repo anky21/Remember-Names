@@ -13,7 +13,8 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.View;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.ImageView;
 
@@ -147,6 +148,29 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
         presenter.unsubscribe();
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu options from the res/menu/menu_editor.xml file.
+        getMenuInflater().inflate(R.menu.menu_editor, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        // User clicked on a menu option in the app bar overflow menu
+        switch (item.getItemId()) {
+            // Respond to a click on the "Save" menu option
+            case R.id.action_save:
+                // Save pet to database
+                saveConnection();
+                // Exit activity
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     @OnClick(R.id.edit_portrait_iv)
     public void changePortraitPhoto() {
         FragmentManager fm = getFragmentManager();
@@ -181,17 +205,17 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
         }
     }
 
-    @OnClick(R.id.add_connection_button)
-    public void handleAddConnectionClicked(View view) {
-        Utilities.saveToInternalStorage(this, mBitmap, mImageName);
-
-        String firstName = mFirstNameEt.getText().toString();
-        String lastName = mLastNameEt.getText().toString();
-        String meetVenue = mMeetVenueEt.getText().toString();
-        String appearance = mAppearanceEt.getText().toString();
-        String feature = mFeatureEt.getText().toString();
-        String commonFriends = mCommonFriendsEt.getText().toString();
-        String description = mDescriptionEt.getText().toString();
+    private void saveConnection() {
+        if (!mImageName.equals("blank_profile.jpg")) {
+            Utilities.saveToInternalStorage(this, mBitmap, mImageName);
+        }
+        String firstName = mFirstNameEt.getText().toString().trim();
+        String lastName = mLastNameEt.getText().toString().trim();
+        String meetVenue = mMeetVenueEt.getText().toString().trim();
+        String appearance = mAppearanceEt.getText().toString().trim();
+        String feature = mFeatureEt.getText().toString().trim();
+        String commonFriends = mCommonFriendsEt.getText().toString().trim();
+        String description = mDescriptionEt.getText().toString().trim();
 
         if (intentHasExtra) {
             updatedConnection = new ConnectidConnection(

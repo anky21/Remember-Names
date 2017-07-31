@@ -11,4 +11,7 @@
     <string name="change_photo">Change Photo</string>
     <string name="title_edit_connection">Edit connection</string>
     <string name="title_add_new_connection">Add new connection</string>
+
+    <!-- Label for editor menu option to save connection and leave editor [CHAR LIMIT=20] -->
+    <string name="action_save">Save</string>
 </resources>
