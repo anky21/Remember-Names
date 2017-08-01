@@ -157,8 +157,6 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
     @Override
     protected void onStop() {
         super.onStop();
-
-
         presenter.unsubscribe();
     }
 

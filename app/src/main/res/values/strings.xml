@@ -9,11 +9,14 @@
     <string name="take_a_photo">Take a photo</string>
     <string name="pick_a_photo">Pick a photo</string>
     <string name="change_photo">Change Photo</string>
-    <string name="title_edit_connection">Edit connection</string>
-    <string name="title_add_new_connection">Add new connection</string>
+    <string name="title_edit_connection">Edit profile</string>
+    <string name="title_add_new_connection">Add new profile</string>
 
     <!-- Label for editor menu option to save connection and leave editor [CHAR LIMIT=20] -->
     <string name="action_save">Save</string>
+
+    <!-- Label for detail menu option to delete connection [CHAR LIMIT=20] -->
+    <string name="action_delete">Delete</string>
 
     <!-- Dialog message when user is leaving editor but hasn't saved changes [CHAR LIMIT=NONE] -->
     <string name="unsaved_changes_dialog_msg">Save or discard your changes and quit editing?</string>
@@ -21,4 +24,7 @@
     <string name="save">Save</string>
     <string name="keep_editing">Keep Editing</string>
     <string name="first_name_required">First name is required.</string>
+    <string name="delete_connection_dialog_msg">Are you sure you want to delete this profile?</string>
+    <string name="delete_success_msg">A profile has been deleted!</string>
+    <string name="share">Share</string>
 </resources>

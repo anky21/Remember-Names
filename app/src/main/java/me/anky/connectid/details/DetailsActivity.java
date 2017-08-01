@@ -2,13 +2,19 @@ package me.anky.connectid.details;
 
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.ShareActionProvider;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -100,6 +106,66 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_detail, menu);
+        // Create the Share action
+        MenuItem item = menu.add(R.string.share);
+        item.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+        ShareActionProvider mShareActionProvider = new ShareActionProvider(this) {
+            @Override
+            public View onCreateActionView() {
+                return null;
+            }
+        };
+        mShareActionProvider.setShareIntent(createShareIntent());
+        item.setIcon(R.drawable.abc_ic_menu_share_mtrl_alpha);
+        MenuItemCompat.setActionProvider(item, mShareActionProvider);
+        return true;
+    }
+
+    private Intent createShareIntent() {
+        String shareMessage = "Check this movie out: "  + ", and the Trailer: ";
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_TEXT, shareMessage);
+        return intent;
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()){
+            case R.id.action_delete:
+                showDeleteDialog();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void showDeleteDialog(){
+        // Create an AlertDialog to confirm the delete
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(R.string.delete_connection_dialog_msg);
+        builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                presenter.deliverDatabaseIdtoDelete();
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (dialog != null){
+                    dialog.dismiss();
+                }
+            }
+        });
+        // Create and show the AlertDialog
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+    @Override
     public void displayConnection(ConnectidConnection connection) {
         this.connection = connection;
         String firstName = connection.getFirstName();
@@ -125,10 +191,6 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
         mFeatureTv.setText(feature);
         mCommonFriendsTv.setText(commonFriends);
         mDescriptionTv.setText(description);
-    }
-
-    public void handleDeleteConnectionClicked(View view) {
-        presenter.deliverDatabaseIdtoDelete();
     }
 
     @Override
@@ -157,7 +219,7 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
 
         Log.i("MVP view", "delete succeeded");
 
-        Toast.makeText(this, databaseId + " deleted!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, R.string.delete_success_msg, Toast.LENGTH_SHORT).show();
 
         Intent data = new Intent();
         setResult(RESULT_OK, data);
