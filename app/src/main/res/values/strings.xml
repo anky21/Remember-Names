@@ -14,4 +14,10 @@
 
     <!-- Label for editor menu option to save connection and leave editor [CHAR LIMIT=20] -->
     <string name="action_save">Save</string>
+
+    <!-- Dialog message when user is leaving editor but hasn't saved changes [CHAR LIMIT=NONE] -->
+    <string name="unsaved_changes_dialog_msg">Save or discard your changes and quit editing?</string>
+    <string name="discard">Discard</string>
+    <string name="save">Save</string>
+    <string name="keep_editing">Keep Editing</string>
 </resources>

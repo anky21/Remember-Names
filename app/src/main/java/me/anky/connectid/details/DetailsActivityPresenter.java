@@ -14,7 +14,6 @@ public class DetailsActivityPresenter implements DetailsActivityMVP.Presenter {
 
     private DetailsActivityMVP.View view;
     private ConnectionsDataSource connectionsDataSource;
-
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     @Inject

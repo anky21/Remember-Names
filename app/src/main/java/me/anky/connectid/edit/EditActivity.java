@@ -4,17 +4,22 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v4.app.NavUtils;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 
@@ -42,11 +47,15 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
 
     private Bitmap mBitmap;
     private String mImageName = "blank_profile.jpg";
+    private String mFirstName = "";
+    private String mLastName = "";
     private ConnectidConnection connection;
     private ConnectidConnection newConnection;
     private ConnectidConnection updatedConnection;
     private boolean intentHasExtra = false;
     private int mDatabaseId;
+    //Boolean flag that keeps track of whether the connection has been edited (true) or not (false)
+    private boolean mConnectionHasChanged = false;
 
     // TODO Allow user clicking outside of EditText to close the soft keyboard
     @BindView(R.id.collapsing_toolbar_layout)
@@ -82,6 +91,18 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
     @Inject
     EditActivityPresenter presenter;
 
+    /**
+     * OnTouchListener that listens for any user touches on a View, implying that they are modifying
+     * the view, and we change the mConnectionHasChanged boolean to true.
+     */
+    private View.OnTouchListener mTouchListener = new View.OnTouchListener() {
+        @Override
+        public boolean onTouch(View view, MotionEvent motionEvent) {
+            mConnectionHasChanged = true;
+            return false;
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,8 +121,8 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
             intentHasExtra = true;
             connection = intent.getParcelableExtra("DETAILS");
             mDatabaseId = connection.getDatabaseId();
-            String firstName = connection.getFirstName();
-            String lastName = connection.getLastName();
+            mFirstName = connection.getFirstName();
+            mLastName = connection.getLastName();
             mImageName = connection.getImageName();
             String meetVenue = connection.getMeetVenue();
             String appearance = connection.getAppearance();
@@ -109,8 +130,8 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
             String commonFriends = connection.getCommonFriends();
             String description = connection.getDescription();
 
-            mFirstNameEt.setText(firstName);
-            mLastNameEt.setText(lastName);
+            mFirstNameEt.setText(mFirstName);
+            mLastNameEt.setText(mLastName);
             ContextWrapper cw = new ContextWrapper(getApplicationContext());
             // path to /data/data/yourapp/app_data/imageDir
             File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
@@ -128,6 +149,15 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
         } else {
             mCollapsingToolbarLayout.setTitle(getString(R.string.title_add_new_connection));
         }
+
+        // Setup OnTouchListeners on all the input fields, so we can determine if the user
+        // has touched or modified them. This will let us know if there are unsaved changes
+        // or not, if the user tries to leave the editor without saving.
+        mMeetVenueEt.setOnTouchListener(mTouchListener);
+        mAppearanceEt.setOnTouchListener(mTouchListener);
+        mFeatureEt.setOnTouchListener(mTouchListener);
+        mCommonFriendsEt.setOnTouchListener(mTouchListener);
+        mDescriptionEt.setOnTouchListener(mTouchListener);
     }
 
     @Override
@@ -144,6 +174,7 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
     @Override
     protected void onStop() {
         super.onStop();
+
 
         presenter.unsubscribe();
     }
@@ -167,8 +198,32 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
                 // Exit activity
                 finish();
                 return true;
+            case android.R.id.home:
+                checkIfNameChanged();
+                // If the connection hasn't changed, continue with navigating up to parent activity
+                if (!mConnectionHasChanged) {
+                    NavUtils.navigateUpFromSameTask(EditActivity.this);
+                    return true;
+                }
+
+                // Otherwise, warn the user with a dialog
+                showUnsavedChangesDialog();
+                return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        checkIfNameChanged();
+        // Continue with handling back button press when there is no change
+        if (!mConnectionHasChanged) {
+            super.onBackPressed();
+            return;
+        }
+
+        // Otherwise, warn the user about the unsaved changes
+        showUnsavedChangesDialog();
     }
 
     @OnClick(R.id.edit_portrait_iv)
@@ -200,6 +255,8 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
 
                 mPortraitIv.setImageBitmap(mBitmap);
             }
+            // Connection is modified when image name is changed
+            mConnectionHasChanged = true;
         } catch (Exception e) {
             Log.e(TAG, "error in changing photo");
         }
@@ -291,5 +348,47 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
     @Override
     public void displayError() {
         Log.i("MVP view", "displayError called - failed to insert into database");
+    }
+
+    private void showUnsavedChangesDialog() {
+        // Create an AlertDialog.Builder and set the message
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(R.string.unsaved_changes_dialog_msg);
+        builder.setNegativeButton(R.string.discard, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                finish();
+            }
+        });
+
+        builder.setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                saveConnection();
+            }
+        });
+
+        builder.setNeutralButton(R.string.keep_editing, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (dialog != null) {
+                    dialog.dismiss();
+                }
+            }
+        });
+
+        // Create and show the AlertDialog
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+    // Check if first name or last name has been changed
+    private void checkIfNameChanged(){
+        if (!mConnectionHasChanged) {
+            if (!mFirstNameEt.getText().toString().trim().equals(mFirstName) ||
+                    !mLastNameEt.getText().toString().trim().equals(mLastName)) {
+                mConnectionHasChanged = true;
+            }
+        }
     }
 }
