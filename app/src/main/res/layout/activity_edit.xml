@@ -35,17 +35,16 @@
                     android:layout_width="match_parent"
                     android:layout_height="300dp"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/profile_picture"
-                     />
+                    android:src="@drawable/profile_picture" />
 
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentBottom="true"
                     android:layout_alignParentEnd="true"
-                    android:layout_marginEnd="@dimen/margin_12dp"
-                    android:layout_marginBottom="@dimen/margin_24dp"
-                    android:src="@drawable/ic_camera"/>
+                    android:layout_marginBottom="@dimen/margin_16dp"
+                    android:layout_marginEnd="@dimen/margin_16dp"
+                    android:src="@drawable/ic_camera" />
             </RelativeLayout>
 
             <!-- Background protection for the Toolbar -->
@@ -71,12 +70,14 @@
         android:id="@+id/scrollview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_gravity="fill_vertical"
+        android:fillViewport="true"
         app:layout_behavior="android.support.design.widget.AppBarLayout$ScrollingViewBehavior">
 
         <LinearLayout
             android:id="@+id/linear_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_gravity="center_horizontal"
             android:background="@color/text_or_icons"
             android:orientation="vertical"

@@ -55,6 +55,8 @@
         android:id="@+id/scrollview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_gravity="fill_vertical"
+        android:fillViewport="true"
         app:layout_behavior="android.support.design.widget.AppBarLayout$ScrollingViewBehavior">
 
         <LinearLayout
@@ -155,12 +157,12 @@
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/edit_fab"
-        android:onClick="launchEditActivity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|right"
+        android:layout_margin="@dimen/fab_margin"
         android:layout_marginBottom="@dimen/fab_margin"
         android:layout_marginRight="@dimen/fab_margin"
-        android:layout_margin="@dimen/fab_margin"
+        android:onClick="launchEditActivity"
         android:src="@drawable/ic_edit" />
 </android.support.design.widget.CoordinatorLayout>
