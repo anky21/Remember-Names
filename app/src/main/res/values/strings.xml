@@ -20,4 +20,5 @@
     <string name="discard">Discard</string>
     <string name="save">Save</string>
     <string name="keep_editing">Keep Editing</string>
+    <string name="first_name_required">First name is required.</string>
 </resources>

@@ -20,6 +20,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
@@ -175,6 +176,12 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
         switch (item.getItemId()) {
             // Respond to a click on the "Save" menu option
             case R.id.action_save:
+                // Check if first name is provided
+                String firstName = mFirstNameEt.getText().toString().trim();
+                if (firstName.equals("") || firstName.equals(null)){
+                    Toast.makeText(this, R.string.first_name_required, Toast.LENGTH_SHORT).show();
+                    return true;
+                }
                 // Save pet to database
                 saveConnection();
                 // Exit activity
@@ -248,7 +255,12 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
         if (!mImageName.equals("blank_profile.jpg")) {
             Utilities.saveToInternalStorage(this, mBitmap, mImageName);
         }
+        // Check if first name is provided
         String firstName = mFirstNameEt.getText().toString().trim();
+        if (firstName.equals("") || firstName.equals(null)){
+            Toast.makeText(this, R.string.first_name_required, Toast.LENGTH_SHORT).show();
+            return;
+        }
         String lastName = mLastNameEt.getText().toString().trim();
         String meetVenue = mMeetVenueEt.getText().toString().trim();
         String appearance = mAppearanceEt.getText().toString().trim();
