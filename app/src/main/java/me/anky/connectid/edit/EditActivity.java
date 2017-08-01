@@ -18,8 +18,6 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
-import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 
@@ -49,6 +47,11 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
     private String mImageName = "blank_profile.jpg";
     private String mFirstName = "";
     private String mLastName = "";
+    private String mMeetVenue = "";
+    private String mAppearance = "";
+    private String mFeature = "";
+    private String mCommonFriends = "";
+    private String mDescription = "";
     private ConnectidConnection connection;
     private ConnectidConnection newConnection;
     private ConnectidConnection updatedConnection;
@@ -91,18 +94,6 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
     @Inject
     EditActivityPresenter presenter;
 
-    /**
-     * OnTouchListener that listens for any user touches on a View, implying that they are modifying
-     * the view, and we change the mConnectionHasChanged boolean to true.
-     */
-    private View.OnTouchListener mTouchListener = new View.OnTouchListener() {
-        @Override
-        public boolean onTouch(View view, MotionEvent motionEvent) {
-            mConnectionHasChanged = true;
-            return false;
-        }
-    };
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -124,11 +115,11 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
             mFirstName = connection.getFirstName();
             mLastName = connection.getLastName();
             mImageName = connection.getImageName();
-            String meetVenue = connection.getMeetVenue();
-            String appearance = connection.getAppearance();
-            String feature = connection.getFeature();
-            String commonFriends = connection.getCommonFriends();
-            String description = connection.getDescription();
+            mMeetVenue = connection.getMeetVenue();
+            mAppearance = connection.getAppearance();
+            mFeature = connection.getFeature();
+            mCommonFriends = connection.getCommonFriends();
+            mDescription = connection.getDescription();
 
             mFirstNameEt.setText(mFirstName);
             mLastNameEt.setText(mLastName);
@@ -139,25 +130,16 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
             Glide.with(this)
                     .load(Uri.fromFile(new File(path)))
                     .into(mPortraitIv);
-            mMeetVenueEt.setText(meetVenue);
-            mAppearanceEt.setText(appearance);
-            mFeatureEt.setText(feature);
-            mCommonFriendsEt.setText(commonFriends);
-            mDescriptionEt.setText(description);
+            mMeetVenueEt.setText(mMeetVenue);
+            mAppearanceEt.setText(mAppearance);
+            mFeatureEt.setText(mFeature);
+            mCommonFriendsEt.setText(mCommonFriends);
+            mDescriptionEt.setText(mDescription);
 
             mCollapsingToolbarLayout.setTitle(getString(R.string.title_edit_connection));
         } else {
             mCollapsingToolbarLayout.setTitle(getString(R.string.title_add_new_connection));
         }
-
-        // Setup OnTouchListeners on all the input fields, so we can determine if the user
-        // has touched or modified them. This will let us know if there are unsaved changes
-        // or not, if the user tries to leave the editor without saving.
-        mMeetVenueEt.setOnTouchListener(mTouchListener);
-        mAppearanceEt.setOnTouchListener(mTouchListener);
-        mFeatureEt.setOnTouchListener(mTouchListener);
-        mCommonFriendsEt.setOnTouchListener(mTouchListener);
-        mDescriptionEt.setOnTouchListener(mTouchListener);
     }
 
     @Override
@@ -382,11 +364,16 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
         alertDialog.show();
     }
 
-    // Check if first name or last name has been changed
+    // Check if any text input field has been changed
     private void checkIfNameChanged(){
         if (!mConnectionHasChanged) {
             if (!mFirstNameEt.getText().toString().trim().equals(mFirstName) ||
-                    !mLastNameEt.getText().toString().trim().equals(mLastName)) {
+                    !mLastNameEt.getText().toString().trim().equals(mLastName) ||
+                    !mMeetVenueEt.getText().toString().trim().equals(mMeetVenue) ||
+                    !mAppearanceEt.getText().toString().trim().equals(mAppearance) ||
+                    !mFeatureEt.getText().toString().trim().equals(mFeature)||
+                    !mCommonFriendsEt.getText().toString().trim().equals(mCommonFriends) ||
+                    !mDescriptionEt.getText().toString().trim().equals(mDescription)) {
                 mConnectionHasChanged = true;
             }
         }
