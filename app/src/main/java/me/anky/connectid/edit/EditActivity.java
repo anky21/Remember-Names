@@ -217,7 +217,6 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
     public void changePortraitPhoto() {
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
-        ft.addToBackStack(null);
         PickerFragment newFragment = new PickerFragment();
         newFragment.show(fm, "dialog");
         ft.commit();

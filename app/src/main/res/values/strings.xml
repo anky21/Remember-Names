@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name">Remember Names</string>
 
     <!-- TODO: Remove or change this placeholder text -->
@@ -27,4 +27,9 @@
     <string name="delete_connection_dialog_msg">Are you sure you want to delete this profile?</string>
     <string name="delete_success_msg">A profile has been deleted!</string>
     <string name="share">Share</string>
+
+    <string name="share_profile_text">Sharing profile: <xliff:g id="first name">%1$s</xliff:g>
+        <xliff:g id="last name">%2$s</xliff:g>. <xliff:g id="meet venue">%3$s</xliff:g>.
+        <xliff:g id="appearance">%4$s</xliff:g>. <xliff:g id="feature">%5$s</xliff:g>. Common
+        friends: <xliff:g id="common friends">%6$s</xliff:g>. <xliff:g id="description">%7$s</xliff:g>.</string>
 </resources>

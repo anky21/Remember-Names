@@ -7,7 +7,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,7 +47,7 @@ public class PickerFragment extends android.app.DialogFragment {
     }
 
     @OnClick(R.id.takeImage_tv)
-    public void takeImage(){
+    public void takeImage() {
         Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (cameraIntent.resolveActivity(getActivity().getPackageManager()) != null) {
             startActivityForResult(cameraIntent, TAKE_PHOTO);
@@ -56,24 +55,16 @@ public class PickerFragment extends android.app.DialogFragment {
     }
 
     @OnClick(R.id.pickImage_tv)
-    public void pickImage(){
-        Intent photoPickerIntent = new Intent(Intent.ACTION_GET_CONTENT,
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+    public void pickImage() {
+        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
         photoPickerIntent.setType("image/*");
         startActivityForResult(photoPickerIntent, PICK_PHOTO);
     }
 
     @OnClick(R.id.cancel_tv)
-    public void closeDialog(){
+    public void closeDialog() {
         // Remove the fragment
         getActivity().getFragmentManager().beginTransaction().remove(this).commit();
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        // Remove the fragment from back stack
-        getActivity().getFragmentManager().popBackStack();
     }
 
     @Override
@@ -83,18 +74,16 @@ public class PickerFragment extends android.app.DialogFragment {
         switch (requestCode) {
             case PICK_PHOTO:
                 if (resultCode == Activity.RESULT_OK) {
-                    Log.v(TAG, "Picked a photo.");
                     Uri selectedImage = data.getData();
-                    ((EditActivity)getActivity()).changePhoto(selectedImage);
+                    ((EditActivity) getActivity()).changePhoto(selectedImage);
                     getDialog().dismiss();
                 }
                 break;
             case TAKE_PHOTO:
                 if (resultCode == Activity.RESULT_OK) {
-                    Log.v(TAG, "Took a photo.");
                     Bundle extras = data.getExtras();
                     Bitmap imageBitmap = (Bitmap) extras.get("data");
-                    ((EditActivity)getActivity()).changePhoto(imageBitmap);
+                    ((EditActivity) getActivity()).changePhoto(imageBitmap);
                     getDialog().dismiss();
                 }
         }

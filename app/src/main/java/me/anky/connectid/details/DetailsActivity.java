@@ -42,6 +42,15 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
     ConnectidConnection connection;
     private Intent intent;
 
+    private String mFirstName;
+    private String mLastName;
+    private String mMeetVenue;
+    private String mAppearance;
+    private String mFeature;
+    private String mCommonFriends;
+    private String mDescription;
+
+
     @BindView(R.id.collapsing_toolbar_layout)
     CollapsingToolbarLayout mCollapsingToolbarLayout;
 
@@ -124,7 +133,8 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
     }
 
     private Intent createShareIntent() {
-        String shareMessage = "Check this movie out: "  + ", and the Trailer: ";
+        String shareMessage = getString(R.string.share_profile_text, mFirstName, mLastName, mMeetVenue,
+                mAppearance, mFeature, mCommonFriends, mDescription);
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("text/plain");
         intent.putExtra(Intent.EXTRA_TEXT, shareMessage);
@@ -168,16 +178,16 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
     @Override
     public void displayConnection(ConnectidConnection connection) {
         this.connection = connection;
-        String firstName = connection.getFirstName();
-        String lastName = connection.getLastName();
+        mFirstName = connection.getFirstName();
+        mLastName = connection.getLastName();
 
-        mCollapsingToolbarLayout.setTitle(firstName + " " + lastName);
+        mCollapsingToolbarLayout.setTitle(mFirstName + " " + mLastName);
         String imageName = connection.getImageName();
-        String meetVenue = connection.getMeetVenue();
-        String appearance = connection.getAppearance();
-        String feature = connection.getFeature();
-        String commonFriends = connection.getCommonFriends();
-        String description = connection.getDescription();
+        mMeetVenue = connection.getMeetVenue();
+        mAppearance = connection.getAppearance();
+        mFeature = connection.getFeature();
+        mCommonFriends = connection.getCommonFriends();
+        mDescription = connection.getDescription();
 
         ContextWrapper cw = new ContextWrapper(getApplicationContext());
         // path to /data/data/yourapp/app_data/imageDir
@@ -186,11 +196,11 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
         Glide.with(this)
                 .load(Uri.fromFile(new File(path)))
                 .into(mPortraitIv);
-        mMeetVenueTv.setText(meetVenue);
-        mAppearanceTv.setText(appearance);
-        mFeatureTv.setText(feature);
-        mCommonFriendsTv.setText(commonFriends);
-        mDescriptionTv.setText(description);
+        mMeetVenueTv.setText(mMeetVenue);
+        mAppearanceTv.setText(mAppearance);
+        mFeatureTv.setText(mFeature);
+        mCommonFriendsTv.setText(mCommonFriends);
+        mDescriptionTv.setText(mDescription);
     }
 
     @Override
