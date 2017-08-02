@@ -32,4 +32,5 @@
         <xliff:g id="last name">%2$s</xliff:g>. <xliff:g id="meet venue">%3$s</xliff:g>.
         <xliff:g id="appearance">%4$s</xliff:g>. <xliff:g id="feature">%5$s</xliff:g>. Common
         friends: <xliff:g id="common friends">%6$s</xliff:g>. <xliff:g id="description">%7$s</xliff:g>.</string>
+    <string name="crop_action_error_msg">Whoops - your device doesn\'t support the crop action!</string>
 </resources>

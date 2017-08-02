@@ -1,8 +1,11 @@
 package me.anky.connectid.edit;
 
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
@@ -11,6 +14,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.io.File;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -24,6 +30,8 @@ public class PickerFragment extends android.app.DialogFragment {
     private static final String TAG = "PICKER_FRAGMENT";
     private static final int PICK_PHOTO = 100;
     private static final int TAKE_PHOTO = 101;
+    private static final int CROP_PHOTO = 102;
+    private Uri imageUri;
 
     @BindView(R.id.pickImage_tv)
     TextView mPickImageTv;
@@ -47,7 +55,14 @@ public class PickerFragment extends android.app.DialogFragment {
 
     @OnClick(R.id.takeImage_tv)
     public void takeImage() {
+        File directory = getActivity().getDir("imageDir", Context.MODE_PRIVATE);
+        String path = directory.getAbsolutePath() + "/" + "profile.jpg";
+
+        Uri uri = Uri.parse(path);
         Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        cameraIntent.putExtra("data", uri);
+        cameraIntent.putExtra("return-data", true);
+
         if (cameraIntent.resolveActivity(getActivity().getPackageManager()) != null) {
             startActivityForResult(cameraIntent, TAKE_PHOTO);
         }
@@ -55,7 +70,6 @@ public class PickerFragment extends android.app.DialogFragment {
 
     @OnClick(R.id.pickImage_tv)
     public void pickImage() {
-//        Uri uri;
         Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
         photoPickerIntent.setType("image/*");
         photoPickerIntent.putExtra("crop", "true");
@@ -89,11 +103,41 @@ public class PickerFragment extends android.app.DialogFragment {
                 break;
             case TAKE_PHOTO:
                 if (resultCode == Activity.RESULT_OK) {
+                    imageUri = data.getData();
+                    performCrop();
+                }
+                break;
+            case CROP_PHOTO:
+                if (resultCode == Activity.RESULT_OK) {
                     Bundle extras = data.getExtras();
                     Bitmap imageBitmap = (Bitmap) extras.get("data");
                     ((EditActivity) getActivity()).changePhoto(imageBitmap);
                     getDialog().dismiss();
                 }
+        }
+    }
+
+    private void performCrop() {
+        try {
+            Intent cropIntent = new Intent("com.android.camera.action.CROP");
+            //indicate image type and Uri
+            cropIntent.setDataAndType(imageUri, "image/*");
+            //set crop properties
+            cropIntent.putExtra("crop", "true");
+            //indicate aspect of desired crop
+            cropIntent.putExtra("aspectX", 1);
+            cropIntent.putExtra("aspectY", 1);
+            //indicate output X and Y
+            cropIntent.putExtra("outputX", 800);
+            cropIntent.putExtra("outputY", 800);
+            //retrieve data on return
+            cropIntent.putExtra("return-data", true);
+            //start the activity - we handle returning in onActivityResult
+            startActivityForResult(cropIntent, CROP_PHOTO);
+        } catch (ActivityNotFoundException e) {
+            //display an error message
+            String errorMessage = getString(R.string.crop_action_error_msg);
+            Toast.makeText(getActivity(), errorMessage, Toast.LENGTH_SHORT).show();
         }
     }
 }
