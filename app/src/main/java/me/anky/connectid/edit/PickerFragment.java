@@ -2,13 +2,15 @@ package me.anky.connectid.edit;
 
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
-import android.content.Context;
+import android.content.ClipData;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.FileProvider;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +34,12 @@ public class PickerFragment extends android.app.DialogFragment {
     private static final int TAKE_PHOTO = 101;
     private static final int CROP_PHOTO = 102;
     private Uri imageUri;
+    private static final String EXTRA_FILENAME = "me.anky.connectid.EXTRA_FILENAME";
+    private static final String FILENAME = "profile.jpeg";
+    private static final String AUTHORITY = "me.anky.connectid.provider";
+    private static final String PHOTOS = "photos";
+    private File output = null;
+    private Bundle mSavedInstanceState;
 
     @BindView(R.id.pickImage_tv)
     TextView mPickImageTv;
@@ -46,25 +54,64 @@ public class PickerFragment extends android.app.DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        mSavedInstanceState = savedInstanceState;
         View view = inflater.inflate(R.layout.fragment_picker, container, false);
         ButterKnife.bind(this, view);
+
+        output = new File(new File(getActivity().getFilesDir(), PHOTOS), FILENAME);
+
+        if (output.exists()) {
+            output.delete();
+        } else {
+            output.getParentFile().mkdirs();
+        }
 
         getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         return view;
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putSerializable(EXTRA_FILENAME, output);
+    }
+
     @OnClick(R.id.takeImage_tv)
     public void takeImage() {
-        File directory = getActivity().getDir("imageDir", Context.MODE_PRIVATE);
-        String path = directory.getAbsolutePath() + "/" + "profile.jpg";
 
-        Uri uri = Uri.parse(path);
-        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        cameraIntent.putExtra("data", uri);
-        cameraIntent.putExtra("return-data", true);
+        if (mSavedInstanceState == null) {
+            output = new File(new File(getActivity().getFilesDir(), PHOTOS), FILENAME);
 
-        if (cameraIntent.resolveActivity(getActivity().getPackageManager()) != null) {
-            startActivityForResult(cameraIntent, TAKE_PHOTO);
+            if (output.exists()) {
+                output.delete();
+            } else {
+                output.getParentFile().mkdirs();
+            }
+
+            Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            String x = AUTHORITY;
+            Uri outputUri = FileProvider.getUriForFile(getActivity(), AUTHORITY, output);
+
+            i.putExtra(MediaStore.EXTRA_OUTPUT, outputUri);
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                i.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                ClipData clip =
+                        ClipData.newUri(getActivity().getContentResolver(), "A photo", outputUri);
+
+                i.setClipData(clip);
+                i.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            }
+
+            try {
+                startActivityForResult(i, TAKE_PHOTO);
+            } catch (ActivityNotFoundException e) {
+
+            }
+        } else {
+            output = (File) mSavedInstanceState.getSerializable(EXTRA_FILENAME);
         }
     }
 
@@ -103,15 +150,30 @@ public class PickerFragment extends android.app.DialogFragment {
                 break;
             case TAKE_PHOTO:
                 if (resultCode == Activity.RESULT_OK) {
-                    imageUri = data.getData();
-                    performCrop();
+                    Intent i = new Intent("com.android.camera.action.CROP");
+                    Uri outputUri = FileProvider.getUriForFile(getActivity(), AUTHORITY, output);
+
+                    i.setDataAndType(outputUri, "image/jpeg");
+                    i.putExtra("aspectX", 1);
+                    i.putExtra("aspectY", 1);
+                    //indicate output X and Y
+                    i.putExtra("outputX", 800);
+                    i.putExtra("outputY", 800);
+                    i.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+                    try {
+                        startActivityForResult(i, CROP_PHOTO);
+                    } catch (ActivityNotFoundException e) {
+                        Toast.makeText(getActivity(), "error", Toast.LENGTH_LONG).show();
+                    }
                 }
                 break;
             case CROP_PHOTO:
                 if (resultCode == Activity.RESULT_OK) {
-                    Bundle extras = data.getExtras();
-                    Bitmap imageBitmap = (Bitmap) extras.get("data");
-                    ((EditActivity) getActivity()).changePhoto(imageBitmap);
+//                    Bundle extras = data.getExtras();
+//                    Bitmap imageBitmap = (Bitmap) extras.get("data");
+                    Uri selectedImage = data.getData();
+                    ((EditActivity)getActivity()).changePhoto(selectedImage);
                     getDialog().dismiss();
                 }
         }
