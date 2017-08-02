@@ -3,7 +3,6 @@ package me.anky.connectid.edit;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
@@ -56,8 +55,16 @@ public class PickerFragment extends android.app.DialogFragment {
 
     @OnClick(R.id.pickImage_tv)
     public void pickImage() {
+//        Uri uri;
         Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
         photoPickerIntent.setType("image/*");
+        photoPickerIntent.putExtra("crop", "true");
+        photoPickerIntent.putExtra("outputX", 800);
+        photoPickerIntent.putExtra("outputY", 800);
+        photoPickerIntent.putExtra("aspectX", 1);
+        photoPickerIntent.putExtra("aspectY", 1);
+        photoPickerIntent.putExtra("scale", true);
+
         startActivityForResult(photoPickerIntent, PICK_PHOTO);
     }
 
@@ -74,8 +81,9 @@ public class PickerFragment extends android.app.DialogFragment {
         switch (requestCode) {
             case PICK_PHOTO:
                 if (resultCode == Activity.RESULT_OK) {
-                    Uri selectedImage = data.getData();
-                    ((EditActivity) getActivity()).changePhoto(selectedImage);
+                    Bundle extras = data.getExtras();
+                    Bitmap imageBitmap = (Bitmap) extras.get("data");
+                    ((EditActivity) getActivity()).changePhoto(imageBitmap);
                     getDialog().dismiss();
                 }
                 break;
