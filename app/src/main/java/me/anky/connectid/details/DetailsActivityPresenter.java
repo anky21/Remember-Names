@@ -16,9 +16,11 @@ public class DetailsActivityPresenter implements DetailsActivityMVP.Presenter {
     private ConnectionsDataSource connectionsDataSource;
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
+
     @Inject
     public DetailsActivityPresenter(ConnectionsDataSource connectionsDataSource) {
         this.connectionsDataSource = connectionsDataSource;
+
     }
 
     @Override

@@ -1,5 +1,7 @@
 package me.anky.connectid.connections;
 
+import android.util.Log;
+
 import java.util.List;
 
 import javax.inject.Inject;
@@ -31,10 +33,10 @@ public class ConnectionsActivityPresenter implements ConnectionsActivityMVP.Pres
     }
 
     @Override
-    public void loadConnections() {
-
+    public void loadConnections(Integer integer) {
+        Log.v("testing", "load connections");
         DisposableSingleObserver<List<ConnectidConnection>> disposableSingleObserver =
-                connectionsDataSource.getConnections()
+                connectionsDataSource.getConnections(integer)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribeWith(new DisposableSingleObserver<List<ConnectidConnection>>() {
@@ -58,6 +60,12 @@ public class ConnectionsActivityPresenter implements ConnectionsActivityMVP.Pres
 
         // Add this subscription to the RxJava cleanup composite
         compositeDisposable.add(disposableSingleObserver);
+    }
+
+    @Override
+    public void handleSortByOptionChange() {
+        int option = view.getSortByOption();
+        loadConnections(option);
     }
 
     @Override

@@ -12,6 +12,9 @@ public interface ConnectionsActivityMVP {
 
         void displayNoConnections();
 
+//        Single<Integer> getSortByOption();
+        int getSortByOption();
+
         void displayError();
     }
 
@@ -19,7 +22,9 @@ public interface ConnectionsActivityMVP {
 
         void setView(ConnectionsActivityMVP.View view);
 
-        void loadConnections();
+        void loadConnections(Integer integer);
+
+        void handleSortByOptionChange();
 
         void unsubscribe();
     }

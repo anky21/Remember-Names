@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 import io.reactivex.Single;
+import me.anky.connectid.Utilities;
 import me.anky.connectid.data.ConnectidConnection;
 import me.anky.connectid.data.ConnectionsDataSource;
 
@@ -33,14 +34,12 @@ public class ConnectionsLocalRepository implements ConnectionsDataSource {
         // deleteAllEntries();
 
         // FOR DEBUG: populate the database with data if it is empty
-        initDatabase();
-
-
+        initDatabase(0);
     }
 
     @Override
-    public Single<List<ConnectidConnection>> getConnections() {
-        prepareConnectionsList();
+    public Single<List<ConnectidConnection>> getConnections(int menOption) {
+        prepareConnectionsList(menOption);
 
         return Single.fromCallable(new Callable<List<ConnectidConnection>>() {
             @Override
@@ -86,19 +85,19 @@ public class ConnectionsLocalRepository implements ConnectionsDataSource {
             });
     }
 
-    private void initDatabase() {
+    private void initDatabase(int menOption) {
 
-        Cursor cursor = getAllEntries();
+        Cursor cursor = getAllEntries(menOption);
         if (cursor == null || cursor.getCount() == 0) {
             insertDummyData();
             Log.i("MVP model", "initialized database");
         }
     }
 
-    private void prepareConnectionsList() {
+    private void prepareConnectionsList(int menOption) {
         connections.clear();
 
-        Cursor cursor = getAllEntries();
+        Cursor cursor = getAllEntries(menOption);
         if (cursor != null && cursor.getCount() != 0) {
 
             while (cursor.moveToNext()) {
@@ -117,13 +116,13 @@ public class ConnectionsLocalRepository implements ConnectionsDataSource {
         }
     }
 
-    private Cursor getAllEntries() {
+    private Cursor getAllEntries(int menOption) {
         return context.getContentResolver().query(
                 ConnectidProvider.Connections.CONTENT_URI,
                 null,
                 null,
                 null,
-                null);
+                Utilities.SORT_ORDER_OPTIONS[menOption]);
     }
 
     private void deleteAllEntries() {

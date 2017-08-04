@@ -9,6 +9,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
@@ -56,6 +58,7 @@ public class ConnectionsActivity extends AppCompatActivity implements
     private static final int DETAILS_ACTIVITY_REQUEST = 100;
     private static final int NEW_CONNECTION_REQUEST = 200;
     boolean shouldScrollToBottom;
+    private int mSortByOption;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,13 +92,60 @@ public class ConnectionsActivity extends AppCompatActivity implements
     protected void onResume() {
         super.onResume();
         presenter.setView(this);
-        presenter.loadConnections();
+        // Get current sort by menu option
+        getSortByOption();
+        presenter.loadConnections(mSortByOption);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         presenter.unsubscribe();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_sortby, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        switch (id) {
+            case R.id.sortby_date_new: {
+                sharedPrefsHelper.put(Utilities.SORTBY, 1);
+            }
+            break;
+            case R.id.sortby_date_old: {
+                sharedPrefsHelper.put(Utilities.SORTBY, 2);
+
+            }
+            break;
+            case R.id.sortby_fname_a: {
+                sharedPrefsHelper.put(Utilities.SORTBY, 3);
+
+            }
+            break;
+            case R.id.sortby_fname_z: {
+                sharedPrefsHelper.put(Utilities.SORTBY, 4);
+
+            }
+            break;
+            case R.id.sortby_lname_a: {
+                sharedPrefsHelper.put(Utilities.SORTBY, 5);
+
+            }
+            break;
+            case R.id.sortby_lname_z: {
+                sharedPrefsHelper.put(Utilities.SORTBY, 6);
+
+            }
+            break;
+        }
+        presenter.handleSortByOptionChange();
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -139,6 +189,12 @@ public class ConnectionsActivity extends AppCompatActivity implements
     }
 
     @Override
+    public int getSortByOption() {
+        mSortByOption = sharedPrefsHelper.get(Utilities.SORTBY, 0);
+        return mSortByOption;
+    }
+
+    @Override
     public void displayError() {
         Log.i("MVP view", "displayError called due to error");
 
@@ -173,7 +229,7 @@ public class ConnectionsActivity extends AppCompatActivity implements
                 Log.i("MVP view", "recyclerview is automatically refreshed upon insertion");
                 // TODO Inform user of insertion success, perhaps with toast
                 // TODO Replace scroll to bottom with alphabetic order (in model)
-                presenter.loadConnections();
+                presenter.loadConnections(mSortByOption);
             }
         }
 
@@ -183,7 +239,7 @@ public class ConnectionsActivity extends AppCompatActivity implements
                 Log.i("MVP view", "recyclerview is automatically refreshed upon insertion");
                 // TODO Inform user of insertion success, perhaps with toast
                 // TODO Replace scroll to bottom with alphabetic order (in model)
-                presenter.loadConnections();
+                presenter.loadConnections(mSortByOption);
                 shouldScrollToBottom = true;
             }
         }
