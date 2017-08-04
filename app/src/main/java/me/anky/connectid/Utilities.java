@@ -12,25 +12,25 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Random;
 
+import me.anky.connectid.data.source.local.ConnectidColumns;
+
 /**
  * Created by Anky An on 28/07/2017.
  * anky25@gmail.com
  */
 
 public class Utilities {
-
     private static final Random random = new Random();
     private static final String CHARS = "abcdefghijkmnopqrstuvwxyz";
+    public static final String SORTBY = "sortby";
 
     // Load image from internal storage
     public static Bitmap loadImageFromStorage(String imageName, String path) {
         Bitmap bitmap = null;
         try {
-            File f=new File(path, imageName);
+            File f = new File(path, imageName);
             bitmap = BitmapFactory.decodeStream(new FileInputStream(f));
-        }
-        catch (FileNotFoundException e)
-        {
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
         return bitmap;
@@ -70,7 +70,7 @@ public class Utilities {
         }
     }
 
-    public static Bitmap resizeBitmap(Bitmap bitmap){
+    public static Bitmap resizeBitmap(Bitmap bitmap) {
 
         int originalWidth = bitmap.getWidth();
         int originalHeight = bitmap.getHeight();
@@ -86,4 +86,15 @@ public class Utilities {
         }
         return bitmap;
     }
+
+    // Sort by options in MainActivity
+    public static final String[] SORT_ORDER_OPTIONS = {
+            null,
+            ConnectidColumns._ID + " DESC",
+            ConnectidColumns._ID + " ASC",
+            ConnectidColumns.FIRST_NAME + " COLLATE NOCASE ASC",
+            ConnectidColumns.FIRST_NAME + " COLLATE NOCASE DESC",
+            ConnectidColumns.LAST_NAME + " COLLATE NOCASE ASC",
+            ConnectidColumns.LAST_NAME + " COLLATE NOCASE DESC"
+    };
 }

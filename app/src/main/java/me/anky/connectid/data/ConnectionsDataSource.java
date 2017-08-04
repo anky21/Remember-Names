@@ -6,7 +6,7 @@ import io.reactivex.Single;
 
 public interface ConnectionsDataSource {
 
-    Single<List<ConnectidConnection>> getConnections();
+    Single<List<ConnectidConnection>> getConnections(int menuOption);
 
     Single<ConnectidConnection> getOneConnection(int data_id);
 

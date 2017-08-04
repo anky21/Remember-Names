@@ -41,7 +41,8 @@ public class ApplicationModule {
     }
 
     @Provides
-    public ConnectionsActivityMVP.Presenter provideConnectionsActivityPresenter(ConnectionsDataSource connectionsDataSource){
+    public ConnectionsActivityMVP.Presenter provideConnectionsActivityPresenter(
+            ConnectionsDataSource connectionsDataSource){
         return new ConnectionsActivityPresenter(connectionsDataSource);
     }
 
