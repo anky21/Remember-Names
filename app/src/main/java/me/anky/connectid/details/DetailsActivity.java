@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -49,10 +48,6 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
     private String mFeature;
     private String mCommonFriends;
     private String mDescription;
-
-
-    @BindView(R.id.collapsing_toolbar_layout)
-    CollapsingToolbarLayout mCollapsingToolbarLayout;
 
     @BindView(R.id.toolbar_1)
     Toolbar mToolbar;
@@ -145,14 +140,14 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.action_delete:
                 showDeleteDialog();
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private void showDeleteDialog(){
+    private void showDeleteDialog() {
         // Create an AlertDialog to confirm the delete
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(R.string.delete_connection_dialog_msg);
@@ -165,7 +160,7 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                if (dialog != null){
+                if (dialog != null) {
                     dialog.dismiss();
                 }
             }
@@ -181,7 +176,7 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
         mFirstName = connection.getFirstName();
         mLastName = connection.getLastName();
 
-        mCollapsingToolbarLayout.setTitle(mFirstName + " " + mLastName);
+        getSupportActionBar().setTitle(mFirstName + " " + mLastName);
         String imageName = connection.getImageName();
         mMeetVenue = connection.getMeetVenue();
         mAppearance = connection.getAppearance();

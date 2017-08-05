@@ -11,4 +11,6 @@
     <dimen name="margin_16dp">16dp</dimen>
     <dimen name="margin_24dp">24dp</dimen>
     <dimen name="margin_32dp">32dp</dimen>
+
+    <dimen name="portfolio_height">300dp</dimen>
 </resources>

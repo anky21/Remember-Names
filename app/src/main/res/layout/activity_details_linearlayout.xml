@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:id="@+id/linear_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal"
+    android:background="@color/text_or_icons"
+    android:orientation="vertical"
+    android:padding="@dimen/margin_16dp"
+    android:transitionGroup="true"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <LinearLayout style="@style/LinearLayoutStyle">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Where did you meet?" />
+
+        <TextView
+            android:id="@+id/meet_venue_tv"
+            style="@style/DescriptionTvStyle"
+            tools:text="On Facebook" />
+
+        <include layout="@layout/divider_view" />
+    </LinearLayout>
+
+    <LinearLayout style="@style/LinearLayoutStyle">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Anything significant about his/her looks?" />
+
+        <TextView
+            android:id="@+id/appearance_tv"
+            style="@style/DescriptionTvStyle"
+            tools:text="He's very tall, like a beast" />
+
+        <include layout="@layout/divider_view" />
+    </LinearLayout>
+
+    <LinearLayout style="@style/LinearLayoutStyle">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="What's special about him/her?" />
+
+        <TextView
+            android:id="@+id/feature_tv"
+            style="@style/DescriptionTvStyle"
+            tools:text="He made the WeChat app." />
+
+        <include layout="@layout/divider_view" />
+    </LinearLayout>
+
+    <LinearLayout style="@style/LinearLayoutStyle">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Common friends" />
+
+        <TextView
+            android:id="@+id/common_friends_tv"
+            style="@style/DescriptionTvStyle"
+            android:text="John Miller, Chris Harold" />
+
+        <include layout="@layout/divider_view" />
+    </LinearLayout>
+
+    <LinearLayout style="@style/LinearLayoutStyle">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="More description" />
+
+        <TextView
+            android:id="@+id/description_tv"
+            style="@style/DescriptionTvStyle"
+            tools:text="Not at the moment" />
+
+        <include layout="@layout/divider_view" />
+    </LinearLayout>
+</LinearLayout>
