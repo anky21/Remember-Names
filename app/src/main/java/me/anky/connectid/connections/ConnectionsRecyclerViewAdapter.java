@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -48,7 +49,7 @@ public class ConnectionsRecyclerViewAdapter extends
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = inflater.inflate(R.layout.connections_list_item, parent, false);
-        ViewHolder viewHolder = new ViewHolder(view);
+        final ViewHolder viewHolder = new ViewHolder(view);
 
         context = parent.getContext();
         view.setOnClickListener(new View.OnClickListener() {
@@ -75,6 +76,7 @@ public class ConnectionsRecyclerViewAdapter extends
         String path = directory.getAbsolutePath() + "/" + imageName;
         Glide.with(context)
                 .load(Uri.fromFile(new File(path)))
+                .apply(RequestOptions.circleCropTransform())
                 .into(holder.listItemIv);
 
         holder.listNameTv.setText(firstName + " " + lastName);

@@ -13,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.stetho.Stetho;
 
@@ -57,7 +58,8 @@ public class ConnectionsActivity extends AppCompatActivity implements
 
     private static final int DETAILS_ACTIVITY_REQUEST = 100;
     private static final int NEW_CONNECTION_REQUEST = 200;
-    boolean shouldScrollToBottom;
+    boolean shouldScrollToBottom = false;
+    boolean shouldScrollToTop = false;
     private int mSortByOption;
 
     @Override
@@ -160,6 +162,11 @@ public class ConnectionsActivity extends AppCompatActivity implements
             recyclerView.smoothScrollToPosition(connections.size() - 1);
             shouldScrollToBottom = false;
         }
+        if (shouldScrollToTop) {
+            recyclerView.smoothScrollToPosition(0);
+            shouldScrollToTop = false;
+        }
+
     }
 
     private void setScrollListener(RecyclerView recyclerView) {
@@ -237,10 +244,16 @@ public class ConnectionsActivity extends AppCompatActivity implements
             if (resultCode == RESULT_OK) {
 
                 Log.i("MVP view", "recyclerview is automatically refreshed upon insertion");
-                // TODO Inform user of insertion success, perhaps with toast
-                // TODO Replace scroll to bottom with alphabetic order (in model)
                 presenter.loadConnections(mSortByOption);
-                shouldScrollToBottom = true;
+                if(mSortByOption == 2) {
+                    Log.v("testing", "bottom");
+                    shouldScrollToBottom = true;
+                }
+                if(mSortByOption == 0 || mSortByOption == 1) {
+                    Log.v("testing", "top");
+                    shouldScrollToTop = true;
+                }
+                Toast.makeText(this, R.string.new_profile_insertion_msg, Toast.LENGTH_SHORT).show();
             }
         }
     }

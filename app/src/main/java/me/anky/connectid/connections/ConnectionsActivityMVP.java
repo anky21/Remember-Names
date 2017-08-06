@@ -12,7 +12,6 @@ public interface ConnectionsActivityMVP {
 
         void displayNoConnections();
 
-//        Single<Integer> getSortByOption();
         int getSortByOption();
 
         void displayError();

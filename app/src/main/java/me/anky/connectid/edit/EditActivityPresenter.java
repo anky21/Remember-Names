@@ -1,5 +1,7 @@
 package me.anky.connectid.edit;
 
+import android.util.Log;
+
 import javax.inject.Inject;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -48,8 +50,10 @@ public class EditActivityPresenter implements EditActivityMVP.Presenter {
 
                                 if (resultCode == -1) {
                                     view.displayError();
+                                    Log.v("testing", "resultcode -1");
                                 } else {
                                     view.displaySuccess();
+                                    Log.v("testing", "resultcode not -1");
                                 }
                             }
 
