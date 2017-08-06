@@ -1,107 +1,107 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:id="@+id/linear_layout"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/linear_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center_horizontal"
     android:background="@color/text_or_icons"
     android:orientation="vertical"
-    android:padding="@dimen/margin_16dp"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    android:padding="@dimen/margin_16dp">
 
     <LinearLayout
         style="@style/LinearLayoutStyle"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="First name:" />
+            style="@style/DescriptionEtLabelStyle"
+            android:text="@string/name" />
 
         <EditText
             android:id="@+id/first_name_et"
             style="@style/EditTvStyle"
-            android:hint="first name is..." />
-
-    </LinearLayout>
-
-    <LinearLayout
-        style="@style/LinearLayoutStyle"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Last name:" />
+            android:hint="@string/hint_first_name"
+            android:inputType="textPersonName|textCapWords" />
 
         <EditText
             android:id="@+id/last_name_et"
             style="@style/EditTvStyle"
-            android:hint="last name is..."
+            android:hint="last name"
+            android:inputType="textPersonName|textCapWords"
             android:textStyle="normal" />
+
     </LinearLayout>
 
     <LinearLayout style="@style/LinearLayoutStyle">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Where did you meet?" />
+            style="@style/DescriptionEtLabelStyle"
+            android:text="@string/where_did_you_meet" />
 
         <EditText
             android:id="@+id/meet_venue_et"
             style="@style/EditTvStyle"
-            android:hint="we met at..." />
+            android:hint="@string/hint_we_met_at"
+            android:inputType="textMultiLine|textCapSentences"
+            android:maxLines="3" />
     </LinearLayout>
 
     <LinearLayout style="@style/LinearLayoutStyle">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Anything significant about his/her looks?" />
+            style="@style/DescriptionEtLabelStyle"
+            android:text="@string/anything_significant_about_appearance" />
 
         <EditText
             android:id="@+id/appearance_et"
             style="@style/EditTvStyle"
-            android:hint="his/her look is..." />
+            android:hint="@string/hint_his_her_look_is"
+            android:inputType="textMultiLine|textCapSentences"
+            android:maxLines="3" />
     </LinearLayout>
 
     <LinearLayout style="@style/LinearLayoutStyle">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="What's special about him/her?" />
+            style="@style/DescriptionEtLabelStyle"
+            android:text="@string/what_is_special" />
 
         <EditText
             android:id="@+id/feature_et"
             style="@style/EditTvStyle"
-            android:hint="he/she really impressed me because..." />
+            android:hint="@string/hint_feature"
+            android:inputType="textMultiLine|textCapSentences"
+            android:maxLines="3" />
     </LinearLayout>
 
     <LinearLayout style="@style/LinearLayoutStyle">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Common friends" />
+            style="@style/DescriptionEtLabelStyle"
+            android:text="@string/common_friends" />
 
         <EditText
             android:id="@+id/common_friends_et"
             style="@style/EditTvStyle"
-            android:hint="our common friend is..." />
+            android:hint="@string/hint_common_friends"
+            android:inputType="textMultiLine|textCapSentences"
+            android:maxLines="2" />
     </LinearLayout>
 
     <LinearLayout style="@style/LinearLayoutStyle">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="More description" />
+            style="@style/DescriptionEtLabelStyle"
+            android:text="@string/more_description" />
 
         <EditText
             android:id="@+id/description_et"
             style="@style/EditTvStyle"
-            android:hint="more description..." />
+            android:hint="@string/hint_more_description"
+            android:inputType="textMultiLine|textCapSentences"
+            android:maxLines="3" />
     </LinearLayout>
+
+    <android.support.v4.widget.Space
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/space_height" />
 </LinearLayout>

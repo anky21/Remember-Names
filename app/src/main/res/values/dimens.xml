@@ -13,4 +13,5 @@
     <dimen name="margin_32dp">32dp</dimen>
 
     <dimen name="portfolio_height">300dp</dimen>
+    <dimen name="space_height">72dp</dimen>
 </resources>

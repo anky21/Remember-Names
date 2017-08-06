@@ -161,6 +161,7 @@ public class PickerFragment extends android.app.DialogFragment {
     private void cropImageIntent(Uri uri){
         CropImage.activity(uri)
                 .setAllowFlipping(false)
+                .setAllowCounterRotation(true)
                 .setAspectRatio(1,1)
                 .start(getActivity(), this);
     }

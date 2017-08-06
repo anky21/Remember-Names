@@ -30,10 +30,23 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:paddingBottom">@dimen/margin_8dp</item>
+        <item name="android:layout_marginStart">@dimen/margin_24dp</item>
     </style>
     <!-- Description TextView style -->
     <style name="DescriptionTvStyle" parent="EditTvStyle">
         <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_marginStart">@dimen/margin_0dp</item>
+        <item name="android:paddingStart">@dimen/margin_24dp</item>
+    </style>
+    <!-- Description EditText style -->
+    <style name="DescriptionEtLabelStyle" parent="EditTvStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:paddingBottom">@dimen/margin_0dp</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:layout_marginStart">@dimen/margin_0dp</item>
+    </style>
+    <!-- Description TextView label style -->
+    <style name="DescriptionTvLabelStyle" parent="DescriptionEtLabelStyle">
         <item name="android:textColor">@android:color/black</item>
     </style>
 </resources>

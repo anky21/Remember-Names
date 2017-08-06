@@ -33,4 +33,20 @@
         <xliff:g id="appearance">%4$s</xliff:g>. <xliff:g id="feature">%5$s</xliff:g>. Common
         friends: <xliff:g id="common friends">%6$s</xliff:g>. <xliff:g id="description">%7$s</xliff:g>.</string>
     <string name="crop_action_error_msg">Whoops - your device doesn\'t support the crop action!</string>
+
+    <!-- Edit activity -->
+    <string name="where_did_you_meet">Where did you meet?</string>
+    <string name="anything_significant_about_appearance">Anything significant about his/her looks?</string>
+    <string name="what_is_special">What\'s special about him/her?</string>
+    <string name="common_friends">Common friends:</string>
+    <string name="more_description">More description:</string>
+    <string name="name">Name:</string>
+
+    <!--EditActivity hints-->
+    <string name="hint_first_name">first name (required)</string>
+    <string name="hint_we_met_at">we met at...</string>
+    <string name="hint_his_her_look_is">his/her look is...</string>
+    <string name="hint_feature">he/she really impressed me...</string>
+    <string name="hint_common_friends">our common friend is...</string>
+    <string name="hint_more_description">more description...</string>
 </resources>
