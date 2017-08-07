@@ -49,4 +49,7 @@
     <string name="hint_feature">he/she really impressed me...</string>
     <string name="hint_common_friends">our common friend is...</string>
     <string name="hint_more_description">more description...</string>
+
+    <!-- ConnectionsActivity -->
+    <string name="new_profile_insertion_msg">A new profile is inserted.</string>
 </resources>

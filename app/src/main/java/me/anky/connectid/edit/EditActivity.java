@@ -44,6 +44,7 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
     private final static String TAG = EditActivity.class.getSimpleName();
 
     private Bitmap mBitmap;
+    private String mOldImageName;
     private String mImageName = "blank_profile.jpg";
     private String mFirstName = "";
     private String mLastName = "";
@@ -111,6 +112,7 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
             mDatabaseId = connection.getDatabaseId();
             mFirstName = connection.getFirstName();
             mLastName = connection.getLastName();
+            mOldImageName = connection.getImageName();
             mImageName = connection.getImageName();
             mMeetVenue = connection.getMeetVenue();
             mAppearance = connection.getAppearance();
@@ -178,8 +180,6 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
                 }
                 // Save pet to database
                 saveConnection();
-                // Exit activity
-                finish();
                 return true;
             case android.R.id.home:
                 checkIfNameChanged();
@@ -245,6 +245,13 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
     }
 
     private void saveConnection() {
+
+        if (mOldImageName != null && !mOldImageName.equals("blank_profile.jpg")){
+            ContextWrapper cw = new ContextWrapper(getApplicationContext());
+            File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
+            File oldImage = new File(directory, mOldImageName);
+            oldImage.delete();
+        }
         if (!mImageName.equals("blank_profile.jpg")) {
             Utilities.saveToInternalStorage(this, mBitmap, mImageName);
         }
