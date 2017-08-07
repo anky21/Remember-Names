@@ -90,7 +90,6 @@ public class PickerFragment extends android.app.DialogFragment {
             }
 
             Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            String x = AUTHORITY;
             Uri outputUri = FileProvider.getUriForFile(getActivity(), AUTHORITY, output);
 
             i.putExtra(MediaStore.EXTRA_OUTPUT, outputUri);
