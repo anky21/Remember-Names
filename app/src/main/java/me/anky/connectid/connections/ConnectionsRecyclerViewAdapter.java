@@ -34,10 +34,6 @@ public class ConnectionsRecyclerViewAdapter extends
         void onItemClick(View view, int position);
     }
 
-    // TODO Internal click tracking will probably be removed
-    // Track user clicks
-    private int clickedPosition = -1;
-
     public ConnectionsRecyclerViewAdapter(Context context, List<ConnectidConnection> connections,
                                           RecyclerViewClickListener clickListener) {
         this.inflater = LayoutInflater.from(context);
@@ -81,15 +77,6 @@ public class ConnectionsRecyclerViewAdapter extends
 
         holder.listNameTv.setText(firstName + " " + lastName);
         holder.listFeatureTv.setText(feature);
-
-        // TODO Probably unnecessary to track clicks internally
-        if (clickedPosition == position) {
-//            Log.i("MVP view", "position " + clickedPosition + " clicked");
-//            Intent intent = new Intent(holder.listNameTv.getContext(), DetailsActivity.class);
-//            intent.putExtra("ID", databaseId);
-//            intent.putExtra("DETAILS", holder.listNameTv.getText().toString());
-//            holder.listNameTv.getContext().startActivity(intent);
-        }
     }
 
     @Override
@@ -112,12 +99,6 @@ public class ConnectionsRecyclerViewAdapter extends
         }
     }
 
-    // Retrieves the ConnectidConnection object at the clicked position
-    // TODO Implement parcelable in ConnectidConnection
-    public ConnectidConnection getParcelableItem(int position) {
-        return connections.get(position);
-    }
-
     // Updates the array, allowing for uninterrupted scrolling
     public void setConnections(List<ConnectidConnection> connections) {
         if (connections == null) {
@@ -127,21 +108,6 @@ public class ConnectionsRecyclerViewAdapter extends
             this.connections.clear();
             this.connections.addAll(connections);
             notifyDataSetChanged();
-        }
-    }
-
-    public void resetAdapter() {
-        if (connections != null) {
-            connections.clear();
-            notifyDataSetChanged();
-        }
-    }
-
-    // Restores the previous array on device orientation change
-    public void refillAdapter(List<ConnectidConnection> oldConnections) {
-        if (oldConnections != null) {
-            connections = new ArrayList<>();
-            connections.addAll(oldConnections);
         }
     }
 }

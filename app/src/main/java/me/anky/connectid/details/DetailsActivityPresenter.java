@@ -20,7 +20,6 @@ public class DetailsActivityPresenter implements DetailsActivityMVP.Presenter {
     @Inject
     public DetailsActivityPresenter(ConnectionsDataSource connectionsDataSource) {
         this.connectionsDataSource = connectionsDataSource;
-
     }
 
     @Override
@@ -69,7 +68,6 @@ public class DetailsActivityPresenter implements DetailsActivityMVP.Presenter {
 
                             @Override
                             public void onError(@NonNull Throwable e) {
-                                // TODO Add Analytics. This error should never be thrown.
                                 System.out.println("MVP presenter - " + "something went seriously wrong");
                             }
                         });

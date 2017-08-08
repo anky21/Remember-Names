@@ -1,13 +1,9 @@
 package me.anky.connectid.data.source.local;
 
-import android.content.ContentProviderOperation;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.OperationApplicationException;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.RemoteException;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,8 +14,6 @@ import me.anky.connectid.Utilities;
 import me.anky.connectid.data.ConnectidConnection;
 import me.anky.connectid.data.ConnectionsDataSource;
 
-import static android.content.ContentProviderOperation.newInsert;
-
 public class ConnectionsLocalRepository implements ConnectionsDataSource {
 
     private final List<ConnectidConnection> connections = new ArrayList<>();
@@ -29,12 +23,6 @@ public class ConnectionsLocalRepository implements ConnectionsDataSource {
 
     public ConnectionsLocalRepository(Context context) {
         this.context = context;
-
-        // FOR DEBUG: clear the database when app launches
-        // deleteAllEntries();
-
-        // FOR DEBUG: populate the database with data if it is empty
-        initDatabase(0);
     }
 
     @Override
@@ -46,8 +34,6 @@ public class ConnectionsLocalRepository implements ConnectionsDataSource {
             public List<ConnectidConnection> call() throws Exception {
 
                 System.out.println("Thread db: " + Thread.currentThread().getId());
-
-                Log.i("MVP model", "getConnections returned " + connections.size() + " connections");
 
                 return connections;
             }
@@ -62,7 +48,6 @@ public class ConnectionsLocalRepository implements ConnectionsDataSource {
 
         if (cursor != null && cursor.getColumnCount() != 0){
             if (cursor.moveToFirst()){
-//                int databaseId = cursor.getInt(cursor.getColumnIndex(ConnectidColumns._ID));
                 String firstName = cursor.getString(cursor.getColumnIndex(ConnectidColumns.FIRST_NAME));
                 String lastName = cursor.getString(cursor.getColumnIndex(ConnectidColumns.LAST_NAME));
                 String imageName = cursor.getString(cursor.getColumnIndex(ConnectidColumns.IMAGE_NAME));
@@ -83,15 +68,6 @@ public class ConnectionsLocalRepository implements ConnectionsDataSource {
                     return connection;
                 }
             });
-    }
-
-    private void initDatabase(int menOption) {
-
-        Cursor cursor = getAllEntries(menOption);
-        if (cursor == null || cursor.getCount() == 0) {
-            insertDummyData();
-            Log.i("MVP model", "initialized database");
-        }
     }
 
     private void prepareConnectionsList(int menOption) {
@@ -132,45 +108,8 @@ public class ConnectionsLocalRepository implements ConnectionsDataSource {
                 null);
     }
 
-    private void insertDummyData() {
-
-        List<ConnectidConnection> dummyConnections = new ArrayList<>();
-
-        dummyConnections.add(new ConnectidConnection("Yoda", "M", "blank_profile.jpg", "met in swamp", "good looking", "good person", "no common friends", "total stranger"));
-        dummyConnections.add(new ConnectidConnection("Donkey", "Who", "blank_profile.jpg", "met in swamp", "looks like a donkey", "grumpy", "Shrek", "Cute"));
-        dummyConnections.add(new ConnectidConnection("Snow", "White", "blank_profile.jpg", "met in swamp", "looks like a princess", "easy going", "7 dwarfs", "she's pretty"));
-
-        ArrayList<ContentProviderOperation> batchOperations =
-                new ArrayList<>(dummyConnections.size());
-
-        for (ConnectidConnection connection : dummyConnections) {
-
-            ContentProviderOperation.Builder builder = newInsert(
-                    ConnectidProvider.Connections.CONTENT_URI);
-            builder.withValue(ConnectidColumns.FIRST_NAME, connection.getFirstName());
-            builder.withValue(ConnectidColumns.LAST_NAME, connection.getLastName());
-            builder.withValue(ConnectidColumns.IMAGE_NAME, connection.getImageName());
-            builder.withValue(ConnectidColumns.MEET_WHERE, connection.getMeetVenue());
-            builder.withValue(ConnectidColumns.APPEARANCE, connection.getAppearance());
-            builder.withValue(ConnectidColumns.FEATURE, connection.getFeature());
-            builder.withValue(ConnectidColumns.COMMON_FRIENDS, connection.getCommonFriends());
-            builder.withValue(ConnectidColumns.DESCRIPTION, connection.getDescription());
-            batchOperations.add(builder.build());
-        }
-
-        try {
-            context.getContentResolver().applyBatch(ConnectidProvider.AUTHORITY, batchOperations);
-        } catch (RemoteException | OperationApplicationException e) {
-
-            // TODO Add some sort of Analytics for reporting.
-            Log.e("DATABASE_TEST", "Error applying batch insert", e);
-        }
-    }
-
     @Override
     public int insertNewConnection(ConnectidConnection newConnection) {
-
-        Log.i("MVP model", "insertNewConnection inserting " + newConnection.getFirstName());
 
         ContentValues contentValues = new ContentValues();
         contentValues.put(ConnectidColumns.FIRST_NAME, newConnection.getFirstName());
@@ -184,8 +123,6 @@ public class ConnectionsLocalRepository implements ConnectionsDataSource {
 
         Uri uri = context.getContentResolver().insert(ConnectidProvider.Connections.CONTENT_URI, contentValues);
 
-        Log.i("MVP model", "insertNewConnection inserted uri " + uri.toString());
-
         return generateResultCode(uri);
     }
 
@@ -193,8 +130,6 @@ public class ConnectionsLocalRepository implements ConnectionsDataSource {
     public int deleteConnection(int databaseId) {
 
         Uri uri = ConnectidProvider.Connections.withId(databaseId);
-
-        Log.i("MVP model", "deleteConnection deleted " + uri.toString());
 
         return context.getContentResolver().delete(uri, null, null);
     }

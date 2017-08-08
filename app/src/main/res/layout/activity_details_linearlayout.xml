@@ -79,4 +79,8 @@
 
         <include layout="@layout/divider_view" />
     </LinearLayout>
+
+    <android.support.v4.widget.Space
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/space_height_small" />
 </LinearLayout>

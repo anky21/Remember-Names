@@ -36,7 +36,6 @@ import me.anky.connectid.edit.EditActivity;
 import me.anky.connectid.root.ConnectidApplication;
 
 public class DetailsActivity extends AppCompatActivity implements DetailsActivityMVP.View {
-    private final static String TAG = DetailsActivity.class.getSimpleName();
     int databaseId;
     ConnectidConnection connection;
     private Intent intent;
@@ -201,8 +200,6 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
     @Override
     public Single<Integer> getConnectionToDelete() {
 
-        Log.i("MVP view", "getConnectionToDelete returning " + databaseId);
-
         return Single.fromCallable(new Callable<Integer>() {
             @Override
             public Integer call() throws Exception {
@@ -221,8 +218,6 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
 
     @Override
     public void displaySuccess() {
-
-        Log.i("MVP view", "delete succeeded");
 
         Toast.makeText(this, R.string.delete_success_msg, Toast.LENGTH_SHORT).show();
 

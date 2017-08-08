@@ -12,7 +12,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.facebook.stetho.Stetho;
@@ -45,8 +45,8 @@ public class ConnectionsActivity extends AppCompatActivity implements
     @BindView(R.id.fab)
     FloatingActionButton fab;
 
-    @BindView(R.id.empty_list_tv)
-    TextView emptyListTv;
+    @BindView(R.id.empty_view)
+    LinearLayout emptyView;
 
     @Inject
     SharedPrefsHelper sharedPrefsHelper;
@@ -152,8 +152,7 @@ public class ConnectionsActivity extends AppCompatActivity implements
 
     @Override
     public void displayConnections(List<ConnectidConnection> connections) {
-        Log.i("MVP view", "displayConnections received " + connections.size() + " connections");
-        emptyListTv.setVisibility(View.INVISIBLE);
+        emptyView.setVisibility(View.INVISIBLE);
         recyclerView.setVisibility(View.VISIBLE);
 
         adapter.setConnections(connections);
@@ -187,12 +186,8 @@ public class ConnectionsActivity extends AppCompatActivity implements
 
     @Override
     public void displayNoConnections() {
-        Log.i("MVP view", "displayNoConnections received empty list");
-
-        // TODO Make pretty strings sometime.
-        emptyListTv.setText("Need to remember someone?\nClick the button to get started!");
         recyclerView.setVisibility(View.INVISIBLE);
-        emptyListTv.setVisibility(View.VISIBLE);
+        emptyView.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -203,12 +198,9 @@ public class ConnectionsActivity extends AppCompatActivity implements
 
     @Override
     public void displayError() {
-        Log.i("MVP view", "displayError called due to error");
-
-        // TODO Make pretty strings sometime.
-        emptyListTv.setText("Fatal error.\nProbably a database failure.");
         recyclerView.setVisibility(View.INVISIBLE);
-        emptyListTv.setVisibility(View.VISIBLE);
+        emptyView.setVisibility(View.INVISIBLE);
+        Toast.makeText(this, R.string.data_loading_error, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -232,10 +224,6 @@ public class ConnectionsActivity extends AppCompatActivity implements
 
         if (requestCode == DETAILS_ACTIVITY_REQUEST) {
             if (resultCode == RESULT_OK) {
-
-                Log.i("MVP view", "recyclerview is automatically refreshed upon insertion");
-                // TODO Inform user of insertion success, perhaps with toast
-                // TODO Replace scroll to bottom with alphabetic order (in model)
                 presenter.loadConnections(mSortByOption);
             }
         }
@@ -243,14 +231,11 @@ public class ConnectionsActivity extends AppCompatActivity implements
         if (requestCode == NEW_CONNECTION_REQUEST) {
             if (resultCode == RESULT_OK) {
 
-                Log.i("MVP view", "recyclerview is automatically refreshed upon insertion");
                 presenter.loadConnections(mSortByOption);
                 if(mSortByOption == 2) {
-                    Log.v("testing", "bottom");
                     shouldScrollToBottom = true;
                 }
                 if(mSortByOption == 0 || mSortByOption == 1) {
-                    Log.v("testing", "top");
                     shouldScrollToTop = true;
                 }
                 Toast.makeText(this, R.string.new_profile_insertion_msg, Toast.LENGTH_SHORT).show();

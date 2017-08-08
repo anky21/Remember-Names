@@ -61,7 +61,6 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
     //Boolean flag that keeps track of whether the connection has been edited (true) or not (false)
     private boolean mConnectionHasChanged = false;
 
-    // TODO Allow user clicking outside of EditText to close the soft keyboard
     @BindView(R.id.toolbar_edit)
     Toolbar mToolbar;
 
@@ -291,16 +290,12 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
                     commonFriends,
                     description);
 
-            Log.i("MVP view", "clicked Add Connection");
-
             presenter.deliverNewConnection();
         }
     }
 
     @Override
     public Single<ConnectidConnection> getNewConnection() {
-        Log.i("MVP view", "getNewConnection returning " + newConnection.getFirstName());
-
         return Single.fromCallable(new Callable<ConnectidConnection>() {
             @Override
             public ConnectidConnection call() throws Exception {
@@ -327,14 +322,7 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
 
     @Override
     public void displaySuccess() {
-        Log.i("MVP view", "displaySuccess called - successfully inserted into database");
-
         Intent data = new Intent();
-        if (intentHasExtra) {
-            data.putExtra("edit_activity_result", updatedConnection);
-        } else {
-            data.putExtra("edit_activity_result", newConnection);
-        }
         setResult(RESULT_OK, data);
         finish();
     }
