@@ -7,3 +7,5 @@
 /build
 /captures
 .externalNativeBuild
+/android_app.jks
+/keystore.properties
