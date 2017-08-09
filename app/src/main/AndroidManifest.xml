@@ -39,7 +39,6 @@
         <activity
             android:name=".edit.EditActivity"
             android:label=""
-            android:parentActivityName=".connections.ConnectionsActivity"
             android:theme="@style/DetailsTheme" />
         <provider
             android:name=".edit.LegacyCompatFileProvider"

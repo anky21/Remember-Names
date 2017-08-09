@@ -10,7 +10,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.NavUtils;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -179,12 +178,15 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
                 }
                 // Save pet to database
                 saveConnection();
+                overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
                 return true;
             case android.R.id.home:
                 checkIfNameChanged();
                 // If the connection hasn't changed, continue with navigating up to parent activity
                 if (!mConnectionHasChanged) {
-                    NavUtils.navigateUpFromSameTask(EditActivity.this);
+//                    NavUtils.navigateUpFromSameTask(EditActivity.this);
+                    super.onBackPressed();
+                    overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
                     return true;
                 }
 
@@ -201,6 +203,7 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
         // Continue with handling back button press when there is no change
         if (!mConnectionHasChanged) {
             super.onBackPressed();
+            overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
             return;
         }
 

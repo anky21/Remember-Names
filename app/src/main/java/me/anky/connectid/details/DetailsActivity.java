@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.NavUtils;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -109,6 +110,12 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
     }
 
     @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_detail, menu);
         // Create the Share action
@@ -142,6 +149,11 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
         switch (item.getItemId()) {
             case R.id.action_delete:
                 showDeleteDialog();
+                break;
+            case android.R.id.home:
+                NavUtils.navigateUpFromSameTask(this);
+                overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -224,6 +236,7 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
         Intent data = new Intent();
         setResult(RESULT_OK, data);
         finish();
+        overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
     }
 
     @OnClick(R.id.edit_fab)
@@ -231,5 +244,6 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
         Intent intent = new Intent(this, EditActivity.class);
         intent.putExtra("DETAILS", connection);
         startActivity(intent);
+        overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
     }
 }

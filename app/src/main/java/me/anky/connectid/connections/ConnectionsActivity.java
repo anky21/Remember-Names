@@ -210,12 +210,14 @@ public class ConnectionsActivity extends AppCompatActivity implements
         Intent intent = new Intent(this, DetailsActivity.class);
         intent.putExtra("DETAILS", data.get(position));
         startActivityForResult(intent, DETAILS_ACTIVITY_REQUEST);
+        overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
     }
 
     @OnClick(R.id.fab)
     public void launchEditActivity(View view) {
         Intent intent = new Intent(this, EditActivity.class);
         startActivityForResult(intent, NEW_CONNECTION_REQUEST);
+        overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
     }
 
     @Override
