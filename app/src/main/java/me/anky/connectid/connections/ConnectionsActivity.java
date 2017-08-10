@@ -96,7 +96,7 @@ public class ConnectionsActivity extends AppCompatActivity implements
     protected void onStart() {
         super.onStart();
 
-        final int launchTimes = 10;
+        final int launchTimes = 20;
         final int installDate = 7;
 
         RateMeDialogTimer.onStart(this);
@@ -111,7 +111,7 @@ public class ConnectionsActivity extends AppCompatActivity implements
                 .build()
                 .show(getFragmentManager(), "plain-dialog");
     }
-    
+
     @Override
     protected void onResume() {
         super.onResume();

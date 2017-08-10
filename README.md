@@ -1,7 +1,15 @@
+<a href="https://play.google.com/store/apps/details?id=me.anky.connectid"><img src="/demo/get_it_on_google_play.png" width="400" height="118" alt="Remember names on Google Play"></a>
+
 Remember Names
 ========
 
-This app aims to help people remember the names of the people they recently met.
+Forget people's names no more. Use this app to put a name to a face and improve your social skills.
+
+DEMO
+--------------
+![alt text](/demo/main.png)
+![alt text](/demo/detail.png)
+![alt text](/demo/edit.png)
 
 Pre-requisites
 --------------
@@ -26,6 +34,12 @@ Getting Started
 
 This project uses the Gradle build system. To build this project, use the
 "gradlew build" command or use "Import Project" in Android Studio.
+
+
+Contribution
+---------------
+
+I welcome any kind of contribution to this project. Please feel free to report any issues or create a pull request with your solutions. Also, there are some features I would like to add to this app. Let me know if you are interested in collaboration.
 
 
 ## License
