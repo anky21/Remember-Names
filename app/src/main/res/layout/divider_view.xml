@@ -4,5 +4,6 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
+        android:layout_marginStart="@dimen/margin_24dp"
         android:background="@color/color_light_primary" />
 </merge>

@@ -75,7 +75,7 @@ public class Utilities {
         int originalWidth = bitmap.getWidth();
         int originalHeight = bitmap.getHeight();
 
-        final int desiredSize = 800;
+        final int desiredSize = 600;
         int maximumSize = Math.max(originalHeight, originalWidth);
 
         if (maximumSize > desiredSize) {
@@ -89,7 +89,7 @@ public class Utilities {
 
     // Sort by options in MainActivity
     public static final String[] SORT_ORDER_OPTIONS = {
-            null,
+            ConnectidColumns._ID + " DESC",
             ConnectidColumns._ID + " DESC",
             ConnectidColumns._ID + " ASC",
             ConnectidColumns.FIRST_NAME + " COLLATE NOCASE ASC",

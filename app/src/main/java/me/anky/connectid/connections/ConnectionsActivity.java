@@ -15,6 +15,8 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.androidsx.rateme.RateMeDialog;
+import com.androidsx.rateme.RateMeDialogTimer;
 import com.facebook.stetho.Stetho;
 
 import java.util.ArrayList;
@@ -90,6 +92,26 @@ public class ConnectionsActivity extends AppCompatActivity implements
         setScrollListener(recyclerView);
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        final int launchTimes = 10;
+        final int installDate = 7;
+
+        RateMeDialogTimer.onStart(this);
+        if (RateMeDialogTimer.shouldShowRateDialog(this, installDate, launchTimes)) {
+            showPlainRateMeDialog();
+        }
+    }
+
+    private void showPlainRateMeDialog() {
+        new RateMeDialog.Builder(getPackageName(), getString(R.string.app_name))
+                .showAppIcon(R.mipmap.ic_launcher_round)
+                .build()
+                .show(getFragmentManager(), "plain-dialog");
+    }
+    
     @Override
     protected void onResume() {
         super.onResume();

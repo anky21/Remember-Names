@@ -21,6 +21,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 
 import java.io.File;
 import java.io.InputStream;
@@ -124,7 +125,14 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
             // path to /data/data/yourapp/app_data/imageDir
             File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
             String path = directory.getAbsolutePath() + "/" + mImageName;
+            RequestOptions myOptions = new RequestOptions()
+                    .centerCrop();
+//                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+//                    .skipMemoryCache(true)
+//                    .override(600, 600);
+
             Glide.with(this)
+                    .applyDefaultRequestOptions(myOptions)
                     .load(Uri.fromFile(new File(path)))
                     .into(mPortraitIv);
             mMeetVenueEt.setText(mMeetVenue);
