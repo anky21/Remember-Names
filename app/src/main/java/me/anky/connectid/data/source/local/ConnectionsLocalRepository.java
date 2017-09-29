@@ -12,12 +12,16 @@ import java.util.concurrent.Callable;
 import io.reactivex.Single;
 import me.anky.connectid.Utilities;
 import me.anky.connectid.data.ConnectidConnection;
+import me.anky.connectid.data.ConnectionTag;
 import me.anky.connectid.data.ConnectionsDataSource;
 
 public class ConnectionsLocalRepository implements ConnectionsDataSource {
 
     private final List<ConnectidConnection> connections = new ArrayList<>();
     private ConnectidConnection connection;
+
+    private final List<ConnectionTag> tags = new ArrayList<>();
+    private ConnectionTag connectionTag;
 
     private Context context;
 
@@ -46,8 +50,8 @@ public class ConnectionsLocalRepository implements ConnectionsDataSource {
 
         Cursor cursor = context.getContentResolver().query(uri, null, null, null, null);
 
-        if (cursor != null && cursor.getColumnCount() != 0){
-            if (cursor.moveToFirst()){
+        if (cursor != null && cursor.getColumnCount() != 0) {
+            if (cursor.moveToFirst()) {
                 String firstName = cursor.getString(cursor.getColumnIndex(ConnectidColumns.FIRST_NAME));
                 String lastName = cursor.getString(cursor.getColumnIndex(ConnectidColumns.LAST_NAME));
                 String imageName = cursor.getString(cursor.getColumnIndex(ConnectidColumns.IMAGE_NAME));
@@ -62,12 +66,12 @@ public class ConnectionsLocalRepository implements ConnectionsDataSource {
             }
         }
 
-            return Single.fromCallable(new Callable<ConnectidConnection>() {
-                @Override
-                public ConnectidConnection call() throws Exception {
-                    return connection;
-                }
-            });
+        return Single.fromCallable(new Callable<ConnectidConnection>() {
+            @Override
+            public ConnectidConnection call() throws Exception {
+                return connection;
+            }
+        });
     }
 
     private void prepareConnectionsList(int menOption) {
@@ -128,7 +132,6 @@ public class ConnectionsLocalRepository implements ConnectionsDataSource {
 
     @Override
     public int deleteConnection(int databaseId) {
-
         Uri uri = ConnectidProvider.Connections.withId(databaseId);
 
         return context.getContentResolver().delete(uri, null, null);
@@ -151,6 +154,88 @@ public class ConnectionsLocalRepository implements ConnectionsDataSource {
         return context.getContentResolver().update(uri, contentValues, null, null);
     }
 
+
+    @Override
+    public Single<List<ConnectionTag>> getTags() {
+        prepareTagsList();
+
+        return Single.fromCallable(new Callable<List<ConnectionTag>>() {
+            @Override
+            public List<ConnectionTag> call() throws Exception {
+
+                System.out.println("Thread db: " + Thread.currentThread().getId());
+
+                return tags;
+            }
+        });
+    }
+
+    private void prepareTagsList() {
+        tags.clear();
+
+        Cursor cursor = context.getContentResolver().query(
+                ConnectidProvider.Tags.CONTENT_URI,
+                null,
+                null,
+                null,
+                null);
+        if (cursor != null && cursor.getCount() != 0) {
+
+            while (cursor.moveToNext()) {
+                int databaseId = cursor.getInt(cursor.getColumnIndex(TagsColumns._ID));
+                String tag = cursor.getString(cursor.getColumnIndex(TagsColumns.TAG));
+                String connectionIds = cursor.getString(cursor.getColumnIndex(TagsColumns.CONNECTION_IDS));
+
+                tags.add(new ConnectionTag(databaseId, tag, connectionIds));
+            }
+        }
+    }
+
+    @Override
+    public Single<ConnectionTag> getOneTag(int data_id) {
+        Uri uri = ConnectidProvider.Tags.withId(data_id);
+
+        Cursor cursor = context.getContentResolver().query(uri, null, null, null, null);
+
+        if (cursor != null && cursor.getColumnCount() != 0) {
+            if (cursor.moveToFirst()) {
+                String tag = cursor.getString(cursor.getColumnIndex(TagsColumns.TAG));
+                String connectionIds = cursor.getString(cursor.getColumnIndex(TagsColumns.CONNECTION_IDS));
+
+                connectionTag = new ConnectionTag(data_id, tag, connectionIds);
+            }
+        }
+
+        return Single.fromCallable(new Callable<ConnectionTag>() {
+            @Override
+            public ConnectionTag call() throws Exception {
+                return connectionTag;
+            }
+        });
+    }
+
+    @Override
+    public int insertNewTag(ConnectionTag newTag) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(TagsColumns.TAG, newTag.getTag());
+        contentValues.put(TagsColumns.CONNECTION_IDS, newTag.getConnection_ids());
+
+        Uri uri = context.getContentResolver().insert(ConnectidProvider.Tags.CONTENT_URI, contentValues);
+
+        return generateResultCode(uri);
+    }
+
+    @Override
+    public int updateTag(ConnectionTag tag) {
+        Uri uri = ConnectidProvider.Tags.withId(tag.getDatabaseId());
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(TagsColumns.TAG, tag.getTag());
+        contentValues.put(TagsColumns.CONNECTION_IDS, tag.getConnection_ids());
+
+        return context.getContentResolver().update(uri, contentValues, null, null);
+    }
+
     private int generateResultCode(Uri uri) {
 
         int lastPathSegment = Integer.parseInt(uri.getLastPathSegment());
@@ -161,4 +246,3 @@ public class ConnectionsLocalRepository implements ConnectionsDataSource {
         }
     }
 }
-

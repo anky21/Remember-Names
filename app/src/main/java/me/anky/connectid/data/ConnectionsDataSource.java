@@ -15,4 +15,12 @@ public interface ConnectionsDataSource {
     int deleteConnection(int databaseId);
 
     int updateConnection(ConnectidConnection connection);
+
+    Single<List<ConnectionTag>> getTags();
+
+    Single<ConnectionTag> getOneTag(int data_id);
+
+    int insertNewTag(ConnectionTag newTag);
+
+    int updateTag(ConnectionTag tag);
 }
