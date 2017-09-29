@@ -17,6 +17,7 @@ public class ConnectidProvider {
 
     interface Path {
         String CONNECTIONS = "connections";
+        String TAGS = "tags";
     }
 
     private static Uri buildUri(String ... paths){
@@ -44,6 +45,26 @@ public class ConnectidProvider {
                 pathSegment = 1)
         public static Uri withId(long id){
             return buildUri(Path.CONNECTIONS, String.valueOf(id));
+        }
+    }
+
+    @TableEndpoint(table = ConnectidDatabase.TAGS)
+    public static class Tags {
+
+        @ContentUri(
+                path = Path.TAGS,
+                type = "vnd.android.cursor.dir/tag",
+                defaultSort = TagsColumns._ID + " ASC")
+        public static final Uri CONTENT_URI = buildUri(Path.TAGS);
+
+        @InexactContentUri(
+                name = "TAG_ID",
+                path = Path.TAGS + "/#",
+                type = "vnd.android.cursor.item/tag",
+                whereColumn = TagsColumns._ID,
+                pathSegment = 1)
+        public static Uri withId(long id){
+            return buildUri(Path.TAGS, String.valueOf(id));
         }
     }
 }
