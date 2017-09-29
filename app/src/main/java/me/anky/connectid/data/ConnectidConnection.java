@@ -13,6 +13,7 @@ public class ConnectidConnection implements Parcelable {
     private String feature;
     private String commonFriends;
     private String description;
+    private String tags;
 
     public ConnectidConnection(Parcel in) {
         databaseId = in.readInt();
@@ -24,6 +25,7 @@ public class ConnectidConnection implements Parcelable {
         feature = in.readString();
         commonFriends = in.readString();
         description = in.readString();
+        tags = in.readString();
     }
 
 

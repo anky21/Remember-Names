@@ -11,36 +11,40 @@ public interface ConnectidColumns {
     @DataType(DataType.Type.INTEGER)
     @PrimaryKey
     @AutoIncrement
-    public static final String _ID = "_id";
+    String _ID = "_id";
 
     @DataType(DataType.Type.TEXT)
     @NotNull
-    public static final String FIRST_NAME = "first_name";
+    String FIRST_NAME = "first_name";
 
     @DataType(DataType.Type.TEXT)
     @DefaultValue("Unknown")
-    public static final String LAST_NAME = "last_name";
+    String LAST_NAME = "last_name";
 
     @DataType(DataType.Type.TEXT)
-    public static final String IMAGE_NAME = "image_name";
-
-    @DataType(DataType.Type.TEXT)
-    @DefaultValue("null")
-    public static final String MEET_WHERE = "meet_venue";
+    String IMAGE_NAME = "image_name";
 
     @DataType(DataType.Type.TEXT)
     @DefaultValue("null")
-    public static final String APPEARANCE = "appearance";
+    String MEET_WHERE = "meet_venue";
 
     @DataType(DataType.Type.TEXT)
     @DefaultValue("null")
-    public static final String FEATURE = "feature";
+    String APPEARANCE = "appearance";
 
     @DataType(DataType.Type.TEXT)
     @DefaultValue("null")
-    public static final String COMMON_FRIENDS = "common_friends";
+    String FEATURE = "feature";
 
     @DataType(DataType.Type.TEXT)
     @DefaultValue("null")
-    public static final String DESCRIPTION = "description";
+    String COMMON_FRIENDS = "common_friends";
+
+    @DataType(DataType.Type.TEXT)
+    @DefaultValue("null")
+    String DESCRIPTION = "description";
+
+    @DataType(DataType.Type.TEXT)
+    @DefaultValue("null")
+    String TAGS = "tags";
 }
