@@ -30,7 +30,7 @@ public class ConnectidConnection implements Parcelable {
 
 
     public ConnectidConnection(String firstName, String lastName, String imageName, String meetVenue,
-                               String appearance, String feature, String commonFriends, String description) {
+                               String appearance, String feature, String commonFriends, String description, String tags) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.imageName = imageName;
@@ -39,11 +39,12 @@ public class ConnectidConnection implements Parcelable {
         this.feature = feature;
         this.commonFriends = commonFriends;
         this.description = description;
+        this.tags = tags;
     }
 
     public ConnectidConnection(int databaseId, String firstName, String lastName, String imageName,
                                String meetVenue, String appearance, String feature,
-                               String commonFriends, String description) {
+                               String commonFriends, String description, String tags) {
         this.databaseId = databaseId;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -53,6 +54,7 @@ public class ConnectidConnection implements Parcelable {
         this.feature = feature;
         this.commonFriends = commonFriends;
         this.description = description;
+        this.tags = tags;
     }
 
     public void setFirstName(String firstName) {
@@ -127,6 +129,14 @@ public class ConnectidConnection implements Parcelable {
         this.commonFriends = commonFriends;
     }
 
+    public String getTags() {
+        return tags;
+    }
+
+    public void setTags(String tags) {
+        this.tags = tags;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -143,6 +153,7 @@ public class ConnectidConnection implements Parcelable {
         dest.writeString(feature);
         dest.writeString(commonFriends);
         dest.writeString(description);
+        dest.writeString(tags);
     }
 
     public static final Parcelable.Creator<ConnectidConnection> CREATOR =

@@ -60,9 +60,10 @@ public class ConnectionsLocalRepository implements ConnectionsDataSource {
                 String feature = cursor.getString(cursor.getColumnIndex(ConnectidColumns.FEATURE));
                 String commonFriends = cursor.getString(cursor.getColumnIndex(ConnectidColumns.COMMON_FRIENDS));
                 String description = cursor.getString(cursor.getColumnIndex(ConnectidColumns.DESCRIPTION));
+                String tags = cursor.getString(cursor.getColumnIndex(ConnectidColumns.TAGS));
 
                 connection = new ConnectidConnection(data_id, firstName, lastName, imageName,
-                        meetVenue, appearance, feature, commonFriends, description);
+                        meetVenue, appearance, feature, commonFriends, description, tags);
             }
         }
 
@@ -90,8 +91,10 @@ public class ConnectionsLocalRepository implements ConnectionsDataSource {
                 String feature = cursor.getString(cursor.getColumnIndex(ConnectidColumns.FEATURE));
                 String commonFriends = cursor.getString(cursor.getColumnIndex(ConnectidColumns.COMMON_FRIENDS));
                 String description = cursor.getString(cursor.getColumnIndex(ConnectidColumns.DESCRIPTION));
+                String tags = cursor.getString(cursor.getColumnIndex(ConnectidColumns.TAGS));
 
-                connections.add(new ConnectidConnection(databaseId, firstName, lastName, imageName, meetVenue, appearance, feature, commonFriends, description));
+                connections.add(new ConnectidConnection(databaseId, firstName, lastName, imageName,
+                        meetVenue, appearance, feature, commonFriends, description, tags));
             }
         }
     }
@@ -124,6 +127,7 @@ public class ConnectionsLocalRepository implements ConnectionsDataSource {
         contentValues.put(ConnectidColumns.FEATURE, newConnection.getFeature());
         contentValues.put(ConnectidColumns.COMMON_FRIENDS, newConnection.getCommonFriends());
         contentValues.put(ConnectidColumns.DESCRIPTION, newConnection.getDescription());
+        contentValues.put(ConnectidColumns.TAGS, newConnection.getTags());
 
         Uri uri = context.getContentResolver().insert(ConnectidProvider.Connections.CONTENT_URI, contentValues);
 
@@ -150,6 +154,7 @@ public class ConnectionsLocalRepository implements ConnectionsDataSource {
         contentValues.put(ConnectidColumns.FEATURE, connection.getFeature());
         contentValues.put(ConnectidColumns.COMMON_FRIENDS, connection.getCommonFriends());
         contentValues.put(ConnectidColumns.DESCRIPTION, connection.getDescription());
+        contentValues.put(ConnectidColumns.TAGS, connection.getTags());
 
         return context.getContentResolver().update(uri, contentValues, null, null);
     }
