@@ -277,7 +277,7 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
         String feature = mFeatureEt.getText().toString().trim();
         String commonFriends = mCommonFriendsEt.getText().toString().trim();
         String description = mDescriptionEt.getText().toString().trim();
-        String tags = "";
+        String tags = "hello tags";
 
         if (intentHasExtra) {
             updatedConnection = new ConnectidConnection(

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
@@ -17,6 +18,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -48,6 +50,7 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
     private String mFeature;
     private String mCommonFriends;
     private String mDescription;
+    private String mTags;
 
     @BindView(R.id.toolbar_1)
     Toolbar mToolbar;
@@ -69,6 +72,9 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
 
     @BindView(R.id.description_tv)
     TextView mDescriptionTv;
+
+    @BindView(R.id.tags_container)
+    LinearLayout mTagsContainer;
 
     @Inject
     DetailsActivityPresenter presenter;
@@ -194,6 +200,7 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
         mFeature = connection.getFeature();
         mCommonFriends = connection.getCommonFriends();
         mDescription = connection.getDescription();
+        mTags = connection.getTags();
 
         ContextWrapper cw = new ContextWrapper(getApplicationContext());
         // path to /data/data/yourapp/app_data/imageDir
@@ -207,6 +214,14 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
         mFeatureTv.setText(mFeature);
         mCommonFriendsTv.setText(mCommonFriends);
         mDescriptionTv.setText(mDescription);
+
+        TextView roundTextView = new TextView(this);
+        roundTextView.setText("abcdefg");
+        roundTextView.setPadding(16, 8, 16, 8);
+        roundTextView.setTextSize(16);
+        roundTextView.setLayoutParams(new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+        mTagsContainer.addView(roundTextView);
     }
 
     @Override
