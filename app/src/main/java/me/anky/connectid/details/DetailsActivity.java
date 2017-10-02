@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
@@ -217,10 +216,10 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
 
         TextView roundTextView = new TextView(this);
         roundTextView.setText("abcdefg");
-        roundTextView.setPadding(16, 8, 16, 8);
         roundTextView.setTextSize(16);
         roundTextView.setLayoutParams(new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+        roundTextView.setBackgroundResource(R.drawable.round_bg_blue);
         mTagsContainer.addView(roundTextView);
     }
 
