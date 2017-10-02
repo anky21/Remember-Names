@@ -8,6 +8,7 @@ import me.anky.connectid.connections.ConnectionsActivityPresenter;
 import me.anky.connectid.data.SharedPrefsHelper;
 import me.anky.connectid.details.DetailsActivity;
 import me.anky.connectid.edit.EditActivity;
+import me.anky.connectid.editTag.EditTagActivity;
 
 /**
  * Created by Anky An on 10/07/2017.
@@ -27,6 +28,8 @@ public interface ApplicationComponent {
     void inject(EditActivity editActivity);
 
     void inject(DetailsActivity detailsActivity);
+
+    void inject(EditTagActivity editTagActivity);
 
     SharedPrefsHelper getPreferenceHelper();
 }

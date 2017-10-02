@@ -17,6 +17,12 @@
             style="@style/DescriptionTvLabelStyle"
             android:text="Tags:" />
 
+        <TextView
+            android:id="@+id/all_tags_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="All Tags"/>
+
         <LinearLayout
             android:id="@+id/tags_container"
             android:layout_width="match_parent"

@@ -31,6 +31,28 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        style="@style/LinearLayoutStyle"
+        android:orientation="vertical">
+        <TextView
+            style="@style/DescriptionEtLabelStyle"
+            android:text="Tags:" />
+
+        <LinearLayout
+            android:id="@+id/all_tags_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginStart="@dimen/margin_24dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="All Tags" />
+        </LinearLayout>
+
+    </LinearLayout>
+
     <LinearLayout style="@style/LinearLayoutStyle">
 
         <TextView

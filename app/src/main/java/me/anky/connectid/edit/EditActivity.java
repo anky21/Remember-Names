@@ -16,6 +16,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -36,6 +37,7 @@ import io.reactivex.Single;
 import me.anky.connectid.R;
 import me.anky.connectid.Utilities;
 import me.anky.connectid.data.ConnectidConnection;
+import me.anky.connectid.editTag.EditTagActivity;
 import me.anky.connectid.root.ConnectidApplication;
 
 import static me.anky.connectid.Utilities.resizeBitmap;
@@ -226,6 +228,13 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
         PickerFragment newFragment = new PickerFragment();
         newFragment.show(fm, "dialog");
         ft.commit();
+    }
+
+    @OnClick(R.id.all_tags_container)
+    public void launchEditTagActivity(View view) {
+        Intent intent = new Intent(this, EditTagActivity.class);
+        startActivity(intent);
+        overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
     }
 
     public void changePhoto(Object object) {
