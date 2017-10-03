@@ -8,6 +8,7 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
 import me.anky.connectid.data.ConnectidConnection;
+import me.anky.connectid.data.ConnectionTag;
 import me.anky.connectid.data.ConnectionsDataSource;
 
 public class EditActivityPresenter implements EditActivityMVP.Presenter {
@@ -43,6 +44,15 @@ public class EditActivityPresenter implements EditActivityMVP.Presenter {
                                 System.out.println("Thread subscribe: " + Thread.currentThread().getId());
 
                                 int resultCode = connectionsDataSource.insertNewConnection(connection);
+//                                ConnectionTag newTag = new ConnectionTag("cool", "1");
+//                                connectionsDataSource.insertNewTag(newTag);
+//                                ConnectionTag newTag1 = new ConnectionTag("white", "3,5,7");
+//                                connectionsDataSource.insertNewTag(newTag1);
+//                                ConnectionTag newTag2 = new ConnectionTag("US", "1,5,8");
+//                                connectionsDataSource.insertNewTag(newTag2);
+//                                ConnectionTag newTag3 = new ConnectionTag("red", "2,4,9");
+//                                connectionsDataSource.insertNewTag(newTag);
+
 
                                 System.out.println("MVP presenter - " + "delivered new connection, resultCode " + resultCode);
 
