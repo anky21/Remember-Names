@@ -1,9 +1,13 @@
 package me.anky.connectid;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -97,4 +101,27 @@ public class Utilities {
             ConnectidColumns.LAST_NAME + " COLLATE NOCASE ASC",
             ConnectidColumns.LAST_NAME + " COLLATE NOCASE DESC"
     };
+
+    public static void hideKeyboard(Activity activity, View view) {
+        if (activity != null) {
+            InputMethodManager inputManager = (InputMethodManager)
+                    activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+
+            if (inputManager != null) {
+                inputManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+            }
+        }
+    }
+
+    public static void showKeyboard(Activity activity, View view) {
+        if (activity != null) {
+            InputMethodManager inputManager = (InputMethodManager)
+                    activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+
+            if (inputManager != null) {
+                inputManager.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT);
+                activity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+            }
+        }
+    }
 }

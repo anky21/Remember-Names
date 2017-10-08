@@ -50,8 +50,8 @@ public class EditActivityPresenter implements EditActivityMVP.Presenter {
 //                                connectionsDataSource.insertNewTag(newTag1);
 //                                ConnectionTag newTag2 = new ConnectionTag("US", "1,5,8");
 //                                connectionsDataSource.insertNewTag(newTag2);
-//                                ConnectionTag newTag3 = new ConnectionTag("red", "2,4,9");
-//                                connectionsDataSource.insertNewTag(newTag);
+                                ConnectionTag newTag3 = new ConnectionTag("hello tags", "2,4,9");
+                                connectionsDataSource.insertNewTag(newTag3);
 
 
                                 System.out.println("MVP presenter - " + "delivered new connection, resultCode " + resultCode);
