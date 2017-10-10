@@ -34,6 +34,28 @@ public class EditTagActivityPresenter implements EditTagActivityMVP.Presenter {
     }
 
     @Override
+    public void createNewTag(String input, List<String> connectionTags) {
+        int existingTagPosition = -1;
+        if (!input.equals("")){
+            if (connectionTags.size() == 0){
+                connectionTags.add(input);
+            } else {
+                for (int i=0; i<connectionTags.size();i++){
+                    if (connectionTags.get(i).equals(input)){
+                        existingTagPosition = i;
+                    }
+                }
+                if (existingTagPosition == -1) {
+                    connectionTags.add(input);
+                } else {
+                    connectionTags.remove(existingTagPosition);
+                    connectionTags.add(input);
+                }
+            }
+        }
+    }
+
+    @Override
     public void loadTags() {
         DisposableSingleObserver<List<ConnectionTag>> disposableSingleObserver =
                 dataSource.getTags().subscribeOn(Schedulers.io())

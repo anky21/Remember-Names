@@ -46,6 +46,8 @@ public class EditTagActivity extends AppCompatActivity implements EditTagActivit
 
     String input = "";
 
+    List<String> connectionTags = new ArrayList<>();
+
 
     @Inject
     EditTagActivityPresenter presenter;
@@ -75,10 +77,7 @@ public class EditTagActivity extends AppCompatActivity implements EditTagActivit
                     Log.v("testing", "hit comma");
                     addTagEt.getText().replace(start, start + 1, "");
                     input = addTagEt.getText().toString().trim();
-                    if (!input.equals("")){
-                        Toast.makeText(EditTagActivity.this, input, Toast.LENGTH_SHORT).show();
-
-                    }
+                    presenter.createNewTag(input, connectionTags);
                     addTagEt.getText().clear();
                 }
             }
@@ -90,10 +89,8 @@ public class EditTagActivity extends AppCompatActivity implements EditTagActivit
                     addTagEt.getText().clear();
                     String modifiedInput = input.split(",")[0].trim();
                     input = modifiedInput;
-                    if (!input.equals("")){
-                        Toast.makeText(EditTagActivity.this, input, Toast.LENGTH_SHORT).show();
+                    presenter.createNewTag(input, connectionTags);
 
-                    }
                 }
 
             }
@@ -134,13 +131,17 @@ public class EditTagActivity extends AppCompatActivity implements EditTagActivit
     }
 
     @Override
+    public void displayConnectionTags(List<String> connectionTag) {
+
+    }
+
+    @Override
     public boolean onKey(View view, int i, KeyEvent event) {
         if (i == KeyEvent.KEYCODE_COMMA || i == KeyEvent.KEYCODE_ENTER) {
             Log.v("testing", "pressed key is " + i);
             input = addTagEt.getText().toString().trim();
-            if (!input.equals("")){
-                Toast.makeText(EditTagActivity.this, input, Toast.LENGTH_SHORT).show();
-            }
+            presenter.createNewTag(input, connectionTags);
+
             addTagEt.setText("");
             addTagEt.setFocusableInTouchMode(true);
             addTagEt.requestFocus();

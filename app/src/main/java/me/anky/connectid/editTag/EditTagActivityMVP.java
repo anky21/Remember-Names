@@ -21,11 +21,15 @@ public interface EditTagActivityMVP {
         void displayNoTags();
 
         void displayError();
+
+        void displayConnectionTags(List<String> connectionTags);
     }
 
     interface Presenter {
 
         void setView(EditTagActivityMVP.View view);
+
+        void createNewTag(String input, List<String> connectionTags);
 
         void loadTags();
 
