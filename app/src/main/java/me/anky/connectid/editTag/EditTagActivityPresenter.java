@@ -52,6 +52,7 @@ public class EditTagActivityPresenter implements EditTagActivityMVP.Presenter {
                     connectionTags.add(input);
                 }
             }
+            view.displayConnectionTags();
         }
     }
 

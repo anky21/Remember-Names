@@ -20,29 +20,26 @@
             android:orientation="horizontal">
 
             <LinearLayout
+                android:id="@+id/selected_tag_container"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/round_bg_blue"
-                android:text="Edit tag activity" />
             </LinearLayout>
+
             <EditText
                 android:id="@+id/add_tag_et"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="14sp"
-                android:layout_marginStart="@dimen/margin_4dp"
                 android:layout_marginEnd="@dimen/margin_4dp"
+                android:layout_marginStart="@dimen/margin_4dp"
                 android:background="@drawable/round_bg_gray"
+                android:hint="Add a Tag"
                 android:inputType="text"
-                android:maxLines="1"
                 android:maxLength="30"
+                android:maxLines="1"
                 android:singleLine="true"
-                android:hint="Add a Tag"/>
+                android:textSize="14sp" />
         </LinearLayout>
     </ScrollView>
 

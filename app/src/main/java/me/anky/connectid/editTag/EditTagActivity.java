@@ -2,6 +2,7 @@ package me.anky.connectid.editTag;
 
 import android.app.Service;
 import android.content.Intent;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -34,6 +35,8 @@ import me.anky.connectid.root.ConnectidApplication;
 public class EditTagActivity extends AppCompatActivity implements EditTagActivityMVP.View, View.OnKeyListener {
 
     public List<ConnectionTag> allTags = new ArrayList<>();
+    List<String> connectionTags = new ArrayList<>();
+
 
     @BindView(R.id.all_tags)
     LinearLayout allTagsLinear;
@@ -44,10 +47,10 @@ public class EditTagActivity extends AppCompatActivity implements EditTagActivit
     @BindView(R.id.add_tag_et)
     EditText addTagEt;
 
+    @BindView(R.id.selected_tag_container)
+            LinearLayout selectedTagLl;
+
     String input = "";
-
-    List<String> connectionTags = new ArrayList<>();
-
 
     @Inject
     EditTagActivityPresenter presenter;
@@ -131,7 +134,24 @@ public class EditTagActivity extends AppCompatActivity implements EditTagActivit
     }
 
     @Override
-    public void displayConnectionTags(List<String> connectionTag) {
+    public void displayConnectionTags() {
+        selectedTagLl.removeAllViews();
+        if (connectionTags.size()>0){
+            for (String tag:connectionTags){
+                Log.v("testing", "selected tag is " + tag);
+                TextView tagTv = new TextView(this);
+                tagTv.setText(tag);
+                tagTv.setTextSize(14);
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                params.setMargins(8, 2, 8, 2);
+                tagTv.setLayoutParams(params);
+                tagTv.setBackgroundResource(R.drawable.round_bg_blue);
+                tagTv.setTextColor(ContextCompat.getColor(EditTagActivity.this, R.color.colorAccent));
+                tagTv.setMaxLines(1);
+                selectedTagLl.addView(tagTv);
+            }
+        }
 
     }
 

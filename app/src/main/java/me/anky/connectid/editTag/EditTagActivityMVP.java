@@ -22,7 +22,7 @@ public interface EditTagActivityMVP {
 
         void displayError();
 
-        void displayConnectionTags(List<String> connectionTags);
+        void displayConnectionTags();
     }
 
     interface Presenter {
