@@ -8,39 +8,31 @@
     android:padding="@dimen/margin_8dp"
     tools:context="me.anky.connectid.editTag.EditTagActivity">
 
+    <EditText
+        android:id="@+id/add_tag_et"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/margin_4dp"
+        android:layout_marginStart="@dimen/margin_4dp"
+        android:background="@drawable/round_bg_gray"
+        android:hint="Add a Tag"
+        android:inputType="text"
+        android:maxLength="30"
+        android:maxLines="1"
+        android:singleLine="true"
+        android:textSize="14sp" />
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
 
-        <LinearLayout
+        <RelativeLayout
             android:id="@+id/selected_tags"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
+            android:layout_height="match_parent">
 
-            <LinearLayout
-                android:id="@+id/selected_tag_container"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-            </LinearLayout>
-
-            <EditText
-                android:id="@+id/add_tag_et"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/margin_4dp"
-                android:layout_marginStart="@dimen/margin_4dp"
-                android:background="@drawable/round_bg_gray"
-                android:hint="Add a Tag"
-                android:inputType="text"
-                android:maxLength="30"
-                android:maxLines="1"
-                android:singleLine="true"
-                android:textSize="14sp" />
-        </LinearLayout>
+        </RelativeLayout>
     </ScrollView>
 
     <View

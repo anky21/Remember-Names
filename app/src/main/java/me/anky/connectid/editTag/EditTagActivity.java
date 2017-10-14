@@ -15,6 +15,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,8 +48,8 @@ public class EditTagActivity extends AppCompatActivity implements EditTagActivit
     @BindView(R.id.add_tag_et)
     EditText addTagEt;
 
-    @BindView(R.id.selected_tag_container)
-            LinearLayout selectedTagLl;
+    @BindView(R.id.selected_tags)
+    RelativeLayout selectedTagRl;
 
     String input = "";
 
@@ -135,7 +136,7 @@ public class EditTagActivity extends AppCompatActivity implements EditTagActivit
 
     @Override
     public void displayConnectionTags() {
-        selectedTagLl.removeAllViews();
+        selectedTagRl.removeAllViews();
         if (connectionTags.size()>0){
             for (String tag:connectionTags){
                 Log.v("testing", "selected tag is " + tag);
@@ -149,7 +150,7 @@ public class EditTagActivity extends AppCompatActivity implements EditTagActivit
                 tagTv.setBackgroundResource(R.drawable.round_bg_blue);
                 tagTv.setTextColor(ContextCompat.getColor(EditTagActivity.this, R.color.colorAccent));
                 tagTv.setMaxLines(1);
-                selectedTagLl.addView(tagTv);
+                selectedTagRl.addView(tagTv);
             }
         }
 
