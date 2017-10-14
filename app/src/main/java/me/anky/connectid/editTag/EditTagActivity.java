@@ -38,6 +38,8 @@ public class EditTagActivity extends AppCompatActivity implements EditTagActivit
     public List<ConnectionTag> allTags = new ArrayList<>();
     List<String> connectionTags = new ArrayList<>();
 
+    final static int TAG_BASE_NUMBER = 1000;
+
 
     @BindView(R.id.all_tags)
     LinearLayout allTagsLinear;
@@ -65,6 +67,10 @@ public class EditTagActivity extends AppCompatActivity implements EditTagActivit
         ButterKnife.bind(this);
 
         ((ConnectidApplication) getApplication()).getApplicationComponent().inject(this);
+
+//        int screenWidth = getResources().getDisplayMetrics().widthPixels;
+//
+//        Log.v("testing", "screenWidth is " + screenWidth);
 
         addTagEt.setOnKeyListener(this);
         addTagEt.addTextChangedListener(new TextWatcher() {
@@ -137,20 +143,67 @@ public class EditTagActivity extends AppCompatActivity implements EditTagActivit
     @Override
     public void displayConnectionTags() {
         selectedTagRl.removeAllViews();
-        if (connectionTags.size()>0){
-            for (String tag:connectionTags){
+        int containerWidth = selectedTagRl.getMeasuredWidth() - 16;
+        int i = 0;
+
+        int count = 0;
+        int currentWidth = 0;
+        boolean isNewLine = false;
+        boolean isFirstLine = true;
+
+        Log.v("testing", "container width is " + containerWidth);
+        if (connectionTags.size() > 0) {
+            for (String tag : connectionTags) {
+
                 Log.v("testing", "selected tag is " + tag);
                 TextView tagTv = new TextView(this);
+                tagTv.setId(TAG_BASE_NUMBER + i);
                 tagTv.setText(tag);
                 tagTv.setTextSize(14);
-                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                params.setMargins(8, 2, 8, 2);
+                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+                        RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                params.setMargins(8, 4, 8, 4);
                 tagTv.setLayoutParams(params);
                 tagTv.setBackgroundResource(R.drawable.round_bg_blue);
                 tagTv.setTextColor(ContextCompat.getColor(EditTagActivity.this, R.color.colorAccent));
                 tagTv.setMaxLines(1);
-                selectedTagRl.addView(tagTv);
+                tagTv.measure(0, 0);
+                int width = tagTv.getMeasuredWidth();
+                Log.v("testing", "width is " + tagTv.getMeasuredWidth());
+
+                if (currentWidth + width <= containerWidth) {
+                    currentWidth += width + 16;
+                    isNewLine = false;
+                    count++;
+                } else {
+                    currentWidth = width + 16;
+                    isNewLine = true;
+                    isFirstLine = false;
+                    count = 1;
+                }
+
+                // Add TextView to the screen
+                if (i == 0) {
+                    params.addRule(RelativeLayout.ALIGN_START);
+                    tagTv.setLayoutParams(params);
+                    selectedTagRl.addView(tagTv);
+                } else if (isNewLine) {
+                    params.addRule(RelativeLayout.ALIGN_LEFT);
+                    params.addRule(RelativeLayout.BELOW, TAG_BASE_NUMBER - 1 + i);
+                    tagTv.setLayoutParams(params);
+                    selectedTagRl.addView(tagTv);
+                } else if (isFirstLine) {
+                    params.addRule(RelativeLayout.RIGHT_OF, TAG_BASE_NUMBER - 1 + i);
+                    tagTv.setLayoutParams(params);
+                    selectedTagRl.addView(tagTv);
+                } else {
+                    params.addRule(RelativeLayout.RIGHT_OF, TAG_BASE_NUMBER - 1 + i);
+                    params.addRule(RelativeLayout.BELOW, TAG_BASE_NUMBER - count + i);
+                    tagTv.setLayoutParams(params);
+                    selectedTagRl.addView(tagTv);
+                }
+
+                i++;
             }
         }
 
