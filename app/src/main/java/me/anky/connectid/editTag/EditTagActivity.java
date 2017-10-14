@@ -81,10 +81,10 @@ public class EditTagActivity extends AppCompatActivity implements EditTagActivit
 
             @Override
             public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
-                Log.v("testing", charSequence + "");
+//                Log.v("testing", charSequence + "");
                 if (before == 0 && count == 1 && charSequence.charAt(start) == ',') {
 
-                    Log.v("testing", "hit comma");
+//                    Log.v("testing", "hit comma");
                     addTagEt.getText().replace(start, start + 1, "");
                     input = addTagEt.getText().toString().trim();
                     presenter.createNewTag(input, connectionTags);
@@ -118,7 +118,7 @@ public class EditTagActivity extends AppCompatActivity implements EditTagActivit
     public void displayAllTags(List<ConnectionTag> allTags) {
         searchTagsLv.setVisibility(View.GONE);
         for (ConnectionTag tag : allTags) {
-            Log.v("testing", "tag is " + tag.getTag());
+//            Log.v("testing", "tag is " + tag.getTag());
             TextView tagTv = new TextView(this);
             tagTv.setText(tag.getTag());
             tagTv.setTextSize(14);
@@ -151,11 +151,12 @@ public class EditTagActivity extends AppCompatActivity implements EditTagActivit
         boolean isNewLine = false;
         boolean isFirstLine = true;
 
-        Log.v("testing", "container width is " + containerWidth);
+//        Log.v("testing", "container width is " + containerWidth);
         if (connectionTags.size() > 0) {
-            for (String tag : connectionTags) {
+            for (final String tag : connectionTags) {
+                //ToDo: Check if the new tag is already in "All Tags"
 
-                Log.v("testing", "selected tag is " + tag);
+//                Log.v("testing", "selected tag is " + tag);
                 TextView tagTv = new TextView(this);
                 tagTv.setId(TAG_BASE_NUMBER + i);
                 tagTv.setText(tag);
@@ -168,8 +169,18 @@ public class EditTagActivity extends AppCompatActivity implements EditTagActivit
                 tagTv.setTextColor(ContextCompat.getColor(EditTagActivity.this, R.color.colorAccent));
                 tagTv.setMaxLines(1);
                 tagTv.measure(0, 0);
+                tagTv.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        selectedTagRl.removeView(view);
+                        connectionTags.remove(tag); // ToDo: Check if the tag is already in "All Tags"
+                        // Refresh the screen
+                        displayConnectionTags();
+                    }
+                });
+
                 int width = tagTv.getMeasuredWidth();
-                Log.v("testing", "width is " + tagTv.getMeasuredWidth());
+//                Log.v("testing", "width is " + tagTv.getMeasuredWidth());
 
                 if (currentWidth + width <= containerWidth) {
                     currentWidth += width + 16;
@@ -212,7 +223,7 @@ public class EditTagActivity extends AppCompatActivity implements EditTagActivit
     @Override
     public boolean onKey(View view, int i, KeyEvent event) {
         if (i == KeyEvent.KEYCODE_COMMA || i == KeyEvent.KEYCODE_ENTER) {
-            Log.v("testing", "pressed key is " + i);
+//            Log.v("testing", "pressed key is " + i);
             input = addTagEt.getText().toString().trim();
             presenter.createNewTag(input, connectionTags);
 
