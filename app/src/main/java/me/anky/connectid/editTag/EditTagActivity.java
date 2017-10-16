@@ -116,9 +116,24 @@ public class EditTagActivity extends AppCompatActivity implements EditTagActivit
 
     @Override
     public void displayAllTags(List<ConnectionTag> allTags) {
+        // Clear all views
+        allTagsLinear.removeAllViews();
+
+        this.allTags = allTags;
         searchTagsLv.setVisibility(View.GONE);
         for (ConnectionTag tag : allTags) {
 //            Log.v("testing", "tag is " + tag.getTag());
+            boolean isSelectedTag = false;
+
+            if (connectionTags != null && connectionTags.size() > 0) {
+                for (String selectedTag : connectionTags) {
+                    if (tag.getTag().equalsIgnoreCase(selectedTag)) {
+                        isSelectedTag = true;
+                        break;
+                    }
+                }
+            }
+
             TextView tagTv = new TextView(this);
             tagTv.setText(tag.getTag());
             tagTv.setTextSize(14);
@@ -126,7 +141,14 @@ public class EditTagActivity extends AppCompatActivity implements EditTagActivit
                     LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             params.setMargins(8, 2, 8, 2);
             tagTv.setLayoutParams(params);
-            tagTv.setBackgroundResource(R.drawable.round_bg_gray);
+
+            if(isSelectedTag){
+                tagTv.setTextColor(ContextCompat.getColor(EditTagActivity.this, R.color.colorAccent));
+                tagTv.setBackgroundResource(R.drawable.round_bg_blue);
+            }else {
+                tagTv.setBackgroundResource(R.drawable.round_bg_gray);
+            }
+
             allTagsLinear.addView(tagTv);
         }
     }
@@ -155,6 +177,14 @@ public class EditTagActivity extends AppCompatActivity implements EditTagActivit
         if (connectionTags.size() > 0) {
             for (final String tag : connectionTags) {
                 //ToDo: Check if the new tag is already in "All Tags"
+                if (allTags != null && allTags.size() > 0) {
+                    for (ConnectionTag allTagsItem : allTags) {
+                        if (allTagsItem.getTag().equalsIgnoreCase(tag)) {
+                            // Refresh allTags
+                            displayAllTags(allTags);
+                        }
+                    }
+                }
 
 //                Log.v("testing", "selected tag is " + tag);
                 TextView tagTv = new TextView(this);
@@ -169,11 +199,22 @@ public class EditTagActivity extends AppCompatActivity implements EditTagActivit
                 tagTv.setTextColor(ContextCompat.getColor(EditTagActivity.this, R.color.colorAccent));
                 tagTv.setMaxLines(1);
                 tagTv.measure(0, 0);
+
                 tagTv.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         selectedTagRl.removeView(view);
-                        connectionTags.remove(tag); // ToDo: Check if the tag is already in "All Tags"
+                        connectionTags.remove(tag);
+
+                        // ToDo: Check if the tag is already in "All Tags"
+                        if (allTags != null && allTags.size() > 0) {
+                            for (ConnectionTag allTagsItem : allTags) {
+                                if (allTagsItem.getTag().equalsIgnoreCase(tag)) {
+                                    // Refresh allTags
+                                    displayAllTags(allTags);
+                                }
+                            }
+                        }
                         // Refresh the screen
                         displayConnectionTags();
                     }

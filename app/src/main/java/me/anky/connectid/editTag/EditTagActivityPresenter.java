@@ -41,7 +41,7 @@ public class EditTagActivityPresenter implements EditTagActivityMVP.Presenter {
                 connectionTags.add(input);
             } else {
                 for (int i=0; i<connectionTags.size();i++){
-                    if (connectionTags.get(i).equals(input)){
+                    if (connectionTags.get(i).equalsIgnoreCase(input)){
                         existingTagPosition = i;
                     }
                 }
