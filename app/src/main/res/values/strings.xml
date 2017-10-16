@@ -54,4 +54,5 @@
     <string name="new_profile_insertion_msg">A new profile is inserted.</string>
     <string name="data_loading_error">There was an error loading data. Please try again later, or clean the data for this app.</string>
     <string name="empty_view_msg">Met someone today? Create a profile for him/her here.</string>
+    <string name="edit_tags">Edit Tags</string>
 </resources>
