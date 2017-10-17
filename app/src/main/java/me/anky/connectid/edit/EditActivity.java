@@ -59,7 +59,7 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
     private ConnectidConnection newConnection;
     private ConnectidConnection updatedConnection;
     private boolean intentHasExtra = false;
-    private int mDatabaseId;
+    private int mDatabaseId = -1;
     //Boolean flag that keeps track of whether the connection has been edited (true) or not (false)
     private boolean mConnectionHasChanged = false;
 
@@ -233,6 +233,9 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
     @OnClick(R.id.all_tags_container)
     public void launchEditTagActivity(View view) {
         Intent intent = new Intent(this, EditTagActivity.class);
+        if (mDatabaseId != -1){
+            intent.putExtra("data_id", mDatabaseId);
+        }
         startActivity(intent);
         overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
     }

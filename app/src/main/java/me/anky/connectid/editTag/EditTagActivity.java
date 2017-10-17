@@ -42,6 +42,8 @@ public class EditTagActivity extends AppCompatActivity implements EditTagActivit
 
     final static int TAG_BASE_NUMBER = 1000;
 
+    int mDatabaseId = -1;
+
 
     @BindView(R.id.all_tags)
     LinearLayout allTagsLinear;
@@ -73,6 +75,11 @@ public class EditTagActivity extends AppCompatActivity implements EditTagActivit
 //        int screenWidth = getResources().getDisplayMetrics().widthPixels;
 //
 //        Log.v("testing", "screenWidth is " + screenWidth);
+
+        Intent intent = getIntent();
+        if (intent.hasExtra("data_id")){
+            mDatabaseId = intent.getIntExtra("data_id", -1);
+        }
 
         addTagEt.setOnKeyListener(this);
         addTagEt.addTextChangedListener(new TextWatcher() {
@@ -129,6 +136,10 @@ public class EditTagActivity extends AppCompatActivity implements EditTagActivit
         switch (item.getItemId()){
             case R.id.action_save:
                 Toast.makeText(this, "hello", Toast.LENGTH_SHORT).show();
+                if (mDatabaseId != -1){
+                    presenter.updateConnectionTags(mDatabaseId, connectionTags);
+                }
+                finish();
                 return true;
         }
 

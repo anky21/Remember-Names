@@ -159,6 +159,14 @@ public class ConnectionsLocalRepository implements ConnectionsDataSource {
         return context.getContentResolver().update(uri, contentValues, null, null);
     }
 
+    @Override
+    public int updateConnection(int id, String tags) {
+        Uri uri = ConnectidProvider.Connections.withId(id);
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(ConnectidColumns.TAGS, tags);
+
+        return context.getContentResolver().update(uri, contentValues, null, null);
+    }
 
     @Override
     public Single<List<ConnectionTag>> getTags() {

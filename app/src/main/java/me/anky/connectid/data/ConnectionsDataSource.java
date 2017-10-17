@@ -16,6 +16,8 @@ public interface ConnectionsDataSource {
 
     int updateConnection(ConnectidConnection connection);
 
+    int updateConnection(int id, String tags);
+
     Single<List<ConnectionTag>> getTags();
 
     Single<ConnectionTag> getOneTag(int data_id);

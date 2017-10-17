@@ -34,5 +34,7 @@ public interface EditTagActivityMVP {
         void loadTags();
 
         void unsubscribe();
+
+        void updateConnectionTags(int id, List<String> connectionTags);
     }
 }

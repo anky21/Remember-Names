@@ -83,4 +83,17 @@ public class EditTagActivityPresenter implements EditTagActivityMVP.Presenter {
     public void unsubscribe() {
         compositeDisposable.clear();
     }
+
+    @Override
+    public void updateConnectionTags(int id, List<String> connectionTags) {
+        if (connectionTags == null || connectionTags.size() == 0){
+            return;
+        } else {
+            StringBuffer tagString = new StringBuffer();
+            for (String tag : connectionTags){
+                tagString.append(tag).append(",");
+            }
+            dataSource.updateConnection(id, tagString.toString());
+        }
+    }
 }
