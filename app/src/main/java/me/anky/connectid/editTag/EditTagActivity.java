@@ -39,6 +39,7 @@ public class EditTagActivity extends AppCompatActivity implements EditTagActivit
 
     public List<ConnectionTag> allTags = new ArrayList<>();
     List<String> connectionTags = new ArrayList<>();
+    String oldTags = "black,,";
 
     final static int TAG_BASE_NUMBER = 1000;
 
@@ -138,6 +139,7 @@ public class EditTagActivity extends AppCompatActivity implements EditTagActivit
                 Toast.makeText(this, "hello", Toast.LENGTH_SHORT).show();
                 if (mDatabaseId != -1){
                     presenter.updateConnectionTags(mDatabaseId, connectionTags);
+                    presenter.updateTagTable(oldTags, allTags, connectionTags, mDatabaseId);
                 }
                 finish();
                 return true;

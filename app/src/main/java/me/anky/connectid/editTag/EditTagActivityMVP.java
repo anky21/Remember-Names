@@ -36,5 +36,7 @@ public interface EditTagActivityMVP {
         void unsubscribe();
 
         void updateConnectionTags(int id, List<String> connectionTags);
+
+        void updateTagTable(String oldTags, List<ConnectionTag> allTags, List<String> connectionTags, int databaseId);
     }
 }

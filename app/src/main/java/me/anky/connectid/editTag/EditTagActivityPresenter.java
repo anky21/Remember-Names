@@ -1,5 +1,8 @@
 package me.anky.connectid.editTag;
 
+import android.util.Log;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -94,6 +97,32 @@ public class EditTagActivityPresenter implements EditTagActivityMVP.Presenter {
                 tagString.append(tag).append(",");
             }
             dataSource.updateConnection(id, tagString.toString());
+        }
+    }
+
+    @Override
+    public void updateTagTable(String oldTags, List<ConnectionTag> allTags,
+                               List<String> connectionTags, int databaseId) {
+        // Remove oldTags from connectionTags (no need to update these tags)
+        if(!oldTags.equals("")){
+            List<Integer> positions = new ArrayList<>();
+            List<String> removedTags = new ArrayList<>();
+            String[] oldTagsArray = oldTags.split(",");
+            for (String tag : oldTagsArray){
+//                Log.v("testing", "old tag is " + tag);
+                for (int i=0; i<connectionTags.size(); i++){
+                    if (tag != null && !tag.trim().equals("")
+                            && tag.trim().equalsIgnoreCase(connectionTags.get(i))){
+                        positions.add(i);
+                    }
+                }
+            }
+            if (positions != null && positions.size()>0){
+                for (int i=0; i<positions.size(); i++){
+//                    Log.v("testing", "remove " + connectionTags.get(i));
+                    connectionTags.remove(positions.get(i));
+                }
+            }
         }
     }
 }
