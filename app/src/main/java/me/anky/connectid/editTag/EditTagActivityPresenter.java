@@ -121,29 +121,25 @@ public class EditTagActivityPresenter implements EditTagActivityMVP.Presenter {
                                List<String> connectionTags, int databaseId) {
         // Remove oldTags from connectionTags (no need to update these tags)
         if(!oldTags.equals("")){
-            List<Integer> positions = new ArrayList<>();
-            List<String> removedTags = new ArrayList<>();
+
             String[] oldTagsArray = oldTags.split(",");
             List<String> oldTagsList = new ArrayList(Arrays.asList(oldTagsArray));
 
-            for (String s:oldTagsList){
-                if (connectionTags.contains(s)){
-                    connectionTags.remove(s);
-                    Log.v("testing", "remove " + s);
-
+            Iterator<String> i = connectionTags.iterator();
+            while (i.hasNext()) {
+                String tag = i.next();
+                if (oldTagsList.contains(tag)) {
+                    i.remove();
+                    oldTagsList.remove(tag);
                 }
             }
-//            Iterator<String> i = connectionTags.iterator();
-//            while (i.hasNext()) {
-//                String tag = i.next();
-//                if (oldTagsList.contains(tag)) {
-//                    i.remove();
-//                }
-//            }
             for (String tag: connectionTags){
                 Log.v("testing", "connection tag is " + tag);
             }
 
+            for (String tag:oldTagsList){
+                Log.v("testing", "old tag is " + tag);
+            }
         }
     }
 }
