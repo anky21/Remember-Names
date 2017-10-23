@@ -22,7 +22,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -38,6 +40,7 @@ import me.anky.connectid.root.ConnectidApplication;
 public class EditTagActivity extends AppCompatActivity implements EditTagActivityMVP.View, View.OnKeyListener {
 
     public List<ConnectionTag> allTags = new ArrayList<>();
+    public Map<String, List<String>> allTagsHashmap = new HashMap<>();
     List<String> connectionTags = new ArrayList<>();
     String oldTags = "black,,";
 
@@ -97,7 +100,7 @@ public class EditTagActivity extends AppCompatActivity implements EditTagActivit
 //                    Log.v("testing", "hit comma");
                     addTagEt.getText().replace(start, start + 1, "");
                     input = addTagEt.getText().toString().trim();
-                    presenter.createNewTag(input, connectionTags);
+                    presenter.createNewTag(input, connectionTags, allTags);
                     addTagEt.getText().clear();
                 }
             }
@@ -109,7 +112,7 @@ public class EditTagActivity extends AppCompatActivity implements EditTagActivit
                     addTagEt.getText().clear();
                     String modifiedInput = input.split(",")[0].trim();
                     input = modifiedInput;
-                    presenter.createNewTag(input, connectionTags);
+                    presenter.createNewTag(input, connectionTags, allTags);
 
                 }
 
@@ -154,8 +157,11 @@ public class EditTagActivity extends AppCompatActivity implements EditTagActivit
         allTagsLinear.removeAllViews();
 
         this.allTags = allTags;
+
         searchTagsLv.setVisibility(View.GONE);
         for (ConnectionTag tag : allTags) {
+            String tagString = tag.getTag();
+
 //            Log.v("testing", "tag is " + tag.getTag());
             boolean isSelectedTag = false;
 
@@ -300,7 +306,7 @@ public class EditTagActivity extends AppCompatActivity implements EditTagActivit
         if (i == KeyEvent.KEYCODE_COMMA || i == KeyEvent.KEYCODE_ENTER) {
 //            Log.v("testing", "pressed key is " + i);
             input = addTagEt.getText().toString().trim();
-            presenter.createNewTag(input, connectionTags);
+            presenter.createNewTag(input, connectionTags, allTags);
 
             addTagEt.setText("");
             addTagEt.setFocusableInTouchMode(true);

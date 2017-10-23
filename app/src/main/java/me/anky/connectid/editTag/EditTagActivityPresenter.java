@@ -37,9 +37,19 @@ public class EditTagActivityPresenter implements EditTagActivityMVP.Presenter {
     }
 
     @Override
-    public void createNewTag(String input, List<String> connectionTags) {
+    public void createNewTag(String input, List<String> connectionTags, List<ConnectionTag> allTags) {
         int existingTagPosition = -1;
+
+        // If the input is already in the allTags with different cases, use the existing one
         if (!input.equals("")){
+            if (allTags != null && allTags.size() > 0){
+                for (ConnectionTag allTagsItem : allTags){
+                    if(allTagsItem.getTag().equalsIgnoreCase(input)){
+                        input = allTagsItem.getTag();
+                    }
+                }
+            }
+
             if (connectionTags.size() == 0){
                 connectionTags.add(input);
             } else {

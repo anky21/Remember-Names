@@ -29,7 +29,7 @@ public interface EditTagActivityMVP {
 
         void setView(EditTagActivityMVP.View view);
 
-        void createNewTag(String input, List<String> connectionTags);
+        void createNewTag(String input, List<String> connectionTags, List<ConnectionTag> allTags);
 
         void loadTags();
 
