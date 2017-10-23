@@ -42,7 +42,7 @@ public class EditTagActivity extends AppCompatActivity implements EditTagActivit
     public List<ConnectionTag> allTags = new ArrayList<>();
     public Map<String, List<String>> allTagsHashmap = new HashMap<>();
     List<String> connectionTags = new ArrayList<>();
-    String oldTags = "black,,";
+    String oldTags = "black,cool,white,us";
 
     final static int TAG_BASE_NUMBER = 1000;
 

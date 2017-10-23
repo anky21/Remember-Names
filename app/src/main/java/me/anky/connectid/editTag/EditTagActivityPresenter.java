@@ -1,12 +1,18 @@
 package me.anky.connectid.editTag;
 
+import android.graphics.Movie;
 import android.util.Log;
 
+import com.facebook.stetho.common.ListUtil;
+
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.inject.Inject;
 
+import butterknife.internal.Utils;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
@@ -118,21 +124,26 @@ public class EditTagActivityPresenter implements EditTagActivityMVP.Presenter {
             List<Integer> positions = new ArrayList<>();
             List<String> removedTags = new ArrayList<>();
             String[] oldTagsArray = oldTags.split(",");
-            for (String tag : oldTagsArray){
-//                Log.v("testing", "old tag is " + tag);
-                for (int i=0; i<connectionTags.size(); i++){
-                    if (tag != null && !tag.trim().equals("")
-                            && tag.trim().equalsIgnoreCase(connectionTags.get(i))){
-                        positions.add(i);
-                    }
+            List<String> oldTagsList = new ArrayList(Arrays.asList(oldTagsArray));
+
+            for (String s:oldTagsList){
+                if (connectionTags.contains(s)){
+                    connectionTags.remove(s);
+                    Log.v("testing", "remove " + s);
+
                 }
             }
-            if (positions != null && positions.size()>0){
-                for (int i=0; i<positions.size(); i++){
-//                    Log.v("testing", "remove " + connectionTags.get(i));
-                    connectionTags.remove(positions.get(i));
-                }
+//            Iterator<String> i = connectionTags.iterator();
+//            while (i.hasNext()) {
+//                String tag = i.next();
+//                if (oldTagsList.contains(tag)) {
+//                    i.remove();
+//                }
+//            }
+            for (String tag: connectionTags){
+                Log.v("testing", "connection tag is " + tag);
             }
+
         }
     }
 }
