@@ -14,6 +14,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.List;
 import java.util.Random;
 
 import me.anky.connectid.data.source.local.ConnectidColumns;
@@ -123,5 +124,13 @@ public class Utilities {
                 activity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
             }
         }
+    }
+
+    public static String createStringFromList(List<String> ids){
+        StringBuffer databaseIds = new StringBuffer();
+        for (String databaseId : ids) {
+            databaseIds.append(databaseId).append(",");
+        }
+        return databaseIds.toString();
     }
 }

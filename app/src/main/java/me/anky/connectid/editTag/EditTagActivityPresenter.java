@@ -18,6 +18,7 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
+import me.anky.connectid.Utilities;
 import me.anky.connectid.data.ConnectionTag;
 import me.anky.connectid.data.ConnectionsDataSource;
 
@@ -119,12 +120,13 @@ public class EditTagActivityPresenter implements EditTagActivityMVP.Presenter {
     @Override
     public void updateTagTable(String oldTags, List<ConnectionTag> allTags,
                                List<String> connectionTags, int databaseId) {
+        List<String> oldTagsList = null;
         // Remove oldTags from connectionTags (no update),
-        // Also remove unselected tags from oldTags
+        // Have oldTagsList with just unselected tags
         if (!oldTags.equals("")) {
 
             String[] oldTagsArray = oldTags.split(",");
-            List<String> oldTagsList = new ArrayList(Arrays.asList(oldTagsArray));
+            oldTagsList = new ArrayList(Arrays.asList(oldTagsArray));
 
             Iterator<String> i = connectionTags.iterator();
             while (i.hasNext()) {
@@ -136,8 +138,22 @@ public class EditTagActivityPresenter implements EditTagActivityMVP.Presenter {
             }
         }
 
+        // Update unselected tags in the Tags table
+        if (oldTagsList != null && oldTagsList.size() != 0) {
+            for (ConnectionTag tag : allTags) {
+                if (oldTagsList.contains(tag.getTag())) {
+                    String[] databaseIdsArray = tag.getConnection_ids().split(",");
+                    List<String> databaseIdsList = new ArrayList(Arrays.asList(databaseIdsArray));
+                    databaseIdsList.remove(String.valueOf(databaseId));
+                    String databaseIdsString = Utilities.createStringFromList(databaseIdsList);
+                    ConnectionTag modifiedTag = new ConnectionTag(tag.getDatabaseId(), tag.getTag(), databaseIdsString);
+                    dataSource.updateTag(modifiedTag);
+                }
+            }
+        }
+
         // Bulk insert new tags into the Tags table
-        if (connectionTags != null && !connectionTags.equals("") && connectionTags.size() != 0) {
+        if (connectionTags != null && connectionTags.size() != 0) {
             dataSource.insertBulkTags(connectionTags, databaseId);
         }
 
