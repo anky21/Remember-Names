@@ -142,7 +142,7 @@ public class EditTagActivity extends AppCompatActivity implements EditTagActivit
     }
 
     @Override
-    public void displayAllTags(List<ConnectionTag> allTags) {
+    public void displayAllTags(final List<ConnectionTag> allTags) {
         // Clear all views
         allTagsLayout.removeAllViews();
         int containerWidth = allTagsLayout.getMeasuredWidth() - 16;
@@ -184,6 +184,20 @@ public class EditTagActivity extends AppCompatActivity implements EditTagActivit
             } else {
                 tagTv.setBackgroundResource(R.drawable.round_bg_gray);
             }
+
+            final String tagString = tag.getTag();
+            tagTv.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (connectionTags.contains(tagString)){
+                        connectionTags.remove(tagString);
+                    } else {
+                        connectionTags.add(tagString);
+                    }
+                    displayConnectionTags();
+                    displayAllTags(allTags);
+                }
+            });
 
             tagTv.measure(0, 0);
 
