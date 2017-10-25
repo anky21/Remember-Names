@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -21,6 +22,7 @@ import java.util.List;
 import java.util.Random;
 
 import me.anky.connectid.data.source.local.ConnectidColumns;
+import me.anky.connectid.details.DetailsActivity;
 
 /**
  * Created by Anky An on 28/07/2017.
@@ -31,6 +33,7 @@ public class Utilities {
     private static final Random random = new Random();
     private static final String CHARS = "abcdefghijkmnopqrstuvwxyz";
     public static final String SORTBY = "sortby";
+    public static final int TAG_BASE_NUMBER = 1000;
 
     // Load image from internal storage
     public static Bitmap loadImageFromStorage(String imageName, String path) {
@@ -135,5 +138,70 @@ public class Utilities {
             databaseIds.append(databaseId).append(",");
         }
         return databaseIds.toString();
+    }
+
+    // Display tags in DetailActivity && EditActivity
+    public static void displayTags(Context context, List<String> tags, RelativeLayout layout) {
+        layout.removeAllViews();
+        int containerWidth = layout.getMeasuredWidth() - 16;
+        int i = 0;
+
+        int count = 0;
+        int currentWidth = 0;
+        boolean isNewLine = false;
+        boolean isFirstLine = true;
+
+        for (String tag : tags) {
+            TextView tagTv = new TextView(context);
+            tagTv.setId(TAG_BASE_NUMBER + i);
+            tagTv.setText(tag);
+            tagTv.setTextSize(14);
+            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+                    RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+            params.setMargins(8, 4, 8, 4);
+            tagTv.setMaxLines(1);
+            tagTv.setLayoutParams(params);
+
+            tagTv.setTextColor(ContextCompat.getColor(context, R.color.colorAccent));
+            tagTv.setBackgroundResource(R.drawable.round_bg_blue);
+
+            tagTv.measure(0, 0);
+
+            int width = tagTv.getMeasuredWidth();
+
+            if (currentWidth + width < containerWidth) {
+                currentWidth += width + 16;
+                isNewLine = false;
+                count++;
+            } else {
+                currentWidth = width + 16;
+                isNewLine = true;
+                isFirstLine = false;
+                count = 1;
+            }
+
+            // Add TextView to the screen
+            if (i == 0) {
+                params.addRule(RelativeLayout.ALIGN_START);
+                tagTv.setLayoutParams(params);
+                layout.addView(tagTv);
+            } else if (isNewLine) {
+                params.addRule(RelativeLayout.ALIGN_LEFT);
+                params.addRule(RelativeLayout.BELOW, TAG_BASE_NUMBER - 1 + i);
+                tagTv.setLayoutParams(params);
+                layout.addView(tagTv);
+            } else if (isFirstLine) {
+                params.addRule(RelativeLayout.RIGHT_OF, TAG_BASE_NUMBER - 1 + i);
+                tagTv.setLayoutParams(params);
+                layout.addView(tagTv);
+            } else {
+                params.addRule(RelativeLayout.RIGHT_OF, TAG_BASE_NUMBER - 1 + i);
+                params.addRule(RelativeLayout.BELOW, TAG_BASE_NUMBER - count + i);
+                tagTv.setLayoutParams(params);
+                layout.addView(tagTv);
+            }
+
+            i++;
+        }
     }
 }

@@ -36,6 +36,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.reactivex.Single;
 import me.anky.connectid.R;
+import me.anky.connectid.Utilities;
 import me.anky.connectid.data.ConnectidConnection;
 import me.anky.connectid.data.ConnectionTag;
 import me.anky.connectid.edit.EditActivity;
@@ -271,71 +272,7 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
     @Override
     public void displayAllTags(List<String> tags) {
         mEmptyTagsTv.setVisibility(View.GONE);
-        mTagsContainer.removeAllViews();
-        int containerWidth = mTagsContainer.getMeasuredWidth() - 16;
-        int i = 0;
-
-        int count = 0;
-        int currentWidth = 0;
-        boolean isNewLine = false;
-        boolean isFirstLine = true;
-
-//        this.allTags = allTags;
-
-//        searchTagsLv.setVisibility(View.GONE);
-        for (String tag : tags) {
-            TextView tagTv = new TextView(this);
-            tagTv.setId(TAG_BASE_NUMBER + i);
-            tagTv.setText(tag);
-            tagTv.setTextSize(14);
-            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
-                    RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-            params.setMargins(8, 4, 8, 4);
-            tagTv.setMaxLines(1);
-            tagTv.setLayoutParams(params);
-
-            tagTv.setTextColor(ContextCompat.getColor(DetailsActivity.this, R.color.colorAccent));
-            tagTv.setBackgroundResource(R.drawable.round_bg_blue);
-
-            tagTv.measure(0, 0);
-
-            int width = tagTv.getMeasuredWidth();
-
-            if (currentWidth + width < containerWidth) {
-                currentWidth += width + 16;
-                isNewLine = false;
-                count++;
-            } else {
-                currentWidth = width + 16;
-                isNewLine = true;
-                isFirstLine = false;
-                count = 1;
-            }
-
-            // Add TextView to the screen
-            if (i == 0) {
-                params.addRule(RelativeLayout.ALIGN_START);
-                tagTv.setLayoutParams(params);
-                mTagsContainer.addView(tagTv);
-            } else if (isNewLine) {
-                params.addRule(RelativeLayout.ALIGN_LEFT);
-                params.addRule(RelativeLayout.BELOW, TAG_BASE_NUMBER - 1 + i);
-                tagTv.setLayoutParams(params);
-                mTagsContainer.addView(tagTv);
-            } else if (isFirstLine) {
-                params.addRule(RelativeLayout.RIGHT_OF, TAG_BASE_NUMBER - 1 + i);
-                tagTv.setLayoutParams(params);
-                mTagsContainer.addView(tagTv);
-            } else {
-                params.addRule(RelativeLayout.RIGHT_OF, TAG_BASE_NUMBER - 1 + i);
-                params.addRule(RelativeLayout.BELOW, TAG_BASE_NUMBER - count + i);
-                tagTv.setLayoutParams(params);
-                mTagsContainer.addView(tagTv);
-            }
-
-            i++;
-        }
-
+        Utilities.displayTags(DetailsActivity.this, tags, mTagsContainer);
     }
 
     @OnClick(R.id.edit_fab)
