@@ -18,31 +18,20 @@
             android:text="Tags:" />
 
         <TextView
-            android:id="@+id/all_tags_tv"
+            android:id="@+id/empty_tags_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="All Tags"/>
+            android:text="Create a tag"/>
 
-        <LinearLayout
+        <RelativeLayout
             android:id="@+id/tags_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:layout_marginStart="@dimen/margin_24dp"
             android:paddingBottom="@dimen/margin_4dp"
             android:paddingTop="@dimen/margin_4dp">
 
-            <TextView
-                android:id="@+id/tags_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingLeft="8dp"
-                android:paddingRight="8dp"
-                android:background="@drawable/round_bg_blue"
-                android:text="Round me up !"
-                android:textColor="@color/colorAccent" />
-
-        </LinearLayout>
+        </RelativeLayout>
 
         <include layout="@layout/divider_view" />
     </LinearLayout>

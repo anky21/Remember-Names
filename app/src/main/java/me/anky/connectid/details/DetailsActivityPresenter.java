@@ -1,5 +1,9 @@
 package me.anky.connectid.details;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import javax.inject.Inject;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -8,6 +12,7 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
 import me.anky.connectid.data.ConnectidConnection;
+import me.anky.connectid.data.ConnectionTag;
 import me.anky.connectid.data.ConnectionsDataSource;
 
 public class DetailsActivityPresenter implements DetailsActivityMVP.Presenter {
@@ -37,6 +42,15 @@ public class DetailsActivityPresenter implements DetailsActivityMVP.Presenter {
                     @Override
                     public void onSuccess(@NonNull ConnectidConnection connection) {
                         view.displayConnection(connection);
+                        String tags = connection.getTags();
+                        String[] tagsArray = tags.split(",");
+                        List<String> tagsList = new ArrayList(Arrays.asList(tagsArray));
+                        if (tagsList.size() == 0){
+                            view.displayNoTags();
+                        } else {
+                            view.displayAllTags(tagsList);
+                        }
+
                     }
 
                     @Override
@@ -44,6 +58,7 @@ public class DetailsActivityPresenter implements DetailsActivityMVP.Presenter {
 
                     }
                 });
+        compositeDisposable.add(disposableConnectionSingleObserver);
     }
 
     @Override
@@ -81,4 +96,5 @@ public class DetailsActivityPresenter implements DetailsActivityMVP.Presenter {
     public void unsubscribe() {
         compositeDisposable.clear();
     }
+
 }

@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -18,12 +19,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
 import java.io.File;
+import java.util.List;
 import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
@@ -34,7 +37,9 @@ import butterknife.OnClick;
 import io.reactivex.Single;
 import me.anky.connectid.R;
 import me.anky.connectid.data.ConnectidConnection;
+import me.anky.connectid.data.ConnectionTag;
 import me.anky.connectid.edit.EditActivity;
+import me.anky.connectid.editTag.EditTagActivity;
 import me.anky.connectid.root.ConnectidApplication;
 
 public class DetailsActivity extends AppCompatActivity implements DetailsActivityMVP.View {
@@ -50,6 +55,7 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
     private String mCommonFriends;
     private String mDescription;
     private String mTags;
+    final static int TAG_BASE_NUMBER = 2000;
 
     @BindView(R.id.toolbar_1)
     Toolbar mToolbar;
@@ -73,7 +79,10 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
     TextView mDescriptionTv;
 
     @BindView(R.id.tags_container)
-    LinearLayout mTagsContainer;
+    RelativeLayout mTagsContainer;
+
+    @BindView(R.id.empty_tags_tv)
+    TextView mEmptyTagsTv;
 
     @Inject
     DetailsActivityPresenter presenter;
@@ -251,6 +260,82 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
         setResult(RESULT_OK, data);
         finish();
         overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
+    }
+
+    @Override
+    public void displayNoTags() {
+        mTagsContainer.setVisibility(View.GONE);
+        mEmptyTagsTv.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void displayAllTags(List<String> tags) {
+        mEmptyTagsTv.setVisibility(View.GONE);
+        mTagsContainer.removeAllViews();
+        int containerWidth = mTagsContainer.getMeasuredWidth() - 16;
+        int i = 0;
+
+        int count = 0;
+        int currentWidth = 0;
+        boolean isNewLine = false;
+        boolean isFirstLine = true;
+
+//        this.allTags = allTags;
+
+//        searchTagsLv.setVisibility(View.GONE);
+        for (String tag : tags) {
+            TextView tagTv = new TextView(this);
+            tagTv.setId(TAG_BASE_NUMBER + i);
+            tagTv.setText(tag);
+            tagTv.setTextSize(14);
+            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+                    RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+            params.setMargins(8, 4, 8, 4);
+            tagTv.setMaxLines(1);
+            tagTv.setLayoutParams(params);
+
+            tagTv.setTextColor(ContextCompat.getColor(DetailsActivity.this, R.color.colorAccent));
+            tagTv.setBackgroundResource(R.drawable.round_bg_blue);
+
+            tagTv.measure(0, 0);
+
+            int width = tagTv.getMeasuredWidth();
+
+            if (currentWidth + width < containerWidth) {
+                currentWidth += width + 16;
+                isNewLine = false;
+                count++;
+            } else {
+                currentWidth = width + 16;
+                isNewLine = true;
+                isFirstLine = false;
+                count = 1;
+            }
+
+            // Add TextView to the screen
+            if (i == 0) {
+                params.addRule(RelativeLayout.ALIGN_START);
+                tagTv.setLayoutParams(params);
+                mTagsContainer.addView(tagTv);
+            } else if (isNewLine) {
+                params.addRule(RelativeLayout.ALIGN_LEFT);
+                params.addRule(RelativeLayout.BELOW, TAG_BASE_NUMBER - 1 + i);
+                tagTv.setLayoutParams(params);
+                mTagsContainer.addView(tagTv);
+            } else if (isFirstLine) {
+                params.addRule(RelativeLayout.RIGHT_OF, TAG_BASE_NUMBER - 1 + i);
+                tagTv.setLayoutParams(params);
+                mTagsContainer.addView(tagTv);
+            } else {
+                params.addRule(RelativeLayout.RIGHT_OF, TAG_BASE_NUMBER - 1 + i);
+                params.addRule(RelativeLayout.BELOW, TAG_BASE_NUMBER - count + i);
+                tagTv.setLayoutParams(params);
+                mTagsContainer.addView(tagTv);
+            }
+
+            i++;
+        }
+
     }
 
     @OnClick(R.id.edit_fab)

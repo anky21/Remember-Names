@@ -1,7 +1,10 @@
 package me.anky.connectid.details;
 
+import java.util.List;
+
 import io.reactivex.Single;
 import me.anky.connectid.data.ConnectidConnection;
+import me.anky.connectid.data.ConnectionTag;
 
 public interface DetailsActivityMVP {
 
@@ -14,6 +17,10 @@ public interface DetailsActivityMVP {
         void displayError();
 
         void displaySuccess();
+
+        void displayNoTags();
+
+        void displayAllTags(List<String> tags);
     }
 
     interface Presenter {
