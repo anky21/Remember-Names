@@ -5,9 +5,12 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -126,7 +129,7 @@ public class Utilities {
         }
     }
 
-    public static String createStringFromList(List<String> ids){
+    public static String createStringFromList(List<String> ids) {
         StringBuffer databaseIds = new StringBuffer();
         for (String databaseId : ids) {
             databaseIds.append(databaseId).append(",");

@@ -1,19 +1,15 @@
 package me.anky.connectid.editTag;
 
-import android.app.Service;
 import android.content.Intent;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -22,35 +18,29 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import me.anky.connectid.R;
-import me.anky.connectid.Utilities;
 import me.anky.connectid.data.ConnectionTag;
-import me.anky.connectid.edit.EditActivity;
 import me.anky.connectid.root.ConnectidApplication;
 
 public class EditTagActivity extends AppCompatActivity implements EditTagActivityMVP.View, View.OnKeyListener {
 
     public List<ConnectionTag> allTags = new ArrayList<>();
-    public Map<String, List<String>> allTagsHashmap = new HashMap<>();
     List<String> connectionTags = new ArrayList<>();
     String oldTags = "black,cool,white,US";
 
     final static int TAG_BASE_NUMBER = 1000;
+    final static int TAG_Base_NUMBER2 = 3000;
 
     int mDatabaseId = -1;
 
-
     @BindView(R.id.all_tags)
-    LinearLayout allTagsLinear;
+    RelativeLayout allTagsLayout;
 
     @BindView(R.id.search_tags_listview)
     ListView searchTagsLv;
@@ -81,7 +71,7 @@ public class EditTagActivity extends AppCompatActivity implements EditTagActivit
 //        Log.v("testing", "screenWidth is " + screenWidth);
 
         Intent intent = getIntent();
-        if (intent.hasExtra("data_id")){
+        if (intent.hasExtra("data_id")) {
             mDatabaseId = intent.getIntExtra("data_id", -1);
         }
 
@@ -137,10 +127,10 @@ public class EditTagActivity extends AppCompatActivity implements EditTagActivit
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.action_save:
                 Toast.makeText(this, "hello", Toast.LENGTH_SHORT).show();
-                if (mDatabaseId != -1){
+                if (mDatabaseId != -1) {
                     presenter.updateConnectionTags(mDatabaseId, connectionTags);
                     presenter.updateTagTable(oldTags, allTags, connectionTags, mDatabaseId);
                 }
@@ -154,15 +144,19 @@ public class EditTagActivity extends AppCompatActivity implements EditTagActivit
     @Override
     public void displayAllTags(List<ConnectionTag> allTags) {
         // Clear all views
-        allTagsLinear.removeAllViews();
+        allTagsLayout.removeAllViews();
+        int containerWidth = allTagsLayout.getMeasuredWidth() - 16;
+        int i = 0;
+
+        int count = 0;
+        int currentWidth = 0;
+        boolean isNewLine = false;
+        boolean isFirstLine = true;
 
         this.allTags = allTags;
 
         searchTagsLv.setVisibility(View.GONE);
         for (ConnectionTag tag : allTags) {
-            String tagString = tag.getTag();
-
-//            Log.v("testing", "tag is " + tag.getTag());
             boolean isSelectedTag = false;
 
             if (connectionTags != null && connectionTags.size() > 0) {
@@ -175,21 +169,60 @@ public class EditTagActivity extends AppCompatActivity implements EditTagActivit
             }
 
             TextView tagTv = new TextView(this);
+            tagTv.setId(TAG_Base_NUMBER2 + i);
             tagTv.setText(tag.getTag());
             tagTv.setTextSize(14);
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            params.setMargins(8, 2, 8, 2);
+            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+                    RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+            params.setMargins(8, 4, 8, 4);
+            tagTv.setMaxLines(1);
             tagTv.setLayoutParams(params);
 
-            if(isSelectedTag){
+            if (isSelectedTag) {
                 tagTv.setTextColor(ContextCompat.getColor(EditTagActivity.this, R.color.colorAccent));
                 tagTv.setBackgroundResource(R.drawable.round_bg_blue);
-            }else {
+            } else {
                 tagTv.setBackgroundResource(R.drawable.round_bg_gray);
             }
 
-            allTagsLinear.addView(tagTv);
+            tagTv.measure(0, 0);
+
+            int width = tagTv.getMeasuredWidth();
+//                Log.v("testing", "width is " + tagTv.getMeasuredWidth());
+
+            if (currentWidth + width < containerWidth) {
+                currentWidth += width + 16;
+                isNewLine = false;
+                count++;
+            } else {
+                currentWidth = width + 16;
+                isNewLine = true;
+                isFirstLine = false;
+                count = 1;
+            }
+
+            // Add TextView to the screen
+            if (i == 0) {
+                params.addRule(RelativeLayout.ALIGN_START);
+                tagTv.setLayoutParams(params);
+                allTagsLayout.addView(tagTv);
+            } else if (isNewLine) {
+                params.addRule(RelativeLayout.ALIGN_LEFT);
+                params.addRule(RelativeLayout.BELOW, TAG_Base_NUMBER2 - 1 + i);
+                tagTv.setLayoutParams(params);
+                allTagsLayout.addView(tagTv);
+            } else if (isFirstLine) {
+                params.addRule(RelativeLayout.RIGHT_OF, TAG_Base_NUMBER2 - 1 + i);
+                tagTv.setLayoutParams(params);
+                allTagsLayout.addView(tagTv);
+            } else {
+                params.addRule(RelativeLayout.RIGHT_OF, TAG_Base_NUMBER2 - 1 + i);
+                params.addRule(RelativeLayout.BELOW, TAG_Base_NUMBER2 - count + i);
+                tagTv.setLayoutParams(params);
+                allTagsLayout.addView(tagTv);
+            }
+
+            i++;
         }
     }
 
@@ -221,12 +254,12 @@ public class EditTagActivity extends AppCompatActivity implements EditTagActivit
                     for (ConnectionTag allTagsItem : allTags) {
                         if (allTagsItem.getTag().equalsIgnoreCase(tag)) {
                             // Refresh allTags
+                            // ToDo: Check whether this has to be done multiple times
                             displayAllTags(allTags);
                         }
                     }
                 }
 
-//                Log.v("testing", "selected tag is " + tag);
                 TextView tagTv = new TextView(this);
                 tagTv.setId(TAG_BASE_NUMBER + i);
                 tagTv.setText(tag);
@@ -259,6 +292,8 @@ public class EditTagActivity extends AppCompatActivity implements EditTagActivit
                         displayConnectionTags();
                     }
                 });
+                // ToDo: Wrap up and put into Utilities
+                // Params: TextView, currentWidth, RelativeLayout, BASE_NUMBER, isNewLine, isFirstLine, i
 
                 int width = tagTv.getMeasuredWidth();
 //                Log.v("testing", "width is " + tagTv.getMeasuredWidth());
