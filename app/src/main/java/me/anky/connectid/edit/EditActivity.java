@@ -17,8 +17,11 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -26,6 +29,9 @@ import com.bumptech.glide.request.RequestOptions;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
@@ -55,6 +61,7 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
     private String mFeature = "";
     private String mCommonFriends = "";
     private String mDescription = "";
+    private String mTags;
     private ConnectidConnection connection;
     private ConnectidConnection newConnection;
     private ConnectidConnection updatedConnection;
@@ -90,6 +97,12 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
     @BindView(R.id.description_et)
     EditText mDescriptionEt;
 
+    @BindView(R.id.tags_container)
+    RelativeLayout mTagsContainer;
+
+    @BindView(R.id.empty_tags_tv)
+    TextView mEmptyTagsTv;
+
     @Inject
     EditActivityPresenter presenter;
 
@@ -120,6 +133,7 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
             mFeature = connection.getFeature();
             mCommonFriends = connection.getCommonFriends();
             mDescription = connection.getDescription();
+            mTags = connection.getTags();
 
             mFirstNameEt.setText(mFirstName);
             mLastNameEt.setText(mLastName);
@@ -129,9 +143,6 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
             String path = directory.getAbsolutePath() + "/" + mImageName;
             RequestOptions myOptions = new RequestOptions()
                     .centerCrop();
-//                    .diskCacheStrategy(DiskCacheStrategy.NONE)
-//                    .skipMemoryCache(true)
-//                    .override(600, 600);
 
             Glide.with(this)
                     .applyDefaultRequestOptions(myOptions)
@@ -143,9 +154,38 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
             mCommonFriendsEt.setText(mCommonFriends);
             mDescriptionEt.setText(mDescription);
 
+            ViewTreeObserver vto = mTagsContainer.getViewTreeObserver();
+            if (vto.isAlive()) {
+                vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+                        int viewWidth = mTagsContainer.getMeasuredWidth();
+                        // handle viewWidth here...
+                        displayTags(mTags);
+
+                        if (viewWidth > 0) {
+                            mTagsContainer.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                        }
+                    }
+                });
+            }
+
             getSupportActionBar().setTitle(getString(R.string.title_edit_connection));
         } else {
             getSupportActionBar().setTitle(getString(R.string.title_add_new_connection));
+        }
+    }
+
+    private void displayTags(String tags) {
+        String[] tagsArray = tags.split(",");
+        List<String> tagsList = new ArrayList(Arrays.asList(tagsArray));
+        if (tagsList.size() == 0) {
+            mEmptyTagsTv.setVisibility(View.VISIBLE);
+            mTagsContainer.setVisibility(View.GONE);
+        } else {
+            mEmptyTagsTv.setVisibility(View.GONE);
+            mTagsContainer.setVisibility(View.VISIBLE);
+            Utilities.displayTags(this, tagsList, mTagsContainer);
         }
     }
 
@@ -158,6 +198,7 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
     protected void onResume() {
         super.onResume();
         presenter.setView(this);
+        displayTags(mTags);
     }
 
     @Override
@@ -182,7 +223,7 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
             case R.id.action_save:
                 // Check if first name is provided
                 String firstName = mFirstNameEt.getText().toString().trim();
-                if (firstName.equals("") || firstName.equals(null)){
+                if (firstName.equals("") || firstName.equals(null)) {
                     Toast.makeText(this, R.string.first_name_required, Toast.LENGTH_SHORT).show();
                     return true;
                 }
@@ -230,10 +271,10 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
         ft.commit();
     }
 
-    @OnClick(R.id.all_tags_container)
+    @OnClick(R.id.tags_container)
     public void launchEditTagActivity(View view) {
         Intent intent = new Intent(this, EditTagActivity.class);
-        if (mDatabaseId != -1){
+        if (mDatabaseId != -1) {
             intent.putExtra("data_id", mDatabaseId);
         }
         startActivity(intent);
@@ -268,7 +309,7 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
 
     private void saveConnection() {
 
-        if (mOldImageName != null && !mOldImageName.equals("blank_profile.jpg")){
+        if (mOldImageName != null && !mOldImageName.equals("blank_profile.jpg")) {
             ContextWrapper cw = new ContextWrapper(getApplicationContext());
             File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
             File oldImage = new File(directory, mOldImageName);
@@ -279,7 +320,7 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
         }
         // Check if first name is provided
         String firstName = mFirstNameEt.getText().toString().trim();
-        if (firstName.equals("") || firstName.equals(null)){
+        if (firstName.equals("") || firstName.equals(null)) {
             Toast.makeText(this, R.string.first_name_required, Toast.LENGTH_SHORT).show();
             return;
         }
@@ -391,13 +432,13 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
     }
 
     // Check if any text input field has been changed
-    private void checkIfNameChanged(){
+    private void checkIfNameChanged() {
         if (!mConnectionHasChanged) {
             if (!mFirstNameEt.getText().toString().trim().equals(mFirstName) ||
                     !mLastNameEt.getText().toString().trim().equals(mLastName) ||
                     !mMeetVenueEt.getText().toString().trim().equals(mMeetVenue) ||
                     !mAppearanceEt.getText().toString().trim().equals(mAppearance) ||
-                    !mFeatureEt.getText().toString().trim().equals(mFeature)||
+                    !mFeatureEt.getText().toString().trim().equals(mFeature) ||
                     !mCommonFriendsEt.getText().toString().trim().equals(mCommonFriends) ||
                     !mDescriptionEt.getText().toString().trim().equals(mDescription)) {
                 mConnectionHasChanged = true;

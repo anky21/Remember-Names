@@ -55,4 +55,7 @@
     <string name="data_loading_error">There was an error loading data. Please try again later, or clean the data for this app.</string>
     <string name="empty_view_msg">Met someone today? Create a profile for him/her here.</string>
     <string name="edit_tags">Edit Tags</string>
+    <string name="tags">Tags:</string>
+    <string name="create_a_tag">Create a tag</string>
+    <string name="last_name">last name</string>
 </resources>

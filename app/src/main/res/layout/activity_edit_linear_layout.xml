@@ -6,7 +6,8 @@
     android:layout_gravity="center_horizontal"
     android:background="@color/text_or_icons"
     android:orientation="vertical"
-    android:padding="@dimen/margin_16dp">
+    android:padding="@dimen/margin_16dp"
+    android:transitionGroup="true">
 
     <LinearLayout
         style="@style/LinearLayoutStyle"
@@ -25,31 +26,18 @@
         <EditText
             android:id="@+id/last_name_et"
             style="@style/EditTvStyle"
-            android:hint="last name"
+            android:hint="@string/last_name"
             android:inputType="textPersonName|textCapWords"
             android:textStyle="normal" />
 
     </LinearLayout>
 
     <LinearLayout
-        style="@style/LinearLayoutStyle"
-        android:orientation="vertical">
-        <TextView
-            style="@style/DescriptionEtLabelStyle"
-            android:text="Tags:" />
+        style="@style/LinearLayoutStyle">
 
-        <LinearLayout
-            android:id="@+id/all_tags_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginStart="@dimen/margin_24dp">
+        <include layout="@layout/tags_view" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="All Tags" />
-        </LinearLayout>
+        <include layout="@layout/divider_view" />
 
     </LinearLayout>
 
