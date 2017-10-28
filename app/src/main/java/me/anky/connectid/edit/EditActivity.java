@@ -61,7 +61,7 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
     private String mFeature = "";
     private String mCommonFriends = "";
     private String mDescription = "";
-    private String mTags;
+    private String mTags = "";
     private ConnectidConnection connection;
     private ConnectidConnection newConnection;
     private ConnectidConnection updatedConnection;
@@ -275,6 +275,7 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
         Intent intent = new Intent(this, EditTagActivity.class);
         if (mDatabaseId != -1) {
             intent.putExtra("data_id", mDatabaseId);
+            intent.putExtra("tags", mTags);
         }
         startActivity(intent);
         overridePendingTransition(R.anim.activity_in, R.anim.activity_out);

@@ -10,6 +10,7 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -17,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -31,7 +33,7 @@ public class EditTagActivity extends AppCompatActivity implements EditTagActivit
 
     public List<ConnectionTag> allTags = new ArrayList<>();
     List<String> connectionTags = new ArrayList<>();
-    String oldTags = "black,cool,white,US";
+    String oldTags;
 
     final static int TAG_BASE_NUMBER = 1000;
     final static int TAG_Base_NUMBER2 = 3000;
@@ -72,6 +74,25 @@ public class EditTagActivity extends AppCompatActivity implements EditTagActivit
         Intent intent = getIntent();
         if (intent.hasExtra("data_id")) {
             mDatabaseId = intent.getIntExtra("data_id", -1);
+            oldTags = intent.getStringExtra("tags");
+            String[] oldTagsArray = oldTags.split(",");
+            connectionTags = new ArrayList(Arrays.asList(oldTagsArray));
+        }
+
+        ViewTreeObserver vto = selectedTagRl.getViewTreeObserver();
+        if (vto.isAlive()) {
+            vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    int viewWidth = selectedTagRl.getMeasuredWidth();
+                    // handle viewWidth here...
+                    displayConnectionTags();
+
+                    if (viewWidth > 0) {
+                        selectedTagRl.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    }
+                }
+            });
         }
 
         addTagEt.setOnKeyListener(this);
