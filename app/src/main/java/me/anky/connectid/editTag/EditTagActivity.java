@@ -75,8 +75,10 @@ public class EditTagActivity extends AppCompatActivity implements EditTagActivit
         if (intent.hasExtra("data_id")) {
             mDatabaseId = intent.getIntExtra("data_id", -1);
             oldTags = intent.getStringExtra("tags");
-            String[] oldTagsArray = oldTags.split(",");
-            connectionTags = new ArrayList(Arrays.asList(oldTagsArray));
+            if (oldTags != null) {
+                String[] oldTagsArray = oldTags.split(",");
+                connectionTags = new ArrayList(Arrays.asList(oldTagsArray));
+            }
         }
 
         ViewTreeObserver vto = selectedTagRl.getViewTreeObserver();

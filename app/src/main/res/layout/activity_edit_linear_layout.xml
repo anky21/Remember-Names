@@ -33,7 +33,11 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/tags_linear_layout"
         style="@style/LinearLayoutStyle">
+        <TextView
+            style="@style/DescriptionEtLabelStyle"
+            android:text="@string/tags" />
 
         <include layout="@layout/tags_view" />
 

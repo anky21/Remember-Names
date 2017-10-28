@@ -2,13 +2,8 @@
 <merge xmlns:android="http://schemas.android.com/apk/res/android">
 
     <TextView
-        style="@style/DescriptionTvLabelStyle"
-        android:text="@string/tags" />
-
-    <TextView
         android:id="@+id/empty_tags_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/DescriptionTvStyle"
         android:text="@string/create_a_tag"/>
 
     <RelativeLayout

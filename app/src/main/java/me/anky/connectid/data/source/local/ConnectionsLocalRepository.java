@@ -154,7 +154,6 @@ public class ConnectionsLocalRepository implements ConnectionsDataSource {
         contentValues.put(ConnectidColumns.FEATURE, connection.getFeature());
         contentValues.put(ConnectidColumns.COMMON_FRIENDS, connection.getCommonFriends());
         contentValues.put(ConnectidColumns.DESCRIPTION, connection.getDescription());
-        contentValues.put(ConnectidColumns.TAGS, connection.getTags());
 
         return context.getContentResolver().update(uri, contentValues, null, null);
     }

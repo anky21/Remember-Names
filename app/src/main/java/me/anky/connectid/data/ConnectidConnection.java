@@ -28,7 +28,6 @@ public class ConnectidConnection implements Parcelable {
         tags = in.readString();
     }
 
-
     public ConnectidConnection(String firstName, String lastName, String imageName, String meetVenue,
                                String appearance, String feature, String commonFriends, String description, String tags) {
         this.firstName = firstName;
@@ -40,6 +39,19 @@ public class ConnectidConnection implements Parcelable {
         this.commonFriends = commonFriends;
         this.description = description;
         this.tags = tags;
+    }
+
+    public ConnectidConnection(int databaseId, String firstName, String lastName, String imageName,
+                               String meetVenue, String appearance, String feature, String commonFriends, String description) {
+        this.databaseId = databaseId;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.imageName = imageName;
+        this.meetVenue = meetVenue;
+        this.appearance = appearance;
+        this.feature = feature;
+        this.commonFriends = commonFriends;
+        this.description = description;
     }
 
     public ConnectidConnection(int databaseId, String firstName, String lastName, String imageName,

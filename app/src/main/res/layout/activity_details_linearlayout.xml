@@ -11,6 +11,9 @@
     android:transitionGroup="true">
 
     <LinearLayout style="@style/LinearLayoutStyle">
+        <TextView
+            style="@style/DescriptionTvLabelStyle"
+            android:text="@string/tags" />
 
         <include layout="@layout/tags_view" />
 

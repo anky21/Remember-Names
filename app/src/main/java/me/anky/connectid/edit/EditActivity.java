@@ -177,12 +177,12 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
     }
 
     private void displayTags(String tags) {
-        String[] tagsArray = tags.split(",");
-        List<String> tagsList = new ArrayList(Arrays.asList(tagsArray));
-        if (tagsList.size() == 0) {
+        if (tags == null) {
             mEmptyTagsTv.setVisibility(View.VISIBLE);
             mTagsContainer.setVisibility(View.GONE);
         } else {
+            String[] tagsArray = tags.split(",");
+            List<String> tagsList = new ArrayList(Arrays.asList(tagsArray));
             mEmptyTagsTv.setVisibility(View.GONE);
             mTagsContainer.setVisibility(View.VISIBLE);
             Utilities.displayTags(this, tagsList, mTagsContainer);
@@ -270,7 +270,7 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
         ft.commit();
     }
 
-    @OnClick(R.id.tags_container)
+    @OnClick(R.id.tags_linear_layout)
     public void launchEditTagActivity(View view) {
         Intent intent = new Intent(this, EditTagActivity.class);
         if (mDatabaseId != -1) {
@@ -342,8 +342,7 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
                     appearance,
                     feature,
                     commonFriends,
-                    description,
-                    tags);
+                    description);
             presenter.updateConnection();
         } else {
             newConnection = new ConnectidConnection(

@@ -1,10 +1,5 @@
 package me.anky.connectid.editTag;
 
-import android.graphics.Movie;
-import android.util.Log;
-
-import com.facebook.stetho.common.ListUtil;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -12,10 +7,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import butterknife.internal.Utils;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.disposables.Disposable;
 import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
 import me.anky.connectid.Utilities;
@@ -107,7 +100,7 @@ public class EditTagActivityPresenter implements EditTagActivityMVP.Presenter {
     @Override
     public void updateConnectionTags(int id, List<String> connectionTags) {
         if (connectionTags == null || connectionTags.size() == 0) {
-            return;
+            dataSource.updateConnection(id, null);
         } else {
             StringBuffer tagString = new StringBuffer();
             for (String tag : connectionTags) {
@@ -123,7 +116,7 @@ public class EditTagActivityPresenter implements EditTagActivityMVP.Presenter {
         List<String> oldTagsList = null;
         // Remove oldTags from connectionTags (no update),
         // Have oldTagsList with just unselected tags
-        if (!oldTags.equals("")) {
+        if (oldTags != null && !oldTags.equals("")) {
 
             String[] oldTagsArray = oldTags.split(",");
             oldTagsList = new ArrayList(Arrays.asList(oldTagsArray));
@@ -156,7 +149,5 @@ public class EditTagActivityPresenter implements EditTagActivityMVP.Presenter {
         if (connectionTags != null && connectionTags.size() != 0) {
             dataSource.insertBulkTags(connectionTags, databaseId);
         }
-
-
     }
 }

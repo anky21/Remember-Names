@@ -41,11 +41,11 @@ public class DetailsActivityPresenter implements DetailsActivityMVP.Presenter {
                     public void onSuccess(@NonNull ConnectidConnection connection) {
                         view.displayConnection(connection);
                         String tags = connection.getTags();
-                        String[] tagsArray = tags.split(",");
-                        List<String> tagsList = new ArrayList(Arrays.asList(tagsArray));
-                        if (tagsList.size() == 0){
+                        if (tags == null ){
                             view.displayNoTags();
                         } else {
+                            String[] tagsArray = tags.split(",");
+                            List<String> tagsList = new ArrayList(Arrays.asList(tagsArray));
                             view.displayAllTags(tagsList);
                         }
                     }
