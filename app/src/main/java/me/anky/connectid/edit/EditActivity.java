@@ -198,7 +198,6 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
     protected void onResume() {
         super.onResume();
         presenter.setView(this);
-        displayTags(mTags);
     }
 
     @Override
@@ -223,7 +222,7 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
             case R.id.action_save:
                 // Check if first name is provided
                 String firstName = mFirstNameEt.getText().toString().trim();
-                if (firstName.equals("") || firstName.equals(null)) {
+                if (firstName == null || firstName.equals("")) {
                     Toast.makeText(this, R.string.first_name_required, Toast.LENGTH_SHORT).show();
                     return true;
                 }
@@ -320,7 +319,7 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
         }
         // Check if first name is provided
         String firstName = mFirstNameEt.getText().toString().trim();
-        if (firstName.equals("") || firstName.equals(null)) {
+        if (firstName == null || firstName.equals("")) {
             Toast.makeText(this, R.string.first_name_required, Toast.LENGTH_SHORT).show();
             return;
         }
