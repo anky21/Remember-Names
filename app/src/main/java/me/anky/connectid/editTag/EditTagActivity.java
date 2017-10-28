@@ -123,9 +123,7 @@ public class EditTagActivity extends AppCompatActivity implements EditTagActivit
                     String modifiedInput = input.split(",")[0].trim();
                     input = modifiedInput;
                     presenter.createNewTag(input, connectionTags, allTags);
-
                 }
-
             }
         });
     }

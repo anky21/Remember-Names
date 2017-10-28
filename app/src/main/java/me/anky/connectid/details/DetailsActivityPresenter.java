@@ -12,7 +12,6 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
 import me.anky.connectid.data.ConnectidConnection;
-import me.anky.connectid.data.ConnectionTag;
 import me.anky.connectid.data.ConnectionsDataSource;
 
 public class DetailsActivityPresenter implements DetailsActivityMVP.Presenter {
@@ -20,7 +19,6 @@ public class DetailsActivityPresenter implements DetailsActivityMVP.Presenter {
     private DetailsActivityMVP.View view;
     private ConnectionsDataSource connectionsDataSource;
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
-
 
     @Inject
     public DetailsActivityPresenter(ConnectionsDataSource connectionsDataSource) {
@@ -50,7 +48,6 @@ public class DetailsActivityPresenter implements DetailsActivityMVP.Presenter {
                         } else {
                             view.displayAllTags(tagsList);
                         }
-
                     }
 
                     @Override
@@ -89,12 +86,10 @@ public class DetailsActivityPresenter implements DetailsActivityMVP.Presenter {
 
         // Add this subscription to the RxJava cleanup composite
         compositeDisposable.add(disposableSingleObserver);
-
     }
 
     @Override
     public void unsubscribe() {
         compositeDisposable.clear();
     }
-
 }

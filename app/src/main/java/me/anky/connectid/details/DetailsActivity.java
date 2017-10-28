@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -17,8 +16,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,16 +37,13 @@ import io.reactivex.Single;
 import me.anky.connectid.R;
 import me.anky.connectid.Utilities;
 import me.anky.connectid.data.ConnectidConnection;
-import me.anky.connectid.data.ConnectionTag;
 import me.anky.connectid.edit.EditActivity;
-import me.anky.connectid.editTag.EditTagActivity;
 import me.anky.connectid.root.ConnectidApplication;
 
 public class DetailsActivity extends AppCompatActivity implements DetailsActivityMVP.View {
     int databaseId;
     ConnectidConnection connection;
     private Intent intent;
-
     private String mFirstName;
     private String mLastName;
     private String mMeetVenue;
@@ -55,8 +51,6 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
     private String mFeature;
     private String mCommonFriends;
     private String mDescription;
-    private String mTags;
-    final static int TAG_BASE_NUMBER = 2000;
 
     @BindView(R.id.toolbar_1)
     Toolbar mToolbar;
@@ -157,7 +151,6 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
         return intent;
     }
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -209,7 +202,6 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
         mFeature = connection.getFeature();
         mCommonFriends = connection.getCommonFriends();
         mDescription = connection.getDescription();
-        mTags = connection.getTags();
 
         ContextWrapper cw = new ContextWrapper(getApplicationContext());
         // path to /data/data/yourapp/app_data/imageDir
@@ -223,14 +215,6 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
         mFeatureTv.setText(mFeature);
         mCommonFriendsTv.setText(mCommonFriends);
         mDescriptionTv.setText(mDescription);
-
-        TextView roundTextView = new TextView(this);
-        roundTextView.setText("abcdefg");
-        roundTextView.setTextSize(16);
-        roundTextView.setLayoutParams(new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-        roundTextView.setBackgroundResource(R.drawable.round_bg_blue);
-        mTagsContainer.addView(roundTextView);
     }
 
     @Override
@@ -270,9 +254,23 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
     }
 
     @Override
-    public void displayAllTags(List<String> tags) {
+    public void displayAllTags(final List<String> tags) {
         mEmptyTagsTv.setVisibility(View.GONE);
-        Utilities.displayTags(DetailsActivity.this, tags, mTagsContainer);
+
+        ViewTreeObserver vto = mTagsContainer.getViewTreeObserver();
+        if (vto.isAlive()) {
+            vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    int viewWidth = mTagsContainer.getMeasuredWidth();
+
+                    if (viewWidth > 0) {
+                        Utilities.displayTags(DetailsActivity.this, tags, mTagsContainer);
+                        mTagsContainer.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    }
+                }
+            });
+        }
     }
 
     @OnClick(R.id.edit_fab)
