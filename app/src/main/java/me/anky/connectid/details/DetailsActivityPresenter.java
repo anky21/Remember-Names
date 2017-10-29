@@ -40,14 +40,6 @@ public class DetailsActivityPresenter implements DetailsActivityMVP.Presenter {
                     @Override
                     public void onSuccess(@NonNull ConnectidConnection connection) {
                         view.displayConnection(connection);
-                        String tags = connection.getTags();
-                        if (tags == null ){
-                            view.displayNoTags();
-                        } else {
-                            String[] tagsArray = tags.split(",");
-                            List<String> tagsList = new ArrayList(Arrays.asList(tagsArray));
-                            view.displayAllTags(tagsList);
-                        }
                     }
 
                     @Override

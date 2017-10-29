@@ -73,11 +73,8 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
     @BindView(R.id.description_tv)
     TextView mDescriptionTv;
 
-    @BindView(R.id.tags_container)
-    RelativeLayout mTagsContainer;
-
-    @BindView(R.id.empty_tags_tv)
-    TextView mEmptyTagsTv;
+    @BindView(R.id.tags_tv)
+    TextView mTagsTv;
 
     @Inject
     DetailsActivityPresenter presenter;
@@ -202,6 +199,12 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
         mFeature = connection.getFeature();
         mCommonFriends = connection.getCommonFriends();
         mDescription = connection.getDescription();
+        String tags = connection.getTags();
+        if (tags == null){
+            mTagsTv.setText("Create a tag");
+        } else {
+            mTagsTv.setText(tags);
+        }
 
         ContextWrapper cw = new ContextWrapper(getApplicationContext());
         // path to /data/data/yourapp/app_data/imageDir
@@ -245,32 +248,6 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
         setResult(RESULT_OK, data);
         finish();
         overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
-    }
-
-    @Override
-    public void displayNoTags() {
-        mTagsContainer.setVisibility(View.GONE);
-        mEmptyTagsTv.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void displayAllTags(final List<String> tags) {
-        mEmptyTagsTv.setVisibility(View.GONE);
-
-        ViewTreeObserver vto = mTagsContainer.getViewTreeObserver();
-        if (vto.isAlive()) {
-            vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                @Override
-                public void onGlobalLayout() {
-                    int viewWidth = mTagsContainer.getMeasuredWidth();
-
-                    if (viewWidth > 0) {
-                        Utilities.displayTags(DetailsActivity.this, tags, mTagsContainer);
-                        mTagsContainer.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                    }
-                }
-            });
-        }
     }
 
     @OnClick(R.id.edit_fab)

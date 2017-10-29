@@ -15,7 +15,10 @@
             style="@style/DescriptionTvLabelStyle"
             android:text="@string/tags" />
 
-        <include layout="@layout/tags_view" />
+        <TextView
+            android:id="@+id/tags_tv"
+            style="@style/DescriptionTvStyle"
+            android:text="@string/create_a_tag"/>
 
         <include layout="@layout/divider_view" />
     </LinearLayout>

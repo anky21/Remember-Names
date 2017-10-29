@@ -17,10 +17,6 @@ public interface DetailsActivityMVP {
         void displayError();
 
         void displaySuccess();
-
-        void displayNoTags();
-
-        void displayAllTags(List<String> tags);
     }
 
     interface Presenter {
