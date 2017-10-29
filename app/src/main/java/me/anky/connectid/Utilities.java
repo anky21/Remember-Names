@@ -6,7 +6,6 @@ import android.content.ContextWrapper;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -22,7 +21,6 @@ import java.util.List;
 import java.util.Random;
 
 import me.anky.connectid.data.source.local.ConnectidColumns;
-import me.anky.connectid.details.DetailsActivity;
 
 /**
  * Created by Anky An on 28/07/2017.
@@ -133,11 +131,24 @@ public class Utilities {
     }
 
     public static String createStringFromList(List<String> ids) {
-        StringBuffer databaseIds = new StringBuffer();
-        for (String databaseId : ids) {
-            databaseIds.append(databaseId).append(",");
+        if (ids == null){
+            return null;
+        } else {
+            StringBuffer databaseIds = new StringBuffer();
+            int size = ids.size();
+            if (size == 1) {
+                databaseIds.append(ids.get(0));
+            } else {
+                for (int i=0; i<ids.size(); i++) {
+                    if (i == ids.size() - 1) {
+                        databaseIds.append(ids.get(i));
+                    } else {
+                        databaseIds.append(ids.get(i)).append(",");
+                    }
+                }
+            }
+            return databaseIds.toString();
         }
-        return databaseIds.toString();
     }
 
     // Display tags in DetailActivity && EditActivity

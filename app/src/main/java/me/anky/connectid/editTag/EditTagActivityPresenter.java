@@ -144,7 +144,7 @@ public class EditTagActivityPresenter implements EditTagActivityMVP.Presenter {
         if (oldTagsList != null && oldTagsList.size() != 0) {
             for (ConnectionTag tag : allTags) {
                 if (oldTagsList.contains(tag.getTag())) {
-                    String[] databaseIdsArray = tag.getConnection_ids().split(", ");
+                    String[] databaseIdsArray = tag.getConnection_ids().split(",");
                     List<String> databaseIdsList = new ArrayList(Arrays.asList(databaseIdsArray));
                     databaseIdsList.remove(String.valueOf(databaseId));
                     String databaseIdsString = Utilities.createStringFromList(databaseIdsList);
