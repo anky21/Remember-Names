@@ -76,7 +76,7 @@ public class EditTagActivity extends AppCompatActivity implements EditTagActivit
             mDatabaseId = intent.getIntExtra("data_id", -1);
             oldTags = intent.getStringExtra("tags");
             if (oldTags != null) {
-                String[] oldTagsArray = oldTags.split(",");
+                String[] oldTagsArray = oldTags.split(", ");
                 connectionTags = new ArrayList(Arrays.asList(oldTagsArray));
             }
         }

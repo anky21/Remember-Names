@@ -103,8 +103,17 @@ public class EditTagActivityPresenter implements EditTagActivityMVP.Presenter {
             dataSource.updateConnection(id, null);
         } else {
             StringBuffer tagString = new StringBuffer();
-            for (String tag : connectionTags) {
-                tagString.append(tag).append(",");
+            int size = connectionTags.size();
+            if (size == 1) {
+                tagString.append(connectionTags.get(0));
+            } else {
+                for (int i=0; i<connectionTags.size(); i++){
+                    if (i == connectionTags.size() - 1){
+                        tagString.append(connectionTags.get(i));
+                    } else {
+                        tagString.append(connectionTags.get(i)).append(", ");
+                    }
+                }
             }
             dataSource.updateConnection(id, tagString.toString());
         }
@@ -118,7 +127,7 @@ public class EditTagActivityPresenter implements EditTagActivityMVP.Presenter {
         // Have oldTagsList with just unselected tags
         if (oldTags != null && !oldTags.equals("")) {
 
-            String[] oldTagsArray = oldTags.split(",");
+            String[] oldTagsArray = oldTags.split(", ");
             oldTagsList = new ArrayList(Arrays.asList(oldTagsArray));
 
             Iterator<String> i = connectionTags.iterator();
@@ -135,7 +144,7 @@ public class EditTagActivityPresenter implements EditTagActivityMVP.Presenter {
         if (oldTagsList != null && oldTagsList.size() != 0) {
             for (ConnectionTag tag : allTags) {
                 if (oldTagsList.contains(tag.getTag())) {
-                    String[] databaseIdsArray = tag.getConnection_ids().split(",");
+                    String[] databaseIdsArray = tag.getConnection_ids().split(", ");
                     List<String> databaseIdsList = new ArrayList(Arrays.asList(databaseIdsArray));
                     databaseIdsList.remove(String.valueOf(databaseId));
                     String databaseIdsString = Utilities.createStringFromList(databaseIdsList);

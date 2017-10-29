@@ -181,7 +181,7 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
             mEmptyTagsTv.setVisibility(View.VISIBLE);
             mTagsContainer.setVisibility(View.GONE);
         } else {
-            String[] tagsArray = tags.split(",");
+            String[] tagsArray = tags.split(", ");
             List<String> tagsList = new ArrayList(Arrays.asList(tagsArray));
             mEmptyTagsTv.setVisibility(View.GONE);
             mTagsContainer.setVisibility(View.VISIBLE);
