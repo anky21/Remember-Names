@@ -69,6 +69,8 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
     private int mDatabaseId = -1;
     //Boolean flag that keeps track of whether the connection has been edited (true) or not (false)
     private boolean mConnectionHasChanged = false;
+    private static final int EDIT_TAG_ACTIVITY_REQUEST = 317;
+
 
     @BindView(R.id.toolbar_edit)
     Toolbar mToolbar;
@@ -277,7 +279,7 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
             intent.putExtra("data_id", mDatabaseId);
             intent.putExtra("tags", mTags);
         }
-        startActivity(intent);
+        startActivityForResult(intent, EDIT_TAG_ACTIVITY_REQUEST);
         overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
     }
 
@@ -442,6 +444,19 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
                     !mDescriptionEt.getText().toString().trim().equals(mDescription)) {
                 mConnectionHasChanged = true;
             }
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == EDIT_TAG_ACTIVITY_REQUEST && resultCode == RESULT_OK) {
+            mTags = data.getStringExtra("connectionTags");
+            if (mTags != null){
+                mTags = mTags.substring(1, mTags.length() - 1);
+            }
+            displayTags(mTags);
         }
     }
 }

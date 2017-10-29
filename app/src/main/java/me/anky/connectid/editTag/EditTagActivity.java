@@ -15,7 +15,6 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -146,14 +145,24 @@ public class EditTagActivity extends AppCompatActivity implements EditTagActivit
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        String connectionTagsString;
+        if (connectionTags.size() == 0){
+            connectionTagsString = null;
+        } else {
+            connectionTagsString = connectionTags.toString();
+        }
 
         switch (item.getItemId()) {
             case R.id.action_save:
-                Toast.makeText(this, "hello", Toast.LENGTH_SHORT).show();
+                Intent data = new Intent();
+                data.putExtra("connectionTags", connectionTagsString);
+                setResult(RESULT_OK, data);
+
                 if (mDatabaseId != -1) {
                     presenter.updateConnectionTags(mDatabaseId, connectionTags);
                     presenter.updateTagTable(oldTags, allTags, connectionTags, mDatabaseId);
                 }
+
                 finish();
                 return true;
             case android.R.id.home:
