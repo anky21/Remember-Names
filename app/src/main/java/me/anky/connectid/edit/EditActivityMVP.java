@@ -1,7 +1,10 @@
 package me.anky.connectid.edit;
 
+import java.util.List;
+
 import io.reactivex.Single;
 import me.anky.connectid.data.ConnectidConnection;
+import me.anky.connectid.data.ConnectionTag;
 
 public interface EditActivityMVP {
 
@@ -13,7 +16,9 @@ public interface EditActivityMVP {
 
         void displayError();
 
-        void displaySuccess();
+        void displaySuccess(int id);
+
+        void handleAllTags(List<ConnectionTag> connectionTags);
     }
 
     interface Presenter {
@@ -25,5 +30,9 @@ public interface EditActivityMVP {
         void unsubscribe();
 
         void updateConnection();
+
+        void loadTags();
+
+        void updateTagTable(List<ConnectionTag> allTags, List<String> connectionTags, int databaseId);
     }
 }
