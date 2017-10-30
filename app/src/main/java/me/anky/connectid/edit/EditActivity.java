@@ -236,7 +236,7 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
                 }
                 // Save pet to database
                 saveConnection();
-//                presenter.updateTagTable();
+                presenter.updateTagTable(mAllTags, mTagsList, mDatabaseId);
                 finish();
                 overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
                 return true;
@@ -257,8 +257,10 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
         return super.onOptionsItemSelected(item);
     }
 
-    private void convertTagsStringToList() {
-
+    private List<String> convertTagsStringToList() {
+        String[] tagsArray = mTags.split(",");
+        mTagsList = new ArrayList(Arrays.asList(tagsArray));
+        return mTagsList;
     }
 
     @Override

@@ -1,5 +1,7 @@
 package me.anky.connectid.edit;
 
+import android.util.Log;
+
 import java.util.List;
 
 import javax.inject.Inject;
@@ -129,10 +131,19 @@ public class EditActivityPresenter implements EditActivityMVP.Presenter {
 
     @Override
     public void updateTagTable(List<ConnectionTag> allTags, List<String> connectionTags, int databaseId) {
+        Log.v("testing", "update Tag Table in EditActivityPresenter");
         if (connectionTags != null && connectionTags.size() != 0){
             for (ConnectionTag tag : allTags) {
-                if (connectionTags.contains(tag)){
-                    tag.setConnection_ids(String.valueOf(databaseId));
+                Log.v("testing", "connectionTags is " + connectionTags.toString());
+                if (connectionTags.contains(tag.getTag())){
+                    Log.v("testing", "tag.getTag is " + tag.getTag());
+                    String ids = tag.getConnection_ids();
+                    if (ids == null || ids.length() == 0){
+                        ids = String.valueOf(databaseId);
+                    } else {
+                        ids = ids + "," + String.valueOf(databaseId);
+                    }
+                    tag.setConnection_ids(ids);
                     connectionsDataSource.updateTag(tag);
                 }
             }
