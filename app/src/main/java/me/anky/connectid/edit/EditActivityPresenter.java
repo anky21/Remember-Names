@@ -1,5 +1,7 @@
 package me.anky.connectid.edit;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -50,8 +52,8 @@ public class EditActivityPresenter implements EditActivityMVP.Presenter {
 //                                connectionsDataSource.insertNewTag(newTag1);
 //                                ConnectionTag newTag2 = new ConnectionTag("US", "1,5,8");
 //                                connectionsDataSource.insertNewTag(newTag2);
-                                ConnectionTag newTag3 = new ConnectionTag("hello tags", "2,4,9");
-                                connectionsDataSource.insertNewTag(newTag3);
+//                                ConnectionTag newTag3 = new ConnectionTag("hello tags", "2,4,9");
+//                                connectionsDataSource.insertNewTag(newTag3);
 
 
                                 System.out.println("MVP presenter - " + "delivered new connection, resultCode " + resultCode);
@@ -59,7 +61,7 @@ public class EditActivityPresenter implements EditActivityMVP.Presenter {
                                 if (resultCode == -1) {
                                     view.displayError();
                                 } else {
-                                    view.displaySuccess();
+                                    view.displaySuccess(resultCode);
                                 }
                             }
 
@@ -92,7 +94,7 @@ public class EditActivityPresenter implements EditActivityMVP.Presenter {
                                 if (resultCode == -1) {
                                     view.displayError();
                                 } else {
-                                    view.displaySuccess();
+                                    view.displaySuccess(resultCode);
                                 }
                             }
 
@@ -104,6 +106,37 @@ public class EditActivityPresenter implements EditActivityMVP.Presenter {
 
         // Add this subscription to the RxJava cleanup composite
         compositeDisposable.add(disposableSingleObserver);
+    }
+
+    @Override
+    public void loadTags() {
+        DisposableSingleObserver<List<ConnectionTag>> disposableSingleTagsObserver =
+                connectionsDataSource.getTags().subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeWith(new DisposableSingleObserver<List<ConnectionTag>>() {
+                            @Override
+                            public void onSuccess(List<ConnectionTag> connectionTags) {
+                                view.handleAllTags(connectionTags);
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+
+                            }
+                        });
+        compositeDisposable.add(disposableSingleTagsObserver);
+    }
+
+    @Override
+    public void updateTagTable(List<ConnectionTag> allTags, List<String> connectionTags, int databaseId) {
+        if (connectionTags != null && connectionTags.size() != 0){
+            for (ConnectionTag tag : allTags) {
+                if (connectionTags.contains(tag)){
+                    tag.setConnection_ids(String.valueOf(databaseId));
+                    connectionsDataSource.updateTag(tag);
+                }
+            }
+        }
     }
 
     @Override

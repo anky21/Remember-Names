@@ -43,6 +43,7 @@ import io.reactivex.Single;
 import me.anky.connectid.R;
 import me.anky.connectid.Utilities;
 import me.anky.connectid.data.ConnectidConnection;
+import me.anky.connectid.data.ConnectionTag;
 import me.anky.connectid.editTag.EditTagActivity;
 import me.anky.connectid.root.ConnectidApplication;
 
@@ -61,7 +62,7 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
     private String mFeature = "";
     private String mCommonFriends = "";
     private String mDescription = "";
-    private String mTags = "";
+    private String mTags;
     private ConnectidConnection connection;
     private ConnectidConnection newConnection;
     private ConnectidConnection updatedConnection;
@@ -71,6 +72,8 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
     private boolean mConnectionHasChanged = false;
     private static final int EDIT_TAG_ACTIVITY_REQUEST = 317;
 
+    private List<ConnectionTag> mAllTags;
+    private List<String> mTagsList;
 
     @BindView(R.id.toolbar_edit)
     Toolbar mToolbar;
@@ -200,6 +203,7 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
     protected void onResume() {
         super.onResume();
         presenter.setView(this);
+        presenter.loadTags();
     }
 
     @Override
@@ -222,6 +226,8 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
         switch (item.getItemId()) {
             // Respond to a click on the "Save" menu option
             case R.id.action_save:
+                // Convert tags string to string list
+                convertTagsStringToList();
                 // Check if first name is provided
                 String firstName = mFirstNameEt.getText().toString().trim();
                 if (firstName == null || firstName.equals("")) {
@@ -230,6 +236,8 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
                 }
                 // Save pet to database
                 saveConnection();
+//                presenter.updateTagTable();
+                finish();
                 overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
                 return true;
             case android.R.id.home:
@@ -247,6 +255,10 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void convertTagsStringToList() {
+
     }
 
     @Override
@@ -277,8 +289,8 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
         Intent intent = new Intent(this, EditTagActivity.class);
         if (mDatabaseId != -1) {
             intent.putExtra("data_id", mDatabaseId);
-            intent.putExtra("tags", mTags);
         }
+        intent.putExtra("tags", mTags);
         startActivityForResult(intent, EDIT_TAG_ACTIVITY_REQUEST);
         overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
     }
@@ -332,7 +344,7 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
         String feature = mFeatureEt.getText().toString().trim();
         String commonFriends = mCommonFriendsEt.getText().toString().trim();
         String description = mDescriptionEt.getText().toString().trim();
-        String tags = "hello tags,cool,US,black";
+//        String tags = "hello tags,cool,US,black";
 
         if (intentHasExtra) {
             updatedConnection = new ConnectidConnection(
@@ -356,7 +368,7 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
                     feature,
                     commonFriends,
                     description,
-                    tags);
+                    mTags);
 
             presenter.deliverNewConnection();
         }
@@ -389,10 +401,18 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
     }
 
     @Override
-    public void displaySuccess() {
+    public void displaySuccess(int id) {
+        if(!intentHasExtra){
+            mDatabaseId = id;
+        }
         Intent data = new Intent();
         setResult(RESULT_OK, data);
-        finish();
+//        finish();
+    }
+
+    @Override
+    public void handleAllTags(List<ConnectionTag> connectionTags) {
+        mAllTags = connectionTags;
     }
 
     @Override
