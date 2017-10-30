@@ -130,8 +130,8 @@ public class ConnectionsLocalRepository implements ConnectionsDataSource {
         contentValues.put(ConnectidColumns.TAGS, newConnection.getTags());
 
         Uri uri = context.getContentResolver().insert(ConnectidProvider.Connections.CONTENT_URI, contentValues);
-
-        return generateResultCode(uri);
+        int databaseId = Integer.parseInt(uri.getLastPathSegment());
+        return databaseId;
     }
 
     @Override

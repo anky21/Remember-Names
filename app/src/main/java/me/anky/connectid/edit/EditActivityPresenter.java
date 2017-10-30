@@ -2,10 +2,13 @@ package me.anky.connectid.edit;
 
 import android.util.Log;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.List;
 
 import javax.inject.Inject;
 
+import events.SetToUpdateTagTable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.CompositeDisposable;
@@ -56,8 +59,9 @@ public class EditActivityPresenter implements EditActivityMVP.Presenter {
 //                                connectionsDataSource.insertNewTag(newTag2);
 //                                ConnectionTag newTag3 = new ConnectionTag("hello tags", "2,4,9");
 //                                connectionsDataSource.insertNewTag(newTag3);
+                                Log.v("testing", "new databaseId is " + resultCode);
 
-
+                                EventBus.getDefault().post(new SetToUpdateTagTable(resultCode));
                                 System.out.println("MVP presenter - " + "delivered new connection, resultCode " + resultCode);
 
                                 if (resultCode == -1) {

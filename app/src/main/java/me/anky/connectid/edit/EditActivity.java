@@ -27,6 +27,10 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -39,6 +43,7 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import events.SetToUpdateTagTable;
 import io.reactivex.Single;
 import me.anky.connectid.R;
 import me.anky.connectid.Utilities;
@@ -197,6 +202,7 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
     @Override
     protected void onStart() {
         super.onStart();
+        EventBus.getDefault().register(this);
     }
 
     @Override
@@ -209,6 +215,7 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
     @Override
     protected void onStop() {
         super.onStop();
+        EventBus.getDefault().unregister(this);
         presenter.unsubscribe();
     }
 
@@ -226,8 +233,10 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
         switch (item.getItemId()) {
             // Respond to a click on the "Save" menu option
             case R.id.action_save:
-                // Convert tags string to string list
-                convertTagsStringToList();
+                if (mTags != null) {
+                    // Convert tags string to string list
+                    convertTagsStringToList();
+                }
                 // Check if first name is provided
                 String firstName = mFirstNameEt.getText().toString().trim();
                 if (firstName == null || firstName.equals("")) {
@@ -236,8 +245,8 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
                 }
                 // Save pet to database
                 saveConnection();
-                presenter.updateTagTable(mAllTags, mTagsList, mDatabaseId);
-                finish();
+//                presenter.updateTagTable(mAllTags, mTagsList, mDatabaseId);
+//                finish();
                 overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
                 return true;
             case android.R.id.home:
@@ -255,6 +264,12 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void setToUpdateTagTable(SetToUpdateTagTable event) {
+        presenter.updateTagTable(mAllTags, mTagsList, event.getDatabaseId());
+        finish();
     }
 
     private List<String> convertTagsStringToList() {
