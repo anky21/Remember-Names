@@ -98,6 +98,21 @@ public class EditTagActivityPresenter implements EditTagActivityMVP.Presenter {
     }
 
     @Override
+    public void insertBulkNewTags(List<String> connectionTags, List<ConnectionTag> allTags) {
+        // Bulk insert new tags into the Tags table
+        if (connectionTags != null && connectionTags.size() != 0) {
+            if (allTags != null && allTags.size() != 0) {
+                for (ConnectionTag tag : allTags) {
+                    if (connectionTags.contains(tag.getTag())){
+                        connectionTags.remove(tag.getTag());
+                    }
+                }
+            }
+            dataSource.insertBulkNewTags(connectionTags);
+        }
+    }
+
+    @Override
     public void updateConnectionTags(int id, List<String> connectionTags) {
         if (connectionTags == null || connectionTags.size() == 0) {
             dataSource.updateConnection(id, null);

@@ -261,6 +261,18 @@ public class ConnectionsLocalRepository implements ConnectionsDataSource {
         context.getContentResolver().bulkInsert(ConnectidProvider.Tags.CONTENT_URI, contentValuesArray);
     }
 
+    @Override
+    public void insertBulkNewTags(List<String> connectionTags) {
+        ContentValues[] contentValuesArray = new ContentValues[connectionTags.size()];
+        for (int i=0; i<connectionTags.size();i++) {
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(TagsColumns.TAG, connectionTags.get(i));
+            contentValuesArray[i] = contentValues;
+        }
+
+        context.getContentResolver().bulkInsert(ConnectidProvider.Tags.CONTENT_URI, contentValuesArray);
+    }
+
     private int generateResultCode(Uri uri) {
 
         int lastPathSegment = Integer.parseInt(uri.getLastPathSegment());

@@ -1,7 +1,5 @@
 package me.anky.connectid.data;
 
-import android.content.ContentValues;
-
 import java.util.List;
 
 import io.reactivex.Single;
@@ -29,4 +27,6 @@ public interface ConnectionsDataSource {
     int updateTag(ConnectionTag tag);
 
     void insertBulkTags(List<String> connectionTags, int databaseId);
+
+    void insertBulkNewTags(List<String> connectionTags);
 }

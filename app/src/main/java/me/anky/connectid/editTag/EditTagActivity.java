@@ -161,6 +161,8 @@ public class EditTagActivity extends AppCompatActivity implements EditTagActivit
                 if (mDatabaseId != -1) {
                     presenter.updateConnectionTags(mDatabaseId, connectionTags);
                     presenter.updateTagTable(oldTags, allTags, connectionTags, mDatabaseId);
+                } else {
+                    presenter.insertBulkNewTags(connectionTags, allTags);
                 }
 
                 finish();

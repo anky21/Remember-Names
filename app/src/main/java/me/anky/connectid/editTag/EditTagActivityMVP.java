@@ -2,11 +2,7 @@ package me.anky.connectid.editTag;
 
 import java.util.List;
 
-import io.reactivex.Single;
-import me.anky.connectid.connections.ConnectionsActivityMVP;
-import me.anky.connectid.data.ConnectidConnection;
 import me.anky.connectid.data.ConnectionTag;
-import me.anky.connectid.edit.EditActivityMVP;
 
 /**
  * Created by anky on 2/10/17.
@@ -34,6 +30,8 @@ public interface EditTagActivityMVP {
         void loadTags();
 
         void unsubscribe();
+
+        void insertBulkNewTags(List<String> connectionTags, List<ConnectionTag> allTags);
 
         void updateConnectionTags(int id, List<String> connectionTags);
 

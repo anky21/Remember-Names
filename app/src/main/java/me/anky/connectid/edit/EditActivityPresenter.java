@@ -128,6 +128,7 @@ public class EditActivityPresenter implements EditActivityMVP.Presenter {
     @Override
     public void updateTagTable(List<ConnectionTag> allTags, List<String> connectionTags, int databaseId) {
         Log.v("testing", "update Tag Table in EditActivityPresenter");
+
         if (connectionTags != null && connectionTags.size() != 0){
             for (ConnectionTag tag : allTags) {
                 Log.v("testing", "connectionTags is " + connectionTags.toString());
