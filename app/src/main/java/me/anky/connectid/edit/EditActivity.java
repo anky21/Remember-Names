@@ -12,7 +12,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -80,8 +79,8 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
     private List<ConnectionTag> mAllTags;
     private List<String> mTagsList;
 
-    @BindView(R.id.toolbar_edit)
-    Toolbar mToolbar;
+//    @BindView(R.id.toolbar_edit)
+//    Toolbar mToolbar;
 
     @BindView(R.id.edit_portrait_iv)
     ImageView mPortraitIv;
@@ -125,9 +124,9 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
         ((ConnectidApplication) getApplication()).getApplicationComponent().inject(this);
 
         // Set a Toolbar to act as the ActionBar for this Activity window
-        setSupportActionBar(mToolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
+//        setSupportActionBar(mToolbar);
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//        getSupportActionBar().setHomeButtonEnabled(true);
 
         Intent intent = getIntent();
         if (intent.hasExtra("DETAILS")) {
@@ -180,9 +179,9 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
                 });
             }
 
-            getSupportActionBar().setTitle(getString(R.string.title_edit_connection));
+//            getSupportActionBar().setTitle(getString(R.string.title_edit_connection));
         } else {
-            getSupportActionBar().setTitle(getString(R.string.title_add_new_connection));
+//            getSupportActionBar().setTitle(getString(R.string.title_add_new_connection));
         }
     }
 
@@ -362,7 +361,6 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
         String feature = mFeatureEt.getText().toString().trim();
         String commonFriends = mCommonFriendsEt.getText().toString().trim();
         String description = mDescriptionEt.getText().toString().trim();
-//        String tags = "hello tags,cool,US,black";
 
         if (isExistingConnection) {
             updatedConnection = new ConnectidConnection(
@@ -425,7 +423,6 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
         }
         Intent data = new Intent();
         setResult(RESULT_OK, data);
-//        finish();
     }
 
     @Override
