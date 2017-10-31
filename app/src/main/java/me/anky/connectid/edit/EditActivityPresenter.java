@@ -50,24 +50,16 @@ public class EditActivityPresenter implements EditActivityMVP.Presenter {
                             public void onSuccess(@NonNull ConnectidConnection connection) {
                                 System.out.println("Thread subscribe: " + Thread.currentThread().getId());
 
-                                int resultCode = connectionsDataSource.insertNewConnection(connection);
-//                                ConnectionTag newTag = new ConnectionTag("cool", "1");
-//                                connectionsDataSource.insertNewTag(newTag);
-//                                ConnectionTag newTag1 = new ConnectionTag("white", "3,5,7");
-//                                connectionsDataSource.insertNewTag(newTag1);
-//                                ConnectionTag newTag2 = new ConnectionTag("US", "1,5,8");
-//                                connectionsDataSource.insertNewTag(newTag2);
-//                                ConnectionTag newTag3 = new ConnectionTag("hello tags", "2,4,9");
-//                                connectionsDataSource.insertNewTag(newTag3);
-                                Log.v("testing", "new databaseId is " + resultCode);
+                                int databaseId = connectionsDataSource.insertNewConnection(connection);
+                                Log.v("testing", "new databaseId is " + databaseId);
 
-                                EventBus.getDefault().post(new SetToUpdateTagTable(resultCode));
-                                System.out.println("MVP presenter - " + "delivered new connection, resultCode " + resultCode);
+                                EventBus.getDefault().post(new SetToUpdateTagTable(databaseId));
+                                System.out.println("MVP presenter - " + "delivered new connection, resultCode " + databaseId);
 
-                                if (resultCode == -1) {
+                                if (databaseId == -1) {
                                     view.displayError();
                                 } else {
-                                    view.displaySuccess(resultCode);
+                                    view.displaySuccess(databaseId);
                                 }
                             }
 

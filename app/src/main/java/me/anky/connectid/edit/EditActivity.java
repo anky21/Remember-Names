@@ -71,7 +71,7 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
     private ConnectidConnection connection;
     private ConnectidConnection newConnection;
     private ConnectidConnection updatedConnection;
-    private boolean intentHasExtra = false;
+    private boolean isExistingConnection = false;
     private int mDatabaseId = -1;
     //Boolean flag that keeps track of whether the connection has been edited (true) or not (false)
     private boolean mConnectionHasChanged = false;
@@ -131,7 +131,7 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
 
         Intent intent = getIntent();
         if (intent.hasExtra("DETAILS")) {
-            intentHasExtra = true;
+            isExistingConnection = true;
             connection = intent.getParcelableExtra("DETAILS");
             mDatabaseId = connection.getDatabaseId();
             mFirstName = connection.getFirstName();
@@ -243,10 +243,11 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
                     Toast.makeText(this, R.string.first_name_required, Toast.LENGTH_SHORT).show();
                     return true;
                 }
-                // Save pet to database
+                // Save connection to database
                 saveConnection();
-//                presenter.updateTagTable(mAllTags, mTagsList, mDatabaseId);
-//                finish();
+                if (isExistingConnection){
+                    finish();
+                }
                 overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
                 return true;
             case android.R.id.home:
@@ -363,7 +364,7 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
         String description = mDescriptionEt.getText().toString().trim();
 //        String tags = "hello tags,cool,US,black";
 
-        if (intentHasExtra) {
+        if (isExistingConnection) {
             updatedConnection = new ConnectidConnection(
                     mDatabaseId,
                     firstName,
@@ -419,7 +420,7 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
 
     @Override
     public void displaySuccess(int id) {
-        if(!intentHasExtra){
+        if(!isExistingConnection){
             mDatabaseId = id;
         }
         Intent data = new Intent();
