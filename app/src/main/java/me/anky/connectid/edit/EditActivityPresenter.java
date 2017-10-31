@@ -4,6 +4,7 @@ import android.util.Log;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.Iterator;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -127,15 +128,14 @@ public class EditActivityPresenter implements EditActivityMVP.Presenter {
 
     @Override
     public void updateTagTable(List<ConnectionTag> allTags, List<String> connectionTags, int databaseId) {
-        Log.v("testing", "update Tag Table in EditActivityPresenter");
 
-        if (connectionTags != null && connectionTags.size() != 0){
-            for (ConnectionTag tag : allTags) {
-                Log.v("testing", "connectionTags is " + connectionTags.toString());
-                if (connectionTags.contains(tag.getTag())){
-                    Log.v("testing", "tag.getTag is " + tag.getTag());
+        if (connectionTags != null && connectionTags.size() != 0) {
+            Iterator<ConnectionTag> i = allTags.iterator();
+            while (i.hasNext()) {
+                ConnectionTag tag = i.next();
+                if (connectionTags.contains(tag.getTag())) {
                     String ids = tag.getConnection_ids();
-                    if (ids == null || ids.length() == 0){
+                    if (ids == null || ids.length() == 0) {
                         ids = String.valueOf(databaseId);
                     } else {
                         ids = ids + "," + String.valueOf(databaseId);

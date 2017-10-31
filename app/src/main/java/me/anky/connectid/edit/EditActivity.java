@@ -274,7 +274,7 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
     }
 
     private List<String> convertTagsStringToList() {
-        String[] tagsArray = mTags.split(",");
+        String[] tagsArray = mTags.split(", ");
         mTagsList = new ArrayList(Arrays.asList(tagsArray));
         return mTagsList;
     }
