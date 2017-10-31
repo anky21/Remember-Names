@@ -140,7 +140,7 @@ public class EditTagActivityPresenter implements EditTagActivityMVP.Presenter {
             }
         }
 
-        // Update unselected tags in the Tags table
+        // Update unselected tags from old tags in the Tags table
         if (oldTagsList != null && oldTagsList.size() != 0) {
             for (ConnectionTag tag : allTags) {
                 if (oldTagsList.contains(tag.getTag())) {
@@ -150,6 +150,25 @@ public class EditTagActivityPresenter implements EditTagActivityMVP.Presenter {
                     String databaseIdsString = Utilities.createStringFromList(databaseIdsList);
                     ConnectionTag modifiedTag = new ConnectionTag(tag.getDatabaseId(), tag.getTag(), databaseIdsString);
                     dataSource.updateTag(modifiedTag);
+                }
+            }
+        }
+
+        // Update selected existing tags
+        if (connectionTags != null && connectionTags.size() != 0){
+            for (ConnectionTag connectionTag : allTags) {
+                if (connectionTags.contains(connectionTag.getTag())) {
+                    String ids = connectionTag.getConnection_ids();
+                    if (ids == null || ids.length() == 0){
+                        ids = String.valueOf(databaseId);
+                    } else {
+                        ids = ids + "," + String.valueOf(databaseId);
+                    }
+                    connectionTag.setConnection_ids(ids);
+                    dataSource.updateTag(connectionTag);
+
+                    // Remove this tag from connectionTags List (not a new tag)
+                    connectionTags.remove(connectionTag.getTag());
                 }
             }
         }
