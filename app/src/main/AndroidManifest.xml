@@ -37,8 +37,8 @@
             android:theme="@style/DetailsTheme" />
         <activity
             android:name=".edit.EditActivity"
-            android:label=""
-            android:theme="@style/DetailsTheme" />
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="stateHidden|adjustResize" />
 
         <provider
             android:name=".edit.LegacyCompatFileProvider"
@@ -57,7 +57,8 @@
         <activity
             android:name=".editTag.EditTagActivity"
             android:label="@string/edit_tags"
-            android:parentActivityName=".edit.EditActivity" />
+            android:parentActivityName=".edit.EditActivity"
+            android:windowSoftInputMode="stateHidden|adjustResize" />
     </application>
 
 </manifest>

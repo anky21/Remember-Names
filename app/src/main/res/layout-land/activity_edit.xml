@@ -12,7 +12,7 @@
         <ImageView
             android:id="@+id/edit_portrait_iv"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/portfolio_height"
+            android:layout_height="match_parent"
             android:scaleType="centerCrop"
             android:src="@drawable/profile_picture" />
 
@@ -31,8 +31,7 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_gravity="fill_vertical"
-        android:layout_weight="5"
-        android:fillViewport="true">
+        android:layout_weight="5">
 
         <include layout="@layout/activity_edit_linear_layout" />
     </ScrollView>

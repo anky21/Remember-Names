@@ -123,10 +123,8 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
 
         ((ConnectidApplication) getApplication()).getApplicationComponent().inject(this);
 
-        // Set a Toolbar to act as the ActionBar for this Activity window
-//        setSupportActionBar(mToolbar);
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-//        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
 
         Intent intent = getIntent();
         if (intent.hasExtra("DETAILS")) {
@@ -178,10 +176,9 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
                     }
                 });
             }
-
-//            getSupportActionBar().setTitle(getString(R.string.title_edit_connection));
+            EditActivity.this.setTitle(getString(R.string.title_edit_connection));
         } else {
-//            getSupportActionBar().setTitle(getString(R.string.title_add_new_connection));
+            EditActivity.this.setTitle(getString(R.string.title_add_new_connection));
         }
     }
 

@@ -6,8 +6,7 @@
     android:layout_gravity="center_horizontal"
     android:background="@color/text_or_icons"
     android:orientation="vertical"
-    android:padding="@dimen/margin_16dp"
-    android:transitionGroup="true">
+    android:padding="@dimen/margin_16dp">
 
     <LinearLayout
         style="@style/LinearLayoutStyle"
@@ -115,7 +114,4 @@
             android:maxLines="3" />
     </LinearLayout>
 
-    <android.support.v4.widget.Space
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/space_height" />
 </LinearLayout>
