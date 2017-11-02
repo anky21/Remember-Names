@@ -117,19 +117,9 @@ public class EditTagActivityPresenter implements EditTagActivityMVP.Presenter {
         if (connectionTags == null || connectionTags.size() == 0) {
             dataSource.updateConnection(id, null);
         } else {
-            StringBuffer tagString = new StringBuffer();
-            int size = connectionTags.size();
-            if (size == 1) {
-                tagString.append(connectionTags.get(0));
-            } else {
-                for (int i=0; i<connectionTags.size(); i++){
-                    if (i == connectionTags.size() - 1){
-                        tagString.append(connectionTags.get(i));
-                    } else {
-                        tagString.append(connectionTags.get(i)).append(", ");
-                    }
-                }
-            }
+            String tagString = connectionTags.toString();
+            tagString = tagString.substring(1, tagString.length() - 1);
+            
             dataSource.updateConnection(id, tagString.toString());
         }
     }
