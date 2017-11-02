@@ -6,6 +6,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -33,6 +34,8 @@ public class EditTagActivity extends AppCompatActivity implements EditTagActivit
     public List<ConnectionTag> allTags = new ArrayList<>();
     List<String> connectionTags = new ArrayList<>();
     String oldTags;
+
+    boolean isAllTagsLayoutReady;
 
     final static int TAG_BASE_NUMBER = 1000;
     final static int TAG_Base_NUMBER2 = 3000;
@@ -66,9 +69,10 @@ public class EditTagActivity extends AppCompatActivity implements EditTagActivit
 
         ((ConnectidApplication) getApplication()).getApplicationComponent().inject(this);
 
-//        int screenWidth = getResources().getDisplayMetrics().widthPixels;
-//
-//        Log.v("testing", "screenWidth is " + screenWidth);
+        // recovering the instance state
+        if (savedInstanceState != null) {
+            isAllTagsLayoutReady = savedInstanceState.getBoolean("AllTagsLayoutReadiness");
+        }
 
         Intent intent = getIntent();
         if (intent.hasExtra("data_id")) {
@@ -105,10 +109,8 @@ public class EditTagActivity extends AppCompatActivity implements EditTagActivit
 
             @Override
             public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
-//                Log.v("testing", charSequence + "");
                 if (before == 0 && count == 1 && charSequence.charAt(start) == ',') {
 
-//                    Log.v("testing", "hit comma");
                     addTagEt.getText().replace(start, start + 1, "");
                     input = addTagEt.getText().toString().trim();
                     presenter.createNewTag(input, connectionTags, allTags);
@@ -127,6 +129,14 @@ public class EditTagActivity extends AppCompatActivity implements EditTagActivit
                 }
             }
         });
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putBoolean("AllTagsLayoutReadiness", isAllTagsLayoutReady);
+
+        // call superclass to save any view hierarchy
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -177,6 +187,32 @@ public class EditTagActivity extends AppCompatActivity implements EditTagActivit
 
     @Override
     public void displayAllTags(final List<ConnectionTag> allTags) {
+
+        if (isAllTagsLayoutReady) {
+            displayAllTagsMethod(allTagsLayout, searchTagsLv, allTags, connectionTags);
+            Log.v("testing", "yes");
+        } else {
+            Log.v("testing", "no");
+
+            ViewTreeObserver vto = allTagsLayout.getViewTreeObserver();
+            if (vto.isAlive()) {
+                vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+                        int viewWidth = selectedTagRl.getMeasuredWidth();
+                        displayAllTagsMethod(allTagsLayout, searchTagsLv, allTags, connectionTags);
+                        isAllTagsLayoutReady = true;
+                        // handle viewWidth here...
+                        if (viewWidth > 0) {
+                            allTagsLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                        }
+                    }
+                });
+            }
+        }
+    }
+
+    private void displayAllTagsMethod(RelativeLayout allTagsLayout, ListView searchTagsLv, final List<ConnectionTag> allTags, final List<String> connectionTags){
         // Clear all views
         allTagsLayout.removeAllViews();
         int containerWidth = allTagsLayout.getMeasuredWidth() - 16;

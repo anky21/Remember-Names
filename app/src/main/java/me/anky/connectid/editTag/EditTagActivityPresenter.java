@@ -119,7 +119,7 @@ public class EditTagActivityPresenter implements EditTagActivityMVP.Presenter {
         } else {
             String tagString = connectionTags.toString();
             tagString = tagString.substring(1, tagString.length() - 1);
-            
+
             dataSource.updateConnection(id, tagString.toString());
         }
     }
