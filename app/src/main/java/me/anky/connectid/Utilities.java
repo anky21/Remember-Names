@@ -138,20 +138,6 @@ public class Utilities {
             idString = idString.substring(1, idString.length() - 1);
 
             return idString;
-//            StringBuffer databaseIds = new StringBuffer();
-//            int size = ids.size();
-//            if (size == 1) {
-//                databaseIds.append(ids.get(0));
-//            } else {
-//                for (int i=0; i<ids.size(); i++) {
-//                    if (i == ids.size() - 1) {
-//                        databaseIds.append(ids.get(i));
-//                    } else {
-//                        databaseIds.append(ids.get(i)).append(",");
-//                    }
-//                }
-//            }
-//            return databaseIds.toString();
         }
     }
 

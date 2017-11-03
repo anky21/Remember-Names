@@ -6,7 +6,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -34,8 +33,10 @@ public class EditTagActivity extends AppCompatActivity implements EditTagActivit
     public List<ConnectionTag> allTags = new ArrayList<>();
     List<String> connectionTags = new ArrayList<>();
     String oldTags;
+    private boolean hasSameTag;
 
-    boolean isAllTagsLayoutReady;
+    boolean allTagsLayoutReady;
+    boolean connectionTagsLayoutReady;
 
     final static int TAG_BASE_NUMBER = 1000;
     final static int TAG_Base_NUMBER2 = 3000;
@@ -58,8 +59,7 @@ public class EditTagActivity extends AppCompatActivity implements EditTagActivit
 
     @Inject
     EditTagActivityPresenter presenter;
-
-
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,7 +71,8 @@ public class EditTagActivity extends AppCompatActivity implements EditTagActivit
 
         // recovering the instance state
         if (savedInstanceState != null) {
-            isAllTagsLayoutReady = savedInstanceState.getBoolean("AllTagsLayoutReadiness");
+            allTagsLayoutReady = savedInstanceState.getBoolean("AllTagsLayoutReadiness");
+            connectionTagsLayoutReady = savedInstanceState.getBoolean("ConnectionTagsLayoutReadiness");
         }
 
         Intent intent = getIntent();
@@ -84,20 +85,25 @@ public class EditTagActivity extends AppCompatActivity implements EditTagActivit
             connectionTags = new ArrayList(Arrays.asList(oldTagsArray));
         }
 
-        ViewTreeObserver vto = selectedTagRl.getViewTreeObserver();
-        if (vto.isAlive()) {
-            vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                @Override
-                public void onGlobalLayout() {
-                    int viewWidth = selectedTagRl.getMeasuredWidth();
-                    // handle viewWidth here...
-                    displayConnectionTags();
+        if (connectionTagsLayoutReady) {
+            displayConnectionTags();
+        } else {
+            ViewTreeObserver vto = selectedTagRl.getViewTreeObserver();
+            if (vto.isAlive()) {
+                vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+                        int viewWidth = selectedTagRl.getMeasuredWidth();
+                        // handle viewWidth here...
+                        displayConnectionTags();
+                        connectionTagsLayoutReady = true;
 
-                    if (viewWidth > 0) {
-                        selectedTagRl.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                        if (viewWidth > 0) {
+                            selectedTagRl.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                        }
                     }
-                }
-            });
+                });
+            }
         }
 
         addTagEt.setOnKeyListener(this);
@@ -133,7 +139,8 @@ public class EditTagActivity extends AppCompatActivity implements EditTagActivit
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        outState.putBoolean("AllTagsLayoutReadiness", isAllTagsLayoutReady);
+        outState.putBoolean("AllTagsLayoutReadiness", allTagsLayoutReady);
+        outState.putBoolean("ConnectionTagsLayoutReadiness", connectionTagsLayoutReady);
 
         // call superclass to save any view hierarchy
         super.onSaveInstanceState(outState);
@@ -188,11 +195,9 @@ public class EditTagActivity extends AppCompatActivity implements EditTagActivit
     @Override
     public void displayAllTags(final List<ConnectionTag> allTags) {
 
-        if (isAllTagsLayoutReady) {
+        if (allTagsLayoutReady) {
             displayAllTagsMethod(allTagsLayout, searchTagsLv, allTags, connectionTags);
-            Log.v("testing", "yes");
         } else {
-            Log.v("testing", "no");
 
             ViewTreeObserver vto = allTagsLayout.getViewTreeObserver();
             if (vto.isAlive()) {
@@ -201,7 +206,7 @@ public class EditTagActivity extends AppCompatActivity implements EditTagActivit
                     public void onGlobalLayout() {
                         int viewWidth = selectedTagRl.getMeasuredWidth();
                         displayAllTagsMethod(allTagsLayout, searchTagsLv, allTags, connectionTags);
-                        isAllTagsLayoutReady = true;
+                        allTagsLayoutReady = true;
                         // handle viewWidth here...
                         if (viewWidth > 0) {
                             allTagsLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
@@ -330,16 +335,17 @@ public class EditTagActivity extends AppCompatActivity implements EditTagActivit
         boolean isNewLine = false;
         boolean isFirstLine = true;
 
-//        Log.v("testing", "container width is " + containerWidth);
         if (connectionTags.size() > 0) {
             for (final String tag : connectionTags) {
-                //ToDo: Check if the new tag is already in "All Tags"
-                if (allTags != null && allTags.size() > 0) {
-                    for (ConnectionTag allTagsItem : allTags) {
-                        if (allTagsItem.getTag().equalsIgnoreCase(tag)) {
-                            // Refresh allTags
-                            // ToDo: Check whether this has to be done multiple times
-                            displayAllTags(allTags);
+                // Check if all Tags has the same tag
+                if (!hasSameTag) {
+                    if (allTags != null && allTags.size() > 0) {
+                        for (ConnectionTag allTagsItem : allTags) {
+                            if (allTagsItem.getTag().equals(tag)) {
+                                // Refresh allTags
+                                hasSameTag = true;
+                                break;
+                            }
                         }
                     }
                 }
@@ -376,11 +382,8 @@ public class EditTagActivity extends AppCompatActivity implements EditTagActivit
                         displayConnectionTags();
                     }
                 });
-                // ToDo: Wrap up and put into Utilities
-                // Params: TextView, currentWidth, RelativeLayout, BASE_NUMBER, isNewLine, isFirstLine, i
 
                 int width = tagTv.getMeasuredWidth();
-//                Log.v("testing", "width is " + tagTv.getMeasuredWidth());
 
                 if (currentWidth + width <= containerWidth) {
                     currentWidth += width + 16;
@@ -416,6 +419,11 @@ public class EditTagActivity extends AppCompatActivity implements EditTagActivit
 
                 i++;
             }
+        }
+        // Refresh allTags if the new Tag is in All Tags
+        if (hasSameTag){
+            displayAllTags(allTags);
+            hasSameTag = false;
         }
 
     }
