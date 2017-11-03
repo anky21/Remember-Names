@@ -28,5 +28,9 @@ public interface DetailsActivityMVP {
         void deliverDatabaseIdtoDelete();
 
         void unsubscribe();
+
+        void loadAndUpdateTagTable(String databaseId, String tags);
+
+        void deleteIdsFromTag(String databaseId, String tags, List<ConnectionTag> allTags);
     }
 }

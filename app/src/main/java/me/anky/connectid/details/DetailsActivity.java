@@ -16,16 +16,13 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
 import java.io.File;
-import java.util.List;
 import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
@@ -35,7 +32,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.reactivex.Single;
 import me.anky.connectid.R;
-import me.anky.connectid.Utilities;
 import me.anky.connectid.data.ConnectidConnection;
 import me.anky.connectid.edit.EditActivity;
 import me.anky.connectid.root.ConnectidApplication;
@@ -44,6 +40,7 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
     int databaseId;
     ConnectidConnection connection;
     private Intent intent;
+    private String mDatabaseId;
     private String mFirstName;
     private String mLastName;
     private String mMeetVenue;
@@ -51,6 +48,7 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
     private String mFeature;
     private String mCommonFriends;
     private String mDescription;
+    private String mTags;
 
     @BindView(R.id.toolbar_1)
     Toolbar mToolbar;
@@ -171,6 +169,9 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 presenter.deliverDatabaseIdtoDelete();
+                if (mTags != null && mTags.length() != 0) {
+                    presenter.loadAndUpdateTagTable(mDatabaseId, mTags);
+                }
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -189,6 +190,7 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
     @Override
     public void displayConnection(ConnectidConnection connection) {
         this.connection = connection;
+        mDatabaseId = String.valueOf(connection.getDatabaseId());
         mFirstName = connection.getFirstName();
         mLastName = connection.getLastName();
 
@@ -199,11 +201,11 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
         mFeature = connection.getFeature();
         mCommonFriends = connection.getCommonFriends();
         mDescription = connection.getDescription();
-        String tags = connection.getTags();
-        if (tags == null){
-            mTagsTv.setText("Create a tag");
+        mTags = connection.getTags();
+        if (mTags == null){
+            mTagsTv.setText("");
         } else {
-            mTagsTv.setText(tags);
+            mTagsTv.setText(mTags);
         }
 
         ContextWrapper cw = new ContextWrapper(getApplicationContext());

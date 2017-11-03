@@ -12,6 +12,7 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
 import me.anky.connectid.data.ConnectidConnection;
+import me.anky.connectid.data.ConnectionTag;
 import me.anky.connectid.data.ConnectionsDataSource;
 
 public class DetailsActivityPresenter implements DetailsActivityMVP.Presenter {
@@ -34,19 +35,19 @@ public class DetailsActivityPresenter implements DetailsActivityMVP.Presenter {
     public void loadConnection(int data_id) {
         DisposableSingleObserver<ConnectidConnection> disposableConnectionSingleObserver =
                 connectionsDataSource.getOneConnection(data_id)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(new DisposableSingleObserver<ConnectidConnection>() {
-                    @Override
-                    public void onSuccess(@NonNull ConnectidConnection connection) {
-                        view.displayConnection(connection);
-                    }
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeWith(new DisposableSingleObserver<ConnectidConnection>() {
+                            @Override
+                            public void onSuccess(@NonNull ConnectidConnection connection) {
+                                view.displayConnection(connection);
+                            }
 
-                    @Override
-                    public void onError(@NonNull Throwable e) {
+                            @Override
+                            public void onError(@NonNull Throwable e) {
 
-                    }
-                });
+                            }
+                        });
         compositeDisposable.add(disposableConnectionSingleObserver);
     }
 
@@ -83,5 +84,48 @@ public class DetailsActivityPresenter implements DetailsActivityMVP.Presenter {
     @Override
     public void unsubscribe() {
         compositeDisposable.clear();
+    }
+
+    @Override
+    public void loadAndUpdateTagTable(final String databaseId, final String tags) {
+        DisposableSingleObserver<List<ConnectionTag>> disposableSingleTagsObserver =
+                connectionsDataSource.getTags().subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeWith(new DisposableSingleObserver<List<ConnectionTag>>() {
+                            @Override
+                            public void onSuccess(List<ConnectionTag> connectionTags) {
+                                if (connectionTags != null && connectionTags.size() != 0) {
+                                    deleteIdsFromTag(databaseId, tags, connectionTags);
+                                }
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+
+                            }
+                        });
+        compositeDisposable.add(disposableSingleTagsObserver);
+    }
+
+    @Override
+    public void deleteIdsFromTag(String databaseId, String tags, List<ConnectionTag> allTags) {
+        List<String> tagsList = new ArrayList(Arrays.asList(tags.split(", ")));
+        for (ConnectionTag connectionTag : allTags) {
+            if (tagsList.contains(connectionTag.getTag())) {
+                String ids = connectionTag.getConnection_ids();
+                List<String> idsList = new ArrayList(Arrays.asList(ids.split(", ")));
+                idsList.remove(databaseId);
+                String newIdsString;
+                if (idsList == null || idsList.size() == 0) {
+                    newIdsString = null;
+                } else {
+                    newIdsString = idsList.toString();
+                    newIdsString = newIdsString.substring(1, newIdsString.length() - 1);
+                }
+                connectionTag.setConnection_ids(newIdsString);
+                connectionsDataSource.updateTag(connectionTag);
+            }
+
+        }
     }
 }

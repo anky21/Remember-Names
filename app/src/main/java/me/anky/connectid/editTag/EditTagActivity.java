@@ -36,7 +36,6 @@ public class EditTagActivity extends AppCompatActivity implements EditTagActivit
     private boolean hasSameTag;
 
     boolean allTagsLayoutReady;
-    boolean connectionTagsLayoutReady;
 
     final static int TAG_BASE_NUMBER = 1000;
     final static int TAG_Base_NUMBER2 = 3000;
@@ -72,7 +71,6 @@ public class EditTagActivity extends AppCompatActivity implements EditTagActivit
         // recovering the instance state
         if (savedInstanceState != null) {
             allTagsLayoutReady = savedInstanceState.getBoolean("AllTagsLayoutReadiness");
-            connectionTagsLayoutReady = savedInstanceState.getBoolean("ConnectionTagsLayoutReadiness");
         }
 
         Intent intent = getIntent();
@@ -85,9 +83,6 @@ public class EditTagActivity extends AppCompatActivity implements EditTagActivit
             connectionTags = new ArrayList(Arrays.asList(oldTagsArray));
         }
 
-        if (connectionTagsLayoutReady) {
-            displayConnectionTags();
-        } else {
             ViewTreeObserver vto = selectedTagRl.getViewTreeObserver();
             if (vto.isAlive()) {
                 vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -96,7 +91,6 @@ public class EditTagActivity extends AppCompatActivity implements EditTagActivit
                         int viewWidth = selectedTagRl.getMeasuredWidth();
                         // handle viewWidth here...
                         displayConnectionTags();
-                        connectionTagsLayoutReady = true;
 
                         if (viewWidth > 0) {
                             selectedTagRl.getViewTreeObserver().removeOnGlobalLayoutListener(this);
@@ -104,7 +98,7 @@ public class EditTagActivity extends AppCompatActivity implements EditTagActivit
                     }
                 });
             }
-        }
+
 
         addTagEt.setOnKeyListener(this);
         addTagEt.addTextChangedListener(new TextWatcher() {
@@ -140,7 +134,6 @@ public class EditTagActivity extends AppCompatActivity implements EditTagActivit
     @Override
     public void onSaveInstanceState(Bundle outState) {
         outState.putBoolean("AllTagsLayoutReadiness", allTagsLayoutReady);
-        outState.putBoolean("ConnectionTagsLayoutReadiness", connectionTagsLayoutReady);
 
         // call superclass to save any view hierarchy
         super.onSaveInstanceState(outState);
