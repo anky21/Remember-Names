@@ -138,7 +138,7 @@ public class EditActivityPresenter implements EditActivityMVP.Presenter {
                     if (ids == null || ids.length() == 0) {
                         ids = String.valueOf(databaseId);
                     } else {
-                        ids = ids + "," + String.valueOf(databaseId);
+                        ids = ids + ", " + String.valueOf(databaseId);
                     }
                     tag.setConnection_ids(ids);
                     connectionsDataSource.updateTag(tag);

@@ -131,23 +131,27 @@ public class Utilities {
     }
 
     public static String createStringFromList(List<String> ids) {
-        if (ids == null){
+        if (ids == null || ids.size() == 0){
             return null;
         } else {
-            StringBuffer databaseIds = new StringBuffer();
-            int size = ids.size();
-            if (size == 1) {
-                databaseIds.append(ids.get(0));
-            } else {
-                for (int i=0; i<ids.size(); i++) {
-                    if (i == ids.size() - 1) {
-                        databaseIds.append(ids.get(i));
-                    } else {
-                        databaseIds.append(ids.get(i)).append(",");
-                    }
-                }
-            }
-            return databaseIds.toString();
+            String idString = ids.toString();
+            idString = idString.substring(1, idString.length() - 1);
+
+            return idString;
+//            StringBuffer databaseIds = new StringBuffer();
+//            int size = ids.size();
+//            if (size == 1) {
+//                databaseIds.append(ids.get(0));
+//            } else {
+//                for (int i=0; i<ids.size(); i++) {
+//                    if (i == ids.size() - 1) {
+//                        databaseIds.append(ids.get(i));
+//                    } else {
+//                        databaseIds.append(ids.get(i)).append(",");
+//                    }
+//                }
+//            }
+//            return databaseIds.toString();
         }
     }
 
