@@ -4,8 +4,15 @@
     tools:context=".connections.ConnectionsActivity">
 
     <item
-        android:id="@+id/sortby_date_new"
+        android:id="@+id/action_tag"
         android:orderInCategory="1"
+        android:icon="@drawable/ic_tag_white"
+        android:title="@string/action_tags"
+        app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/sortby_date_new"
+        android:orderInCategory="8"
         android:title="Newest first (default)"
         app:showAsAction="never" />
     <item
