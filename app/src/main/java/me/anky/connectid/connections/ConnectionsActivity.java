@@ -34,6 +34,7 @@ import me.anky.connectid.data.SharedPrefsHelper;
 import me.anky.connectid.details.DetailsActivity;
 import me.anky.connectid.edit.EditActivity;
 import me.anky.connectid.root.ConnectidApplication;
+import me.anky.connectid.tags.TagsActivity;
 
 public class ConnectionsActivity extends AppCompatActivity implements
         ConnectionsActivityMVP.View,
@@ -138,6 +139,11 @@ public class ConnectionsActivity extends AppCompatActivity implements
         int id = item.getItemId();
 
         switch (id) {
+            case R.id.action_tag: {
+                Intent intent = new Intent(this, TagsActivity.class);
+                startActivity(intent);
+            }
+
             case R.id.sortby_date_new: {
                 sharedPrefsHelper.put(Utilities.SORTBY, 1);
             }

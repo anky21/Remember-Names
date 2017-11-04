@@ -2,7 +2,6 @@ package me.anky.connectid.root;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.widget.EditText;
 
 import javax.inject.Singleton;
 
@@ -18,6 +17,8 @@ import me.anky.connectid.edit.EditActivityMVP;
 import me.anky.connectid.edit.EditActivityPresenter;
 import me.anky.connectid.editTag.EditTagActivityMVP;
 import me.anky.connectid.editTag.EditTagActivityPresenter;
+import me.anky.connectid.tags.TagsActivityMVP;
+import me.anky.connectid.tags.TagsActivityPresenter;
 
 /**
  * Created by Anky An on 10/07/2017.
@@ -62,6 +63,11 @@ public class ApplicationModule {
     @Provides
     public EditTagActivityMVP.Presenter provideEditTagActivityPresenter(ConnectionsDataSource dataSource){
         return new EditTagActivityPresenter(dataSource);
+    }
+
+    @Provides
+    public TagsActivityMVP.Presenter provideTagsActivityPresenter(ConnectionsDataSource dataSource){
+        return new TagsActivityPresenter(dataSource);
     }
 
     @Provides

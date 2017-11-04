@@ -59,4 +59,5 @@
     <string name="tags">Tags:</string>
     <string name="create_a_tag">Create a tag</string>
     <string name="last_name">last name</string>
+    <string name="activity_label_tags">Tags</string>
 </resources>
