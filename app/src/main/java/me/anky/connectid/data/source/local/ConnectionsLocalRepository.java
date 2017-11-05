@@ -30,8 +30,8 @@ public class ConnectionsLocalRepository implements ConnectionsDataSource {
     }
 
     @Override
-    public Single<List<ConnectidConnection>> getConnections(int menOption) {
-        prepareConnectionsList(menOption);
+    public Single<List<ConnectidConnection>> getConnections(int menuOption) {
+        prepareConnectionsList(menuOption);
 
         return Single.fromCallable(new Callable<List<ConnectidConnection>>() {
             @Override
@@ -75,10 +75,10 @@ public class ConnectionsLocalRepository implements ConnectionsDataSource {
         });
     }
 
-    private void prepareConnectionsList(int menOption) {
+    private void prepareConnectionsList(int menuOption) {
         connections.clear();
 
-        Cursor cursor = getAllEntries(menOption);
+        Cursor cursor = getAllEntries(menuOption);
         if (cursor != null && cursor.getCount() != 0) {
 
             while (cursor.moveToNext()) {

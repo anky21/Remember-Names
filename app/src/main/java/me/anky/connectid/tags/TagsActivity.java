@@ -1,5 +1,6 @@
 package me.anky.connectid.tags;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -19,6 +20,7 @@ import me.anky.connectid.R;
 import me.anky.connectid.connections.DividerItemDecoration;
 import me.anky.connectid.data.ConnectionTag;
 import me.anky.connectid.root.ConnectidApplication;
+import me.anky.connectid.selectedConnections.SelectedConnectionsActivity;
 
 public class TagsActivity extends AppCompatActivity implements TagsActivityMVP.View,
 TagsRecyclerViewAdapter.RecyclerViewClickListener{
@@ -83,6 +85,14 @@ TagsRecyclerViewAdapter.RecyclerViewClickListener{
 
     @Override
     public void onItemClick(View view, int position) {
-        Toast.makeText(this, "Tag position " + position, Toast.LENGTH_SHORT).show();
+        ConnectionTag connectionTag = data.get(position);
+        String ids = connectionTag.getConnection_ids();
+        if (ids == null || ids.length() == 0) {
+            Toast.makeText(this, "There is no connections for this tag.", Toast.LENGTH_SHORT).show();
+        } else {
+            Intent selectedConnectionsIntent = new Intent(TagsActivity.this, SelectedConnectionsActivity.class);
+            selectedConnectionsIntent.putExtra("ids", ids);
+            startActivity(selectedConnectionsIntent);
+        }
     }
 }

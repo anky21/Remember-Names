@@ -56,9 +56,13 @@ public class TagsRecyclerViewAdapter extends RecyclerView.Adapter<TagsRecyclerVi
     public void onBindViewHolder(TagsRecyclerViewAdapter.ViewHolder holder, int position) {
         String tag = tags.get(position).getTag();
         String ids = tags.get(position).getConnection_ids();
-        List<String> idsList = new ArrayList(Arrays.asList(ids.split(", ")));
+        int count = 0;
+        if (ids != null ) {
+            List<String> idsList = new ArrayList(Arrays.asList(ids.split(", ")));
+            count =idsList.size();
+        }
 
-        holder.tagItemTv.setText(String.format(context.getString(R.string.tag_with_count), tag, idsList.size()));
+        holder.tagItemTv.setText(String.format(context.getString(R.string.tag_with_count), tag, count));
     }
 
     @Override

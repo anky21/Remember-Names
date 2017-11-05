@@ -61,6 +61,9 @@
         <activity
             android:name=".tags.TagsActivity"
             android:label="@string/activity_label_tags" />
+        <activity
+            android:name=".selectedConnections.SelectedConnectionsActivity"
+            android:label="Selected Tag" />
     </application>
 
 </manifest>
