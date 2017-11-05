@@ -2,9 +2,13 @@ package me.anky.connectid.tags;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -12,13 +16,23 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import me.anky.connectid.R;
+import me.anky.connectid.connections.DividerItemDecoration;
 import me.anky.connectid.data.ConnectionTag;
 import me.anky.connectid.root.ConnectidApplication;
 
-public class TagsActivity extends AppCompatActivity implements TagsActivityMVP.View{
+public class TagsActivity extends AppCompatActivity implements TagsActivityMVP.View,
+TagsRecyclerViewAdapter.RecyclerViewClickListener{
+
+    public List<ConnectionTag> data = new ArrayList<>();
+
 
     @BindView(R.id.all_tags_recyclerview)
     RecyclerView recyclerView;
+
+    @BindView(R.id.empty_tags_tv)
+    TextView emptyTv;
+
+    TagsRecyclerViewAdapter adapter;
 
     @Inject
     TagsActivityPresenter presenter;
@@ -31,6 +45,13 @@ public class TagsActivity extends AppCompatActivity implements TagsActivityMVP.V
 
         ((ConnectidApplication) getApplication()).getApplicationComponent().inject(this);
 
+        adapter = new TagsRecyclerViewAdapter(this, data, this);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(adapter);
+        RecyclerView.ItemDecoration dividerItemDecoration = new DividerItemDecoration(this,
+                DividerItemDecoration.VERTICAL_LIST);
+        recyclerView.addItemDecoration(dividerItemDecoration);
     }
 
     @Override
@@ -42,11 +63,26 @@ public class TagsActivity extends AppCompatActivity implements TagsActivityMVP.V
 
     @Override
     public void displayTags(List<ConnectionTag> allTags) {
-        Toast.makeText(this, "all tags", Toast.LENGTH_SHORT).show();
+        emptyTv.setVisibility(View.INVISIBLE);
+        recyclerView.setVisibility(View.VISIBLE);
+
+        adapter.setTags(allTags);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        presenter.unsubscribe();
     }
 
     @Override
     public void displayNoTags() {
-        Toast.makeText(this, "no tags", Toast.LENGTH_SHORT).show();
+        emptyTv.setVisibility(View.VISIBLE);
+        recyclerView.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public void onItemClick(View view, int position) {
+        Toast.makeText(this, "Tag position " + position, Toast.LENGTH_SHORT).show();
     }
 }

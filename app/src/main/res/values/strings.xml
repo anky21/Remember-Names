@@ -59,5 +59,8 @@
     <string name="tags">Tags:</string>
     <string name="create_a_tag">Create a tag</string>
     <string name="last_name">last name</string>
+
+    <!-- TagsActivity -->
     <string name="activity_label_tags">Tags</string>
+    <string name="tag_with_count"><xliff:g id="tag_label">%1$s</xliff:g> (<xliff:g id="count_of_ids">%2$d</xliff:g>)</string>
 </resources>

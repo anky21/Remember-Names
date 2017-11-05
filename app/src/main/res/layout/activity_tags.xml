@@ -1,10 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/all_tags_recyclerview"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="me.anky.connectid.tags.TagsActivity">
+    android:layout_height="match_parent">
 
-</android.support.v7.widget.RecyclerView>
+    <TextView
+        android:id="@+id/empty_tags_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:paddingTop="@dimen/margin_16dp"
+        android:text="You have no tags for your connections."
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:visibility="invisible" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/all_tags_recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="me.anky.connectid.tags.TagsActivity"></android.support.v7.widget.RecyclerView>
+</FrameLayout>

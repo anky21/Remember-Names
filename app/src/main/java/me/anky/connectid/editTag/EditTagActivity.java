@@ -147,6 +147,12 @@ public class EditTagActivity extends AppCompatActivity implements EditTagActivit
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+        presenter.unsubscribe();
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu options from the res/menu/menu_editor.xml file.
         getMenuInflater().inflate(R.menu.menu_editor, menu);
