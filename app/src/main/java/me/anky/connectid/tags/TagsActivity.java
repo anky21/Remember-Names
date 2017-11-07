@@ -88,7 +88,7 @@ TagsRecyclerViewAdapter.RecyclerViewClickListener{
         ConnectionTag connectionTag = data.get(position);
         String ids = connectionTag.getConnection_ids();
         if (ids == null || ids.length() == 0) {
-            Toast.makeText(this, "There is no connections for this tag.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.no_connection_tag, Toast.LENGTH_SHORT).show();
         } else {
             Intent selectedConnectionsIntent = new Intent(TagsActivity.this, SelectedConnectionsActivity.class);
             selectedConnectionsIntent.putExtra("ids", ids);

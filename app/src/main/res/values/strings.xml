@@ -63,4 +63,5 @@
     <!-- TagsActivity -->
     <string name="activity_label_tags">Tags</string>
     <string name="tag_with_count"><xliff:g id="tag_label">%1$s</xliff:g> (<xliff:g id="count_of_ids">%2$d</xliff:g>)</string>
+    <string name="no_connection_tag">There is no connections for this tag.</string>
 </resources>

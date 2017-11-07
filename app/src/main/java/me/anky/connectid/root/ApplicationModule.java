@@ -17,6 +17,8 @@ import me.anky.connectid.edit.EditActivityMVP;
 import me.anky.connectid.edit.EditActivityPresenter;
 import me.anky.connectid.editTag.EditTagActivityMVP;
 import me.anky.connectid.editTag.EditTagActivityPresenter;
+import me.anky.connectid.selectedConnections.SelectedConnectionsActivityMVP;
+import me.anky.connectid.selectedConnections.SelectedConnectionsActivityPresenter;
 import me.anky.connectid.tags.TagsActivityMVP;
 import me.anky.connectid.tags.TagsActivityPresenter;
 
@@ -68,6 +70,11 @@ public class ApplicationModule {
     @Provides
     public TagsActivityMVP.Presenter provideTagsActivityPresenter(ConnectionsDataSource dataSource){
         return new TagsActivityPresenter(dataSource);
+    }
+
+    @Provides
+    public SelectedConnectionsActivityMVP.Presenter provideSelectedConnectionsActivityPresenter(ConnectionsDataSource dataSource){
+        return new SelectedConnectionsActivityPresenter(dataSource);
     }
 
     @Provides

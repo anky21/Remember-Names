@@ -9,6 +9,7 @@ import me.anky.connectid.data.SharedPrefsHelper;
 import me.anky.connectid.details.DetailsActivity;
 import me.anky.connectid.edit.EditActivity;
 import me.anky.connectid.editTag.EditTagActivity;
+import me.anky.connectid.selectedConnections.SelectedConnectionsActivity;
 import me.anky.connectid.tags.TagsActivity;
 
 /**
@@ -33,6 +34,8 @@ public interface ApplicationComponent {
     void inject(EditTagActivity editTagActivity);
 
     void inject(TagsActivity tagsActivity);
+
+    void inject(SelectedConnectionsActivity selectedConnectionsActivity);
 
     SharedPrefsHelper getPreferenceHelper();
 }
