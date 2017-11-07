@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.NavUtils;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -154,7 +153,8 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
                 showDeleteDialog();
                 break;
             case android.R.id.home:
-                NavUtils.navigateUpFromSameTask(this);
+//                NavUtils.navigateUpFromSameTask(this);
+                onBackPressed();
                 overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
                 return true;
         }

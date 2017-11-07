@@ -24,6 +24,8 @@ public interface SelectedConnectionsActivityMVP {
 
         void setView(SelectedConnectionsActivityMVP.View view);
 
+        void loadTag(int tagId);
+
         void loadConnections(List<String> idsList);
 
         void unsubscribe();

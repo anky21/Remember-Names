@@ -60,10 +60,11 @@
             android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
             android:name=".tags.TagsActivity"
-            android:label="@string/activity_label_tags" />
+            android:label="@string/activity_label_tags"
+            android:parentActivityName=".connections.ConnectionsActivity"/>
         <activity
             android:name=".selectedConnections.SelectedConnectionsActivity"
-            android:label="Selected Tag" />
+            android:parentActivityName=".tags.TagsActivity"/>
     </application>
 
 </manifest>

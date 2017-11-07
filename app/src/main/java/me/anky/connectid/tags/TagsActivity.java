@@ -90,6 +90,7 @@ TagsRecyclerViewAdapter.RecyclerViewClickListener{
             Toast.makeText(this, R.string.no_connection_tag, Toast.LENGTH_SHORT).show();
         } else {
             Intent selectedConnectionsIntent = new Intent(TagsActivity.this, SelectedConnectionsActivity.class);
+            selectedConnectionsIntent.putExtra("tagId", connectionTag.getDatabaseId());
             selectedConnectionsIntent.putExtra("ids", ids);
             selectedConnectionsIntent.putExtra("tag", connectionTag.getTag());
             startActivity(selectedConnectionsIntent);
