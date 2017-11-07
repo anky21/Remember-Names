@@ -3,6 +3,7 @@ package me.anky.connectid.selectedConnections;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,11 +39,20 @@ SelectedConnectionsActivityMVP.View{
     protected void onResume() {
         super.onResume();
         presenter.setView(this);
+        presenter.loadConnections(idsList);
+    }
+
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        presenter.unsubscribe();
     }
 
     @Override
     public void displayConnections(List<ConnectidConnection> connections) {
-
+        int size = connections.size();
+        Toast.makeText(this, "size " + size, Toast.LENGTH_SHORT).show();
     }
 
     @Override
