@@ -27,7 +27,6 @@ TagsRecyclerViewAdapter.RecyclerViewClickListener{
 
     public List<ConnectionTag> data = new ArrayList<>();
 
-
     @BindView(R.id.all_tags_recyclerview)
     RecyclerView recyclerView;
 
@@ -92,6 +91,7 @@ TagsRecyclerViewAdapter.RecyclerViewClickListener{
         } else {
             Intent selectedConnectionsIntent = new Intent(TagsActivity.this, SelectedConnectionsActivity.class);
             selectedConnectionsIntent.putExtra("ids", ids);
+            selectedConnectionsIntent.putExtra("tag", connectionTag.getTag());
             startActivity(selectedConnectionsIntent);
         }
     }
