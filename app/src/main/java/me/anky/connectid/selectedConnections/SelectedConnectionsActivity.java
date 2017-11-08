@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.LinearLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +33,9 @@ public class SelectedConnectionsActivity extends AppCompatActivity implements
 
     @BindView(R.id.selected_connections_rv)
     RecyclerView recyclerView;
+
+    @BindView(R.id.empty_view)
+    LinearLayout emptyView;
 
     @Inject
     SelectedConnectionsActivityPresenter presenter;
@@ -76,13 +80,15 @@ public class SelectedConnectionsActivity extends AppCompatActivity implements
     @Override
     public void displayConnections(List<ConnectidConnection> connections) {
         recyclerView.setVisibility(View.VISIBLE);
+        emptyView.setVisibility(View.GONE);
 
         adapter.setConnections(connections);
     }
 
     @Override
     public void displayNoConnections() {
-        recyclerView.setVisibility(View.INVISIBLE);
+        emptyView.setVisibility(View.VISIBLE);
+        recyclerView.setVisibility(View.GONE);
     }
 
     @Override

@@ -6,7 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.TextView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -30,8 +30,8 @@ TagsRecyclerViewAdapter.RecyclerViewClickListener{
     @BindView(R.id.all_tags_recyclerview)
     RecyclerView recyclerView;
 
-    @BindView(R.id.empty_tags_tv)
-    TextView emptyTv;
+    @BindView(R.id.empty_view)
+    LinearLayout emptyView;
 
     TagsRecyclerViewAdapter adapter;
 
@@ -64,7 +64,7 @@ TagsRecyclerViewAdapter.RecyclerViewClickListener{
 
     @Override
     public void displayTags(List<ConnectionTag> allTags) {
-        emptyTv.setVisibility(View.INVISIBLE);
+        emptyView.setVisibility(View.GONE);
         recyclerView.setVisibility(View.VISIBLE);
 
         adapter.setTags(allTags);
@@ -78,8 +78,8 @@ TagsRecyclerViewAdapter.RecyclerViewClickListener{
 
     @Override
     public void displayNoTags() {
-        emptyTv.setVisibility(View.VISIBLE);
-        recyclerView.setVisibility(View.INVISIBLE);
+        emptyView.setVisibility(View.VISIBLE);
+        recyclerView.setVisibility(View.GONE);
     }
 
     @Override

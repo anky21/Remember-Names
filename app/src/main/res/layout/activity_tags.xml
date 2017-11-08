@@ -1,23 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/empty_tags_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:paddingTop="@dimen/margin_16dp"
-        android:text="You have no tags for your connections."
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:visibility="invisible" />
+    <LinearLayout
+        android:id="@+id/empty_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingEnd="@dimen/margin_24dp"
+        android:paddingStart="@dimen/margin_24dp"
+        android:paddingTop="@dimen/margin_48dp">
+
+        <ImageView
+            android:layout_width="@dimen/empty_view_image_size"
+            android:layout_height="@dimen/empty_view_image_size"
+            android:src="@drawable/tags" />
+
+        <TextView
+            android:id="@+id/empty_tags_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:paddingTop="@dimen/margin_16dp"
+            android:text="You have no tags for your connections."
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+    </LinearLayout>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/all_tags_recyclerview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context="me.anky.connectid.tags.TagsActivity"></android.support.v7.widget.RecyclerView>
-</FrameLayout>
+</LinearLayout>
