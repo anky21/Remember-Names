@@ -142,6 +142,7 @@ public class ConnectionsActivity extends AppCompatActivity implements
             case R.id.action_tag: {
                 Intent intent = new Intent(this, TagsActivity.class);
                 startActivity(intent);
+                overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
             }
 
             case R.id.sortby_date_new: {

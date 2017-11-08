@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -56,6 +57,24 @@ TagsRecyclerViewAdapter.RecyclerViewClickListener{
     }
 
     @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
         presenter.setView(this);
@@ -94,6 +113,7 @@ TagsRecyclerViewAdapter.RecyclerViewClickListener{
             selectedConnectionsIntent.putExtra("ids", ids);
             selectedConnectionsIntent.putExtra("tag", connectionTag.getTag());
             startActivity(selectedConnectionsIntent);
+            overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
         }
     }
 }
