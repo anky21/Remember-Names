@@ -9,3 +9,4 @@
 .externalNativeBuild
 /android_app.jks
 /keystore.properties
+/app/google-services.json

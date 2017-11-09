@@ -20,6 +20,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 
 import java.io.File;
 import java.util.concurrent.Callable;
@@ -202,7 +204,7 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
         mCommonFriends = connection.getCommonFriends();
         mDescription = connection.getDescription();
         mTags = connection.getTags();
-        if (mTags == null){
+        if (mTags == null) {
             mTagsTv.setText("");
         } else {
             mTagsTv.setText(mTags);
@@ -212,9 +214,22 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
         // path to /data/data/yourapp/app_data/imageDir
         File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
         String path = directory.getAbsolutePath() + "/" + imageName;
+        mPortraitIv.getMeasuredWidth();
+        mPortraitIv.getMeasuredHeight();
+        Log.v("testing", "width is " + mPortraitIv.getMeasuredWidth());
+        Log.v("testing", "height is " + mPortraitIv.getMeasuredHeight());
+
+        RequestOptions myOptions = new RequestOptions()
+                .centerCrop()
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .skipMemoryCache(true)
+                .override(600, 600);
+
         Glide.with(this)
+                .applyDefaultRequestOptions(myOptions)
                 .load(Uri.fromFile(new File(path)))
                 .into(mPortraitIv);
+
         mMeetVenueTv.setText(mMeetVenue);
         mAppearanceTv.setText(mAppearance);
         mFeatureTv.setText(mFeature);

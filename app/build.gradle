@@ -37,6 +37,8 @@ android {
 }
 
 repositories {
+    mavenCentral()
+    maven { url 'https://maven.google.com' }
     maven {
         url "https://s3.amazonaws.com/repo.commonsware.com"
     }
@@ -44,6 +46,7 @@ repositories {
 
 ext {
     supportLibVersion = '25.3.1'
+    firebase = '11.6.0'
 }
 
 dependencies {
@@ -54,8 +57,8 @@ dependencies {
     compile "com.android.support:support-v4:${supportLibVersion}"
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     testCompile 'junit:junit:4.12'
-    compile 'com.github.bumptech.glide:glide:4.0.0'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.0.0'
+    compile 'com.github.bumptech.glide:glide:4.3.1'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.3.1'
     compile 'net.simonvt.schematic:schematic:0.7.0'
     compile 'com.jakewharton:butterknife:8.6.0'
     compile 'com.facebook.stetho:stetho:1.5.0'
@@ -67,6 +70,11 @@ dependencies {
     compile 'com.theartofdev.edmodo:android-image-cropper:2.4.+'
     compile 'com.androidsx:rate-me:4.0.3'
     compile 'org.greenrobot:eventbus:3.0.0'
+
+    // Firebase
+    compile "com.google.firebase:firebase-core:${firebase}"
+    compile "com.google.firebase:firebase-messaging:${firebase}"
+
 
     // RxJava
     compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
@@ -91,3 +99,4 @@ dependencies {
         exclude group: 'com.android.support', module: 'recyclerview-v7'
     }
 }
+apply plugin: 'com.google.gms.google-services'
