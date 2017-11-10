@@ -29,6 +29,7 @@ import me.anky.connectid.data.ConnectionTag;
 import me.anky.connectid.root.ConnectidApplication;
 
 public class EditTagActivity extends AppCompatActivity implements EditTagActivityMVP.View, View.OnKeyListener {
+    private final static String TAG = "EditTagActivity";
 
     public List<ConnectionTag> allTags = new ArrayList<>();
     List<String> connectionTags = new ArrayList<>();
@@ -276,7 +277,6 @@ public class EditTagActivity extends AppCompatActivity implements EditTagActivit
             tagTv.measure(0, 0);
 
             int width = tagTv.getMeasuredWidth();
-//                Log.v("testing", "width is " + tagTv.getMeasuredWidth());
 
             if (currentWidth + width < containerWidth) {
                 currentWidth += width + 16;
@@ -368,7 +368,6 @@ public class EditTagActivity extends AppCompatActivity implements EditTagActivit
                         selectedTagRl.removeView(view);
                         connectionTags.remove(tag);
 
-                        // ToDo: Check if the tag is already in "All Tags"
                         if (allTags != null && allTags.size() > 0) {
                             for (ConnectionTag allTagsItem : allTags) {
                                 if (allTagsItem.getTag().equalsIgnoreCase(tag)) {

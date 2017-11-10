@@ -1,7 +1,5 @@
 package me.anky.connectid.edit;
 
-import android.util.Log;
-
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.Iterator;
@@ -15,11 +13,14 @@ import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
+import me.anky.connectid.Constant;
+import me.anky.connectid.Utilities;
 import me.anky.connectid.data.ConnectidConnection;
 import me.anky.connectid.data.ConnectionTag;
 import me.anky.connectid.data.ConnectionsDataSource;
 
 public class EditActivityPresenter implements EditActivityMVP.Presenter {
+    private final static String TAG = "EditActivityPresenter";
 
     private EditActivityMVP.View view;
     private ConnectionsDataSource connectionsDataSource;
@@ -49,16 +50,18 @@ public class EditActivityPresenter implements EditActivityMVP.Presenter {
 
                             @Override
                             public void onSuccess(@NonNull ConnectidConnection connection) {
-                                System.out.println("Thread subscribe: " + Thread.currentThread().getId());
+//                                System.out.println("Thread subscribe: " + Thread.currentThread().getId());
 
                                 int databaseId = connectionsDataSource.insertNewConnection(connection);
-                                Log.v("testing", "new databaseId is " + databaseId);
+//                                Log.v("testing", "new databaseId is " + databaseId);
 
                                 EventBus.getDefault().post(new SetToUpdateTagTable(databaseId));
-                                System.out.println("MVP presenter - " + "delivered new connection, resultCode " + databaseId);
+//                                System.out.println("MVP presenter - " + "delivered new connection, resultCode " + databaseId);
 
                                 if (databaseId == -1) {
                                     view.displayError();
+                                    Utilities.logFirebaseEvent(TAG, Constant.EVENT_TYPE_ERROR, "deliverNewConnection onError: databaseId is -1");
+
                                 } else {
                                     view.displaySuccess(databaseId);
                                 }
@@ -66,7 +69,8 @@ public class EditActivityPresenter implements EditActivityMVP.Presenter {
 
                             @Override
                             public void onError(@NonNull Throwable e) {
-                                System.out.println("MVP presenter - " + "something went seriously wrong");
+//                                System.out.println("MVP presenter - " + "something went seriously wrong");
+                                Utilities.logFirebaseEvent(TAG, Constant.EVENT_TYPE_CRITICAL_ERROR, "deliverNewConnection onError " + e.getMessage());
                             }
                         });
 
@@ -88,9 +92,10 @@ public class EditActivityPresenter implements EditActivityMVP.Presenter {
 
                                 int resultCode = connectionsDataSource.updateConnection(connection);
 
-                                System.out.println("MVP presenter - " + "delivered new connection, resultCode " + resultCode);
+//                                System.out.println("MVP presenter - " + "delivered new connection, resultCode " + resultCode);
 
                                 if (resultCode == -1) {
+                                    Utilities.logFirebaseEvent(TAG, Constant.EVENT_TYPE_ERROR, "updateConnection onError: resultCode is -1");
                                     view.displayError();
                                 } else {
                                     view.displaySuccess(resultCode);
@@ -99,7 +104,8 @@ public class EditActivityPresenter implements EditActivityMVP.Presenter {
 
                             @Override
                             public void onError(@NonNull Throwable e) {
-                                System.out.println("MVP presenter - " + "something went seriously wrong");
+//                                System.out.println("MVP presenter - " + "something went seriously wrong");
+                                Utilities.logFirebaseEvent(TAG, Constant.EVENT_TYPE_CRITICAL_ERROR, "updateConnection onError " + e.getMessage());
                             }
                         });
 
@@ -120,7 +126,7 @@ public class EditActivityPresenter implements EditActivityMVP.Presenter {
 
                             @Override
                             public void onError(Throwable e) {
-
+                                Utilities.logFirebaseEvent(TAG, Constant.EVENT_TYPE_CRITICAL_ERROR, "loadTags onError " + e.getMessage());
                             }
                         });
         compositeDisposable.add(disposableSingleTagsObserver);

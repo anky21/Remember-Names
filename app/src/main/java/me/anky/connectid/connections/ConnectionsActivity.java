@@ -8,7 +8,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,6 +26,7 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import me.anky.connectid.Constant;
 import me.anky.connectid.R;
 import me.anky.connectid.Utilities;
 import me.anky.connectid.data.ConnectidConnection;
@@ -41,6 +41,7 @@ public class ConnectionsActivity extends AppCompatActivity implements
         ConnectionsRecyclerViewAdapter.RecyclerViewClickListener {
 
     public List<ConnectidConnection> data = new ArrayList<>();
+    private final static String TAG = "ConnectionsActivity";
 
     @BindView(R.id.connections_list_rv)
     RecyclerView recyclerView;
@@ -140,6 +141,8 @@ public class ConnectionsActivity extends AppCompatActivity implements
 
         switch (id) {
             case R.id.action_tag: {
+                Utilities.logFirebaseEvent(TAG, Constant.EVENT_TYPE_ACTION, "btn_tags_activity_clicked");
+
                 Intent intent = new Intent(this, TagsActivity.class);
                 startActivity(intent);
                 overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
@@ -147,31 +150,32 @@ public class ConnectionsActivity extends AppCompatActivity implements
 
             case R.id.sortby_date_new: {
                 sharedPrefsHelper.put(Utilities.SORTBY, 1);
+                Utilities.logFirebaseEvent(TAG, Constant.EVENT_TYPE_ACTION, "sorby_new");
             }
             break;
             case R.id.sortby_date_old: {
                 sharedPrefsHelper.put(Utilities.SORTBY, 2);
-
+                Utilities.logFirebaseEvent(TAG, Constant.EVENT_TYPE_ACTION, "sorby_old");
             }
             break;
             case R.id.sortby_fname_a: {
                 sharedPrefsHelper.put(Utilities.SORTBY, 3);
-
+                Utilities.logFirebaseEvent(TAG, Constant.EVENT_TYPE_ACTION, "sorby_firstname_a");
             }
             break;
             case R.id.sortby_fname_z: {
                 sharedPrefsHelper.put(Utilities.SORTBY, 4);
-
+                Utilities.logFirebaseEvent(TAG, Constant.EVENT_TYPE_ACTION, "sorby_firstname_z");
             }
             break;
             case R.id.sortby_lname_a: {
                 sharedPrefsHelper.put(Utilities.SORTBY, 5);
-
+                Utilities.logFirebaseEvent(TAG, Constant.EVENT_TYPE_ACTION, "sorby_lastname_a");
             }
             break;
             case R.id.sortby_lname_z: {
                 sharedPrefsHelper.put(Utilities.SORTBY, 6);
-
+                Utilities.logFirebaseEvent(TAG, Constant.EVENT_TYPE_ACTION, "sorby_lastname_z");
             }
             break;
         }
@@ -194,7 +198,6 @@ public class ConnectionsActivity extends AppCompatActivity implements
             recyclerView.smoothScrollToPosition(0);
             shouldScrollToTop = false;
         }
-
     }
 
     private void setScrollListener(RecyclerView recyclerView) {
@@ -234,7 +237,7 @@ public class ConnectionsActivity extends AppCompatActivity implements
 
     @Override
     public void onItemClick(View view, int position) {
-        Log.i("MVP view", "position " + position + " clicked");
+//        Log.i("MVP view", "position " + position + " clicked");
 
         Intent intent = new Intent(this, DetailsActivity.class);
         intent.putExtra("DETAILS", data.get(position));
@@ -247,6 +250,8 @@ public class ConnectionsActivity extends AppCompatActivity implements
         Intent intent = new Intent(this, EditActivity.class);
         startActivityForResult(intent, NEW_CONNECTION_REQUEST);
         overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+
+        Utilities.logFirebaseEvent(TAG, Constant.EVENT_TYPE_ACTION, "FAB_btn_edit_activity_clicked");
     }
 
     @Override

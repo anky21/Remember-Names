@@ -11,11 +11,14 @@ import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
+import me.anky.connectid.Constant;
+import me.anky.connectid.Utilities;
 import me.anky.connectid.data.ConnectidConnection;
 import me.anky.connectid.data.ConnectionTag;
 import me.anky.connectid.data.ConnectionsDataSource;
 
 public class DetailsActivityPresenter implements DetailsActivityMVP.Presenter {
+    private final static String TAG = "DetailsActivityPresenter";
 
     private DetailsActivityMVP.View view;
     private ConnectionsDataSource connectionsDataSource;
@@ -45,6 +48,7 @@ public class DetailsActivityPresenter implements DetailsActivityMVP.Presenter {
 
                             @Override
                             public void onError(@NonNull Throwable e) {
+                                Utilities.logFirebaseEvent(TAG, Constant.EVENT_TYPE_CRITICAL_ERROR, "loadConnection onError " + e.getMessage());
 
                             }
                         });
@@ -73,7 +77,8 @@ public class DetailsActivityPresenter implements DetailsActivityMVP.Presenter {
 
                             @Override
                             public void onError(@NonNull Throwable e) {
-                                System.out.println("MVP presenter - " + "something went seriously wrong");
+//                                System.out.println("MVP presenter - " + "something went seriously wrong");
+                                Utilities.logFirebaseEvent(TAG, Constant.EVENT_TYPE_CRITICAL_ERROR, "deliverDatabaseIdtoDelete onError " + e.getMessage());
                             }
                         });
 
@@ -101,7 +106,7 @@ public class DetailsActivityPresenter implements DetailsActivityMVP.Presenter {
 
                             @Override
                             public void onError(Throwable e) {
-
+                                Utilities.logFirebaseEvent(TAG, Constant.EVENT_TYPE_CRITICAL_ERROR, "loadAndUpdateTagTable onError " + e.getMessage());
                             }
                         });
         compositeDisposable.add(disposableSingleTagsObserver);

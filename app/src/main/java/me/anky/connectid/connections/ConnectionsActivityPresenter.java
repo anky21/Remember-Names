@@ -11,11 +11,13 @@ import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
+import me.anky.connectid.Constant;
+import me.anky.connectid.Utilities;
 import me.anky.connectid.data.ConnectidConnection;
 import me.anky.connectid.data.ConnectionsDataSource;
 
 public class ConnectionsActivityPresenter implements ConnectionsActivityMVP.Presenter {
-
+    private final static String TAG = "ConnectionsActivityPresenter";
     private ConnectionsActivityMVP.View view;
     private ConnectionsDataSource connectionsDataSource;
 
@@ -55,6 +57,7 @@ public class ConnectionsActivityPresenter implements ConnectionsActivityMVP.Pres
                             @Override
                             public void onError(@NonNull Throwable e) {
                                 view.displayError();
+                                Utilities.logFirebaseEvent(TAG, Constant.EVENT_TYPE_CRITICAL_ERROR, "loadConnections " + e.getMessage());
                             }
                         });
 

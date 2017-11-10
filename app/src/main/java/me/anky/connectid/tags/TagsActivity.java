@@ -25,6 +25,7 @@ import me.anky.connectid.selectedConnections.SelectedConnectionsActivity;
 
 public class TagsActivity extends AppCompatActivity implements TagsActivityMVP.View,
 TagsRecyclerViewAdapter.RecyclerViewClickListener{
+    private final static String TAG = "TagsActivity";
 
     public List<ConnectionTag> data = new ArrayList<>();
 

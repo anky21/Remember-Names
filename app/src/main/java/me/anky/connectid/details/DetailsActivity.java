@@ -32,12 +32,16 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.reactivex.Single;
+import me.anky.connectid.Constant;
 import me.anky.connectid.R;
+import me.anky.connectid.Utilities;
 import me.anky.connectid.data.ConnectidConnection;
 import me.anky.connectid.edit.EditActivity;
 import me.anky.connectid.root.ConnectidApplication;
 
 public class DetailsActivity extends AppCompatActivity implements DetailsActivityMVP.View {
+    private final static String TAG = "DetailsActivity";
+
     int databaseId;
     ConnectidConnection connection;
     private Intent intent;
@@ -144,6 +148,9 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("text/plain");
         intent.putExtra(Intent.EXTRA_TEXT, shareMessage);
+
+        Utilities.logFirebaseEvent(TAG, Constant.EVENT_TYPE_EVENT, "sharing connection " + shareMessage);
+
         return intent;
     }
 
@@ -153,6 +160,7 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
         switch (item.getItemId()) {
             case R.id.action_delete:
                 showDeleteDialog();
+                Utilities.logFirebaseEvent(TAG, Constant.EVENT_TYPE_ACTION, "delete connection btn clicked");
                 break;
             case android.R.id.home:
 //                NavUtils.navigateUpFromSameTask(this);
@@ -253,7 +261,7 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
 
     @Override
     public void displayError() {
-        Log.i("MVP view", "delete failed");
+//        Log.i("MVP view", "delete failed");
     }
 
     @Override
@@ -269,6 +277,8 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
 
     @OnClick(R.id.edit_fab)
     public void launchEditActivity(View view) {
+        Utilities.logFirebaseEvent(TAG, Constant.EVENT_TYPE_ACTION, "FAB btn EditActivity clicked");
+
         Intent intent = new Intent(this, EditActivity.class);
         intent.putExtra("DETAILS", connection);
         startActivity(intent);

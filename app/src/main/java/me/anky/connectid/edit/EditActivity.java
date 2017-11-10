@@ -44,6 +44,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import events.SetToUpdateTagTable;
 import io.reactivex.Single;
+import me.anky.connectid.Constant;
 import me.anky.connectid.R;
 import me.anky.connectid.Utilities;
 import me.anky.connectid.data.ConnectidConnection;
@@ -291,6 +292,7 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
 
     @OnClick(R.id.edit_portrait_iv)
     public void changePortraitPhoto() {
+        Utilities.logFirebaseEvent(TAG, Constant.EVENT_TYPE_ACTION, "changePortraitPhoto() called");
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         PickerFragment newFragment = new PickerFragment();
@@ -300,6 +302,8 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
 
     @OnClick(R.id.tags_linear_layout)
     public void launchEditTagActivity(View view) {
+        Utilities.logFirebaseEvent(TAG, Constant.EVENT_TYPE_ACTION, "launchEditTagActivity() called");
+
         Intent intent = new Intent(this, EditTagActivity.class);
         if (mDatabaseId != -1) {
             intent.putExtra("data_id", mDatabaseId);

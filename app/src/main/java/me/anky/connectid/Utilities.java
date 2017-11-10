@@ -5,12 +5,15 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -21,6 +24,7 @@ import java.util.List;
 import java.util.Random;
 
 import me.anky.connectid.data.source.local.ConnectidColumns;
+import me.anky.connectid.root.ConnectidApplication;
 
 /**
  * Created by Anky An on 28/07/2017.
@@ -32,6 +36,9 @@ public class Utilities {
     private static final String CHARS = "abcdefghijkmnopqrstuvwxyz";
     public static final String SORTBY = "sortby";
     public static final int TAG_BASE_NUMBER = 1000;
+    private static ConnectidApplication application;
+    private static FirebaseAnalytics mFirebaseAnalytics;
+
 
     // Load image from internal storage
     public static Bitmap loadImageFromStorage(String imageName, String path) {
@@ -204,5 +211,21 @@ public class Utilities {
 
             i++;
         }
+    }
+
+    /**
+     *
+     * @param context Activity or class where event is logged
+     * @param content The type of events: event, error, critical_error
+     * @param msg The actual content of the event, error message etc
+     */
+    public static void logFirebaseEvent(String context, String content, String msg) {
+        application = ConnectidApplication.getAppInstance();
+        mFirebaseAnalytics = application.getAnalyticsInstance();
+
+        Bundle params = new Bundle();
+        params.putString("item", content);
+        params.putString("message", msg);
+        mFirebaseAnalytics.logEvent(context, params);
     }
 }

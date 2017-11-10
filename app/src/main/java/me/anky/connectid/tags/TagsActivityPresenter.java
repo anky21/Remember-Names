@@ -8,6 +8,8 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
+import me.anky.connectid.Constant;
+import me.anky.connectid.Utilities;
 import me.anky.connectid.data.ConnectionTag;
 import me.anky.connectid.data.ConnectionsDataSource;
 
@@ -17,6 +19,8 @@ import me.anky.connectid.data.ConnectionsDataSource;
  */
 
 public class TagsActivityPresenter implements TagsActivityMVP.Presenter {
+    private final static String TAG = "TagsActivityPresenter";
+
     private  TagsActivityMVP.View view;
     private ConnectionsDataSource dataSource;
 
@@ -47,7 +51,7 @@ public class TagsActivityPresenter implements TagsActivityMVP.Presenter {
 
                             @Override
                             public void onError(Throwable e) {
-
+                                Utilities.logFirebaseEvent(TAG, Constant.EVENT_TYPE_CRITICAL_ERROR, "loadTags onError " + e.getMessage());
                             }
                         });
         compositeDisposable.add(disposableSingleObserver);
@@ -55,6 +59,6 @@ public class TagsActivityPresenter implements TagsActivityMVP.Presenter {
 
     @Override
     public void unsubscribe() {
-
+        compositeDisposable.clear();
     }
 }

@@ -11,6 +11,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
+import me.anky.connectid.Constant;
 import me.anky.connectid.Utilities;
 import me.anky.connectid.data.ConnectionTag;
 import me.anky.connectid.data.ConnectionsDataSource;
@@ -20,6 +21,7 @@ import me.anky.connectid.data.ConnectionsDataSource;
  */
 
 public class EditTagActivityPresenter implements EditTagActivityMVP.Presenter {
+    private final static String TAG = "EditTagActivityPresenter";
 
     private EditTagActivityMVP.View view;
     private ConnectionsDataSource dataSource;
@@ -38,6 +40,8 @@ public class EditTagActivityPresenter implements EditTagActivityMVP.Presenter {
 
     @Override
     public void createNewTag(String input, List<String> connectionTags, List<ConnectionTag> allTags) {
+        Utilities.logFirebaseEvent(TAG, Constant.EVENT_TYPE_NEW_TAG, input);
+
         int existingTagPosition = -1;
 
         // If the input is already in the allTags with different cases, use the existing one
@@ -86,7 +90,7 @@ public class EditTagActivityPresenter implements EditTagActivityMVP.Presenter {
 
                             @Override
                             public void onError(Throwable e) {
-
+                                Utilities.logFirebaseEvent(TAG, Constant.EVENT_TYPE_CRITICAL_ERROR, "loadTags onError " + e.getMessage());
                             }
                         });
         compositeDisposable.add(disposableSingleObserver);

@@ -26,6 +26,8 @@ import me.anky.connectid.root.ConnectidApplication;
 public class SelectedConnectionsActivity extends AppCompatActivity implements
         SelectedConnectionsActivityMVP.View,
         ConnectionsRecyclerViewAdapter.RecyclerViewClickListener {
+    private final static String TAG = "SelectedConnectionsActivity";
+
     private int tagId;
     public List<ConnectidConnection> data = new ArrayList<>();
     private static final int DETAILS_ACTIVITY_REQUEST = 100;
