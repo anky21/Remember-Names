@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -164,6 +165,7 @@ public class Utilities {
             tagTv.setId(TAG_BASE_NUMBER + i);
             tagTv.setText(tag);
             tagTv.setTextSize(14);
+            tagTv.setEllipsize(TextUtils.TruncateAt.END);
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
                     RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
             params.setMargins(8, 4, 8, 4);

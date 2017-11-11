@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -12,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -30,6 +32,7 @@ import me.anky.connectid.root.ConnectidApplication;
 
 public class EditTagActivity extends AppCompatActivity implements EditTagActivityMVP.View, View.OnKeyListener {
     private final static String TAG = "EditTagActivity";
+//    public static final int DEFAULT_MSG_LENGTH_LIMIT = 30;
 
     public List<ConnectionTag> allTags = new ArrayList<>();
     List<String> connectionTags = new ArrayList<>();
@@ -59,7 +62,7 @@ public class EditTagActivity extends AppCompatActivity implements EditTagActivit
 
     @Inject
     EditTagActivityPresenter presenter;
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,22 +87,23 @@ public class EditTagActivity extends AppCompatActivity implements EditTagActivit
             connectionTags = new ArrayList(Arrays.asList(oldTagsArray));
         }
 
-            ViewTreeObserver vto = selectedTagRl.getViewTreeObserver();
-            if (vto.isAlive()) {
-                vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                    @Override
-                    public void onGlobalLayout() {
-                        int viewWidth = selectedTagRl.getMeasuredWidth();
-                        // handle viewWidth here...
-                        displayConnectionTags();
+        ViewTreeObserver vto = selectedTagRl.getViewTreeObserver();
+        if (vto.isAlive()) {
+            vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    int viewWidth = selectedTagRl.getMeasuredWidth();
+                    // handle viewWidth here...
+                    displayConnectionTags();
 
-                        if (viewWidth > 0) {
-                            selectedTagRl.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                        }
+                    if (viewWidth > 0) {
+                        selectedTagRl.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                     }
-                });
-            }
-
+                }
+            });
+        }
+//        addTagEt.setFilters(new InputFilter[]{new InputFilter.LengthFilter(DEFAULT_MSG_LENGTH_LIMIT)});
+        setMaxWidthForEditText(); // Set maximum width for EditText
 
         addTagEt.setOnKeyListener(this);
         addTagEt.addTextChangedListener(new TextWatcher() {
@@ -163,7 +167,7 @@ public class EditTagActivity extends AppCompatActivity implements EditTagActivit
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         String connectionTagsString;
-        if (connectionTags.size() == 0){
+        if (connectionTags.size() == 0) {
             connectionTagsString = null;
         } else {
             connectionTagsString = connectionTags.toString();
@@ -217,7 +221,23 @@ public class EditTagActivity extends AppCompatActivity implements EditTagActivit
         }
     }
 
-    private void displayAllTagsMethod(RelativeLayout allTagsLayout, ListView searchTagsLv, final List<ConnectionTag> allTags, final List<String> connectionTags){
+    private void setMaxWidthForEditText() {
+        TextView textView = new TextView(this);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        textView.setText("WWWWWWWWWWWWWWWWWW"); // 18 Ws
+        textView.setTextSize(14);
+        textView.setBackgroundResource(R.drawable.round_bg_blue);
+        textView.setLayoutParams(params);
+        textView.measure(0, 0);
+        int maxWidth = textView.getMeasuredWidth();
+
+        if (maxWidth != 0) {
+            addTagEt.setMaxWidth(maxWidth);
+        }
+    }
+
+    private void displayAllTagsMethod(RelativeLayout allTagsLayout, ListView searchTagsLv, final List<ConnectionTag> allTags, final List<String> connectionTags) {
         // Clear all views
         allTagsLayout.removeAllViews();
         int containerWidth = allTagsLayout.getMeasuredWidth() - 16;
@@ -250,6 +270,7 @@ public class EditTagActivity extends AppCompatActivity implements EditTagActivit
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
                     RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
             params.setMargins(8, 4, 8, 4);
+            tagTv.setEllipsize(TextUtils.TruncateAt.END);
             tagTv.setMaxLines(1);
             tagTv.setLayoutParams(params);
 
@@ -264,7 +285,7 @@ public class EditTagActivity extends AppCompatActivity implements EditTagActivit
             tagTv.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (connectionTags.contains(tagString)){
+                    if (connectionTags.contains(tagString)) {
                         connectionTags.remove(tagString);
                     } else {
                         connectionTags.add(tagString);
@@ -360,6 +381,7 @@ public class EditTagActivity extends AppCompatActivity implements EditTagActivit
                 tagTv.setBackgroundResource(R.drawable.round_bg_blue);
                 tagTv.setTextColor(ContextCompat.getColor(EditTagActivity.this, R.color.colorAccent));
                 tagTv.setMaxLines(1);
+                tagTv.setEllipsize(TextUtils.TruncateAt.END);
                 tagTv.measure(0, 0);
 
                 tagTv.setOnClickListener(new View.OnClickListener() {
@@ -419,7 +441,7 @@ public class EditTagActivity extends AppCompatActivity implements EditTagActivit
             }
         }
         // Refresh allTags if the new Tag is in All Tags
-        if (hasSameTag){
+        if (hasSameTag) {
             displayAllTags(allTags);
             hasSameTag = false;
         }
