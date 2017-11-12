@@ -5,6 +5,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -42,6 +45,7 @@ public class ConnectionsActivity extends AppCompatActivity implements
 
     public List<ConnectidConnection> data = new ArrayList<>();
     private final static String TAG = "ConnectionsActivity";
+    private ActionBarDrawerToggle mToggle;
 
     @BindView(R.id.connections_list_rv)
     RecyclerView recyclerView;
@@ -51,6 +55,12 @@ public class ConnectionsActivity extends AppCompatActivity implements
 
     @BindView(R.id.empty_view)
     LinearLayout emptyView;
+
+    @BindView(R.id.drawer_layout)
+    DrawerLayout mDrawerLayout;
+
+    @BindView(R.id.navigation_view)
+    NavigationView mNavigationView;
 
     @Inject
     SharedPrefsHelper sharedPrefsHelper;
@@ -74,6 +84,15 @@ public class ConnectionsActivity extends AppCompatActivity implements
         ButterKnife.bind(this);
 
         ((ConnectidApplication) getApplication()).getApplicationComponent().inject(this);
+
+        mToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.open, R.string.close);
+        mDrawerLayout.addDrawerListener(mToggle);
+        mToggle.syncState();
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        mNavigationView.setItemIconTintList(null);
+
+        mNavigationView.setNavigationItemSelectedListener(navigationItemSelectedListener);
 
         Stetho.initializeWithDefaults(this);
 
@@ -137,6 +156,9 @@ public class ConnectionsActivity extends AppCompatActivity implements
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        if (mToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
         int id = item.getItemId();
 
         switch (id) {
@@ -278,4 +300,33 @@ public class ConnectionsActivity extends AppCompatActivity implements
             }
         }
     }
+
+    private NavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
+            new NavigationView.OnNavigationItemSelectedListener() {
+                @Override
+                public boolean onNavigationItemSelected(MenuItem menuItem) {
+                    switch (menuItem.getItemId()) {
+                        case (R.id.nav_tags):
+                            Intent intent = new Intent(getApplicationContext(), TagsActivity.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(intent);
+                            mDrawerLayout.closeDrawer(mNavigationView);
+                            break;
+                        case (R.id.nav_invite):
+//                            Intent messageIntent = new Intent(getApplicationContext(), MessagesActivity.class);
+//                            messageIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                            startActivity(messageIntent);
+                            Toast.makeText(ConnectionsActivity.this, "Invite friends", Toast.LENGTH_SHORT).show();
+                            mDrawerLayout.closeDrawer(mNavigationView);
+                            break;
+                        case (R.id.nav_exit):
+                            mDrawerLayout.closeDrawer(mNavigationView);
+                            finish();
+                            break;
+                        default:
+                            break;
+                    }
+                    return true;
+                }
+            };
 }

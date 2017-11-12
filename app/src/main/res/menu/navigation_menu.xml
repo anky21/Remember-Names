@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/nav_tags"
+        android:icon="@drawable/ic_tag_blue"
+        android:title="@string/nav_all_tags" />
+
+    <item
+        android:id="@+id/nav_invite"
+        android:icon="@drawable/ic_invite_friends"
+        android:title="@string/nav_invite_friends" />
+
+    <item
+        android:id="@+id/nav_exit"
+        android:icon="@drawable/ic_log_out"
+        android:title="@string/nav_exit" />
+
+</menu>

@@ -68,4 +68,11 @@
     <!-- SelectedConnectionsActivity-->
     <string name="selected_connections_activity_title">Tag-%s</string>
     <string name="put_a_name_on_this_tag">Put a name on this tag</string>
+
+    <!-- Navigation menu-->
+    <string name="open">Open</string>
+    <string name="close">Close</string>
+    <string name="nav_all_tags">All Tags</string>
+    <string name="nav_invite_friends">Invite Friends</string>
+    <string name="nav_exit">Exit</string>
 </resources>
