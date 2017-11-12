@@ -15,6 +15,10 @@ public interface ConnectionsActivityMVP {
         int getSortByOption();
 
         void displayError();
+
+        void closeNavigationMenu();
+
+        void showExitDialog();
     }
 
     interface Presenter {

@@ -11,7 +11,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.ShareActionProvider;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -222,10 +221,6 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
         // path to /data/data/yourapp/app_data/imageDir
         File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
         String path = directory.getAbsolutePath() + "/" + imageName;
-        mPortraitIv.getMeasuredWidth();
-        mPortraitIv.getMeasuredHeight();
-        Log.v("testing", "width is " + mPortraitIv.getMeasuredWidth());
-        Log.v("testing", "height is " + mPortraitIv.getMeasuredHeight());
 
         RequestOptions myOptions = new RequestOptions()
                 .centerCrop()

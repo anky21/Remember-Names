@@ -1,5 +1,6 @@
 package me.anky.connectid.connections;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -8,6 +9,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -46,6 +48,7 @@ public class ConnectionsActivity extends AppCompatActivity implements
     public List<ConnectidConnection> data = new ArrayList<>();
     private final static String TAG = "ConnectionsActivity";
     private ActionBarDrawerToggle mToggle;
+    private AlertDialog alertDialog;
 
     @BindView(R.id.connections_list_rv)
     RecyclerView recyclerView;
@@ -75,6 +78,7 @@ public class ConnectionsActivity extends AppCompatActivity implements
     boolean shouldScrollToBottom = false;
     boolean shouldScrollToTop = false;
     private int mSortByOption;
+    private boolean isBackBtnPressedOnce = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -146,6 +150,9 @@ public class ConnectionsActivity extends AppCompatActivity implements
     protected void onStop() {
         super.onStop();
         presenter.unsubscribe();
+        if (alertDialog != null && alertDialog.isShowing()) {
+            alertDialog.dismiss();
+        }
     }
 
     @Override
@@ -163,6 +170,8 @@ public class ConnectionsActivity extends AppCompatActivity implements
 
         switch (id) {
             case R.id.action_tag: {
+                closeNavigationMenu();
+
                 Utilities.logFirebaseEvent(TAG, Constant.EVENT_TYPE_ACTION, "btn_tags_activity_clicked");
 
                 Intent intent = new Intent(this, TagsActivity.class);
@@ -171,31 +180,42 @@ public class ConnectionsActivity extends AppCompatActivity implements
             }
 
             case R.id.sortby_date_new: {
+                closeNavigationMenu();
+
                 sharedPrefsHelper.put(Utilities.SORTBY, 1);
                 Utilities.logFirebaseEvent(TAG, Constant.EVENT_TYPE_ACTION, "sorby_new");
             }
             break;
             case R.id.sortby_date_old: {
+                closeNavigationMenu();
+
                 sharedPrefsHelper.put(Utilities.SORTBY, 2);
                 Utilities.logFirebaseEvent(TAG, Constant.EVENT_TYPE_ACTION, "sorby_old");
             }
             break;
             case R.id.sortby_fname_a: {
+                closeNavigationMenu();
+
                 sharedPrefsHelper.put(Utilities.SORTBY, 3);
                 Utilities.logFirebaseEvent(TAG, Constant.EVENT_TYPE_ACTION, "sorby_firstname_a");
             }
             break;
             case R.id.sortby_fname_z: {
+                closeNavigationMenu();
+
                 sharedPrefsHelper.put(Utilities.SORTBY, 4);
                 Utilities.logFirebaseEvent(TAG, Constant.EVENT_TYPE_ACTION, "sorby_firstname_z");
             }
             break;
             case R.id.sortby_lname_a: {
+                closeNavigationMenu();
+
                 sharedPrefsHelper.put(Utilities.SORTBY, 5);
                 Utilities.logFirebaseEvent(TAG, Constant.EVENT_TYPE_ACTION, "sorby_lastname_a");
             }
             break;
             case R.id.sortby_lname_z: {
+                closeNavigationMenu();
                 sharedPrefsHelper.put(Utilities.SORTBY, 6);
                 Utilities.logFirebaseEvent(TAG, Constant.EVENT_TYPE_ACTION, "sorby_lastname_z");
             }
@@ -301,27 +321,73 @@ public class ConnectionsActivity extends AppCompatActivity implements
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        closeNavigationMenu();
+        if (!isBackBtnPressedOnce) {
+            Toast.makeText(this, R.string.press_back_to_exit, Toast.LENGTH_SHORT).show();
+            isBackBtnPressedOnce = true;
+        } else {
+            finish();
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public void closeNavigationMenu() {
+        if (mDrawerLayout.isDrawerOpen(mNavigationView)) {
+            mDrawerLayout.closeDrawer(mNavigationView);
+        }
+    }
+
+    @Override
+    public void showExitDialog() {
+        if (mDrawerLayout.isDrawerOpen(mNavigationView)) {
+            mDrawerLayout.closeDrawer(mNavigationView);
+        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Are you sure you want to exit?");
+        builder.setCancelable(false);
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                finish();
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (dialog != null) {
+                    dialog.dismiss();
+                }
+            }
+        });
+        // Create and show the AlertDialog
+        alertDialog = builder.show();
+    }
+
     private NavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
             new NavigationView.OnNavigationItemSelectedListener() {
                 @Override
                 public boolean onNavigationItemSelected(MenuItem menuItem) {
                     switch (menuItem.getItemId()) {
                         case (R.id.nav_tags):
+                            closeNavigationMenu();
                             Intent intent = new Intent(getApplicationContext(), TagsActivity.class);
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             startActivity(intent);
-                            mDrawerLayout.closeDrawer(mNavigationView);
+                            overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
                             break;
                         case (R.id.nav_invite):
+                            closeNavigationMenu();
 //                            Intent messageIntent = new Intent(getApplicationContext(), MessagesActivity.class);
 //                            messageIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 //                            startActivity(messageIntent);
                             Toast.makeText(ConnectionsActivity.this, "Invite friends", Toast.LENGTH_SHORT).show();
-                            mDrawerLayout.closeDrawer(mNavigationView);
                             break;
                         case (R.id.nav_exit):
-                            mDrawerLayout.closeDrawer(mNavigationView);
-                            finish();
+                            closeNavigationMenu();
+                            showExitDialog();
                             break;
                         default:
                             break;
