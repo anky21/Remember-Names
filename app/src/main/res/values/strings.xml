@@ -59,7 +59,15 @@
     <string name="tags">Tags:</string>
     <string name="create_a_tag">Create a tag</string>
     <string name="last_name">last name</string>
-    <string name="press_back_to_exit">Press one more to exit.</string>
+    <string name="confirm_to_exit">Are you sure you want to exit?</string>
+    <string name="press_back_to_exit">Press back once more to exit.</string>
+
+    <string name="invitation_title">Send An Invitation</string>
+    <string name="invitation_message">This app is terrific, check it out!</string>
+    <string name="invitation_deep_link">https://c9479.app.goo.gl/eNh4</string>
+    <string name="invitation_custom_image">https://lh3.googleusercontent.com/QvL60Mwpu1QUYRX2HZsi3Js8cq5jti9QHlqcrws-nzlGrWBp2mDSChF1z5E5J5sdTNI=w300</string>
+    <string name="invitation_cta">Install!</string>
+    <string name="send_failed">Sending invitations failed</string>
 
     <!-- TagsActivity -->
     <string name="activity_label_tags">Tags</string>

@@ -4,7 +4,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
@@ -13,6 +15,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,6 +25,12 @@ import android.widget.Toast;
 import com.androidsx.rateme.RateMeDialog;
 import com.androidsx.rateme.RateMeDialogTimer;
 import com.facebook.stetho.Stetho;
+import com.google.android.gms.appinvite.AppInviteInvitation;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.appinvite.FirebaseAppInvite;
+import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
+import com.google.firebase.dynamiclinks.PendingDynamicLinkData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,6 +84,8 @@ public class ConnectionsActivity extends AppCompatActivity implements
 
     private static final int DETAILS_ACTIVITY_REQUEST = 100;
     private static final int NEW_CONNECTION_REQUEST = 200;
+    private static final int REQUEST_INVITE = 0;
+
     boolean shouldScrollToBottom = false;
     boolean shouldScrollToTop = false;
     private int mSortByOption;
@@ -115,6 +126,42 @@ public class ConnectionsActivity extends AppCompatActivity implements
                 DividerItemDecoration.VERTICAL_LIST);
         recyclerView.addItemDecoration(dividerItemDecoration);
         setScrollListener(recyclerView);
+
+        FirebaseDynamicLinks.getInstance().getDynamicLink(getIntent())
+                .addOnSuccessListener(this, new OnSuccessListener<PendingDynamicLinkData>() {
+                    @Override
+                    public void onSuccess(PendingDynamicLinkData data) {
+                        if (data == null) {
+//                            Log.d(TAG, "getInvitation: no data");
+                            return;
+                        }
+
+                        // Get the deep link
+                        Uri deepLink = data.getLink();
+
+                        // Extract invite
+                        FirebaseAppInvite invite = FirebaseAppInvite.getInvitation(data);
+                        if (invite != null) {
+                            String invitationId = invite.getInvitationId();
+                        }
+
+                        // Handle the deep link
+//                        Log.d(TAG, "deepLink:" + deepLink);
+                        if (deepLink != null) {
+                            Intent intent = new Intent(Intent.ACTION_VIEW);
+                            intent.setPackage(getPackageName());
+                            intent.setData(deepLink);
+
+                            startActivity(intent);
+                        }
+                    }
+                })
+                .addOnFailureListener(this, new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+//                        Log.w(TAG, "getDynamicLink:onFailure", e);
+                    }
+                });
     }
 
     @Override
@@ -319,7 +366,20 @@ public class ConnectionsActivity extends AppCompatActivity implements
                 Toast.makeText(this, R.string.new_profile_insertion_msg, Toast.LENGTH_SHORT).show();
             }
         }
+
+        if (requestCode == REQUEST_INVITE) {
+            if (resultCode == RESULT_OK) {
+                // Get the invitation IDs of all sent messages
+                String[] ids = AppInviteInvitation.getInvitationIds(resultCode, data);
+                for (String id : ids) {
+                    Log.d(TAG, "onActivityResult: sent invitation " + id);
+                }
+            } else {
+                Toast.makeText(this, getString(R.string.send_failed), Toast.LENGTH_SHORT).show();
+            }
+        }
     }
+
 
     @Override
     public void onBackPressed() {
@@ -346,7 +406,7 @@ public class ConnectionsActivity extends AppCompatActivity implements
             mDrawerLayout.closeDrawer(mNavigationView);
         }
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("Are you sure you want to exit?");
+        builder.setMessage(R.string.confirm_to_exit);
         builder.setCancelable(false);
         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
@@ -380,10 +440,13 @@ public class ConnectionsActivity extends AppCompatActivity implements
                             break;
                         case (R.id.nav_invite):
                             closeNavigationMenu();
-//                            Intent messageIntent = new Intent(getApplicationContext(), MessagesActivity.class);
-//                            messageIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//                            startActivity(messageIntent);
-                            Toast.makeText(ConnectionsActivity.this, "Invite friends", Toast.LENGTH_SHORT).show();
+                            Intent inviteIntent = new AppInviteInvitation.IntentBuilder(getString(R.string.invitation_title))
+                                    .setMessage(getString(R.string.invitation_message))
+                                    .setDeepLink(Uri.parse(getString(R.string.invitation_deep_link)))
+                                    .setCustomImage(Uri.parse(getString(R.string.invitation_custom_image)))
+                                    .setCallToActionText(getString(R.string.invitation_cta))
+                                    .build();
+                            startActivityForResult(inviteIntent, REQUEST_INVITE);
                             break;
                         case (R.id.nav_exit):
                             closeNavigationMenu();
