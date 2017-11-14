@@ -217,17 +217,31 @@ public class Utilities {
 
     /**
      *
-     * @param context Activity or class where event is logged
-     * @param content The type of me.anky.connectid.events: event, error, critical_error
-     * @param msg The actual content of the event, error message etc
+     * @param event Content of the events
+     * @param origin Activity + class name
      */
-    public static void logFirebaseEvent(String context, String content, String msg) {
+    public static void logFirebaseEvents(String event, String origin) {
         application = ConnectidApplication.getAppInstance();
         mFirebaseAnalytics = application.getAnalyticsInstance();
 
         Bundle params = new Bundle();
-        params.putString("item", content);
-        params.putString("message", msg);
-        mFirebaseAnalytics.logEvent(context, params);
+        params.putString(FirebaseAnalytics.Param.ORIGIN, origin);
+        mFirebaseAnalytics.logEvent(event, params);
+    }
+
+    /**
+     *
+     * @param event Type of errors
+     * @param origin Activity + class name
+     * @param msg Error message
+     */
+    public static void logFirebaseError(String event, String origin, String msg) {
+        application = ConnectidApplication.getAppInstance();
+        mFirebaseAnalytics = application.getAnalyticsInstance();
+
+        Bundle params = new Bundle();
+        params.putString(FirebaseAnalytics.Param.ORIGIN, origin);
+        params.putString(FirebaseAnalytics.Param.ITEM_NAME, msg);
+        mFirebaseAnalytics.logEvent(event, params);
     }
 }

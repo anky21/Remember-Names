@@ -11,7 +11,6 @@ import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
-import me.anky.connectid.Constant;
 import me.anky.connectid.Utilities;
 import me.anky.connectid.data.ConnectidConnection;
 import me.anky.connectid.data.ConnectionTag;
@@ -48,8 +47,7 @@ public class DetailsActivityPresenter implements DetailsActivityMVP.Presenter {
 
                             @Override
                             public void onError(@NonNull Throwable e) {
-                                Utilities.logFirebaseEvent(TAG, Constant.EVENT_TYPE_CRITICAL_ERROR, "loadConnection onError " + e.getMessage());
-
+                                Utilities.logFirebaseError("error_load_connection", TAG + ".loadConnection", e.getMessage());
                             }
                         });
         compositeDisposable.add(disposableConnectionSingleObserver);
@@ -78,7 +76,8 @@ public class DetailsActivityPresenter implements DetailsActivityMVP.Presenter {
                             @Override
                             public void onError(@NonNull Throwable e) {
 //                                System.out.println("MVP presenter - " + "something went seriously wrong");
-                                Utilities.logFirebaseEvent(TAG, Constant.EVENT_TYPE_CRITICAL_ERROR, "deliverDatabaseIdtoDelete onError " + e.getMessage());
+                                Utilities.logFirebaseError("error_delete_connection", TAG + ".deliverDatabaseIdtoDelete", e.getMessage());
+
                             }
                         });
 
@@ -106,7 +105,7 @@ public class DetailsActivityPresenter implements DetailsActivityMVP.Presenter {
 
                             @Override
                             public void onError(Throwable e) {
-                                Utilities.logFirebaseEvent(TAG, Constant.EVENT_TYPE_CRITICAL_ERROR, "loadAndUpdateTagTable onError " + e.getMessage());
+                                Utilities.logFirebaseError("error_update_tag_table", TAG + ".loadAndUpdateTagTable", e.getMessage());
                             }
                         });
         compositeDisposable.add(disposableSingleTagsObserver);

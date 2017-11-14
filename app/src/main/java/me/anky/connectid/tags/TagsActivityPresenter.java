@@ -8,7 +8,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
-import me.anky.connectid.Constant;
 import me.anky.connectid.Utilities;
 import me.anky.connectid.data.ConnectionTag;
 import me.anky.connectid.data.ConnectionsDataSource;
@@ -51,7 +50,7 @@ public class TagsActivityPresenter implements TagsActivityMVP.Presenter {
 
                             @Override
                             public void onError(Throwable e) {
-                                Utilities.logFirebaseEvent(TAG, Constant.EVENT_TYPE_CRITICAL_ERROR, "loadTags onError " + e.getMessage());
+                                Utilities.logFirebaseError("error_load_tags", TAG + ".loadTags", e.getMessage());
                             }
                         });
         compositeDisposable.add(disposableSingleObserver);

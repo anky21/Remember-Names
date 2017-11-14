@@ -12,7 +12,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -42,14 +41,13 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import me.anky.connectid.events.SetToUpdateTagTable;
 import io.reactivex.Single;
-import me.anky.connectid.Constant;
 import me.anky.connectid.R;
 import me.anky.connectid.Utilities;
 import me.anky.connectid.data.ConnectidConnection;
 import me.anky.connectid.data.ConnectionTag;
 import me.anky.connectid.editTag.EditTagActivity;
+import me.anky.connectid.events.SetToUpdateTagTable;
 import me.anky.connectid.root.ConnectidApplication;
 
 import static me.anky.connectid.Utilities.resizeBitmap;
@@ -292,7 +290,7 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
 
     @OnClick(R.id.edit_portrait_iv)
     public void changePortraitPhoto() {
-        Utilities.logFirebaseEvent(TAG, Constant.EVENT_TYPE_ACTION, "changePortraitPhoto() called");
+        Utilities.logFirebaseEvents("click_to_change_portrait_photo", TAG + ".changePortraitPhoto");
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         PickerFragment newFragment = new PickerFragment();
@@ -302,7 +300,7 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
 
     @OnClick(R.id.tags_linear_layout)
     public void launchEditTagActivity(View view) {
-        Utilities.logFirebaseEvent(TAG, Constant.EVENT_TYPE_ACTION, "launchEditTagActivity() called");
+        Utilities.logFirebaseEvents("launch_edit_tag_activity", TAG + ".launchEditTagActivity");
 
         Intent intent = new Intent(this, EditTagActivity.class);
         if (mDatabaseId != -1) {
@@ -335,7 +333,8 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
             // Connection is modified when image name is changed
             mConnectionHasChanged = true;
         } catch (Exception e) {
-            Log.e(TAG, "error in changing photo");
+//            Log.e(TAG, "error in changing photo");
+            Utilities.logFirebaseError("error_change_photo", TAG + ".changePhoto", e.getMessage());
         }
     }
 
@@ -410,7 +409,7 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
             @Override
             public ConnectidConnection call() throws Exception {
 
-                System.out.println("Thread db: " + Thread.currentThread().getId());
+//                System.out.println("Thread db: " + Thread.currentThread().getId());
 
                 return updatedConnection;
             }
@@ -433,7 +432,7 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
 
     @Override
     public void displayError() {
-        Log.i("MVP view", "displayError called - failed to insert into database");
+//        Log.i("MVP view", "displayError called - failed to insert into database");
     }
 
     private void showUnsavedChangesDialog() {

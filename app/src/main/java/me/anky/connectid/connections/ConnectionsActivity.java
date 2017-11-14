@@ -42,7 +42,6 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import me.anky.connectid.Constant;
 import me.anky.connectid.R;
 import me.anky.connectid.Utilities;
 import me.anky.connectid.data.ConnectidConnection;
@@ -134,7 +133,7 @@ public class ConnectionsActivity extends AppCompatActivity implements
                     @Override
                     public void onSuccess(PendingDynamicLinkData data) {
                         if (data == null) {
-//                            Log.d(TAG, "getInvitation: no data");
+                            Utilities.logFirebaseError("get_invitation_no_data", TAG + ".onSuccess", "no data");
                             return;
                         }
 
@@ -161,7 +160,7 @@ public class ConnectionsActivity extends AppCompatActivity implements
                 .addOnFailureListener(this, new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-//                        Log.w(TAG, "getDynamicLink:onFailure", e);
+                        Utilities.logFirebaseError("invite_friends_failed", TAG + ".addOnFailureListener", e.getMessage());
                     }
                 });
     }
@@ -221,7 +220,7 @@ public class ConnectionsActivity extends AppCompatActivity implements
             case R.id.action_tag: {
                 closeNavigationMenu();
 
-                Utilities.logFirebaseEvent(TAG, Constant.EVENT_TYPE_ACTION, "btn_tags_activity_clicked");
+                Utilities.logFirebaseEvents("start_tags_activity", TAG + ".nav btn tags clicked");
 
                 Intent intent = new Intent(this, TagsActivity.class);
                 startActivity(intent);
@@ -232,41 +231,41 @@ public class ConnectionsActivity extends AppCompatActivity implements
                 closeNavigationMenu();
 
                 sharedPrefsHelper.put(Utilities.SORTBY, 1);
-                Utilities.logFirebaseEvent(TAG, Constant.EVENT_TYPE_ACTION, "sorby_new");
+                Utilities.logFirebaseEvents("connections_sort_order", TAG + ".new first clicked");
             }
             break;
             case R.id.sortby_date_old: {
                 closeNavigationMenu();
 
                 sharedPrefsHelper.put(Utilities.SORTBY, 2);
-                Utilities.logFirebaseEvent(TAG, Constant.EVENT_TYPE_ACTION, "sorby_old");
+                Utilities.logFirebaseEvents("connections_sort_order", TAG + ".old first clicked");
             }
             break;
             case R.id.sortby_fname_a: {
                 closeNavigationMenu();
 
                 sharedPrefsHelper.put(Utilities.SORTBY, 3);
-                Utilities.logFirebaseEvent(TAG, Constant.EVENT_TYPE_ACTION, "sorby_firstname_a");
+                Utilities.logFirebaseEvents("connections_sort_order", TAG + ".first name a-z clicked");
             }
             break;
             case R.id.sortby_fname_z: {
                 closeNavigationMenu();
 
                 sharedPrefsHelper.put(Utilities.SORTBY, 4);
-                Utilities.logFirebaseEvent(TAG, Constant.EVENT_TYPE_ACTION, "sorby_firstname_z");
+                Utilities.logFirebaseEvents("connections_sort_order", TAG + ".first name z-a clicked");
             }
             break;
             case R.id.sortby_lname_a: {
                 closeNavigationMenu();
 
                 sharedPrefsHelper.put(Utilities.SORTBY, 5);
-                Utilities.logFirebaseEvent(TAG, Constant.EVENT_TYPE_ACTION, "sorby_lastname_a");
+                Utilities.logFirebaseEvents("connections_sort_order", TAG + ".last name a-z clicked");
             }
             break;
             case R.id.sortby_lname_z: {
                 closeNavigationMenu();
                 sharedPrefsHelper.put(Utilities.SORTBY, 6);
-                Utilities.logFirebaseEvent(TAG, Constant.EVENT_TYPE_ACTION, "sorby_lastname_z");
+                Utilities.logFirebaseEvents("connections_sort_order", TAG + ".last name z-a clicked");
             }
             break;
         }
@@ -342,7 +341,8 @@ public class ConnectionsActivity extends AppCompatActivity implements
         startActivityForResult(intent, NEW_CONNECTION_REQUEST);
         overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
 
-        Utilities.logFirebaseEvent(TAG, Constant.EVENT_TYPE_ACTION, "FAB_btn_edit_activity_clicked");
+        Utilities.logFirebaseEvents("fab_new_connection", TAG + ".fab launch edit activity clicked");
+
     }
 
     @Override
@@ -375,13 +375,13 @@ public class ConnectionsActivity extends AppCompatActivity implements
                 String[] ids = AppInviteInvitation.getInvitationIds(resultCode, data);
                 for (String id : ids) {
                     Log.d(TAG, "onActivityResult: sent invitation " + id);
+                    Utilities.logFirebaseEvents("invite_friends_result", TAG + "." + id);
                 }
             } else {
                 Toast.makeText(this, getString(R.string.send_failed), Toast.LENGTH_SHORT).show();
             }
         }
     }
-
 
     @Override
     public void onBackPressed() {
@@ -441,6 +441,8 @@ public class ConnectionsActivity extends AppCompatActivity implements
                 public boolean onNavigationItemSelected(MenuItem menuItem) {
                     switch (menuItem.getItemId()) {
                         case (R.id.nav_tags):
+                            Utilities.logFirebaseEvents("start_tags_activity", TAG + ".nav btn tags clicked");
+
                             closeNavigationMenu();
                             Intent intent = new Intent(getApplicationContext(), TagsActivity.class);
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -448,6 +450,7 @@ public class ConnectionsActivity extends AppCompatActivity implements
                             overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
                             break;
                         case (R.id.nav_invite):
+                            Utilities.logFirebaseEvents("nav_invite_friends", TAG + ".nav btn invite friends clicked");
                             closeNavigationMenu();
                             Intent inviteIntent = new AppInviteInvitation.IntentBuilder(getString(R.string.invitation_title))
                                     .setMessage(getString(R.string.invitation_message))

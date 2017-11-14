@@ -81,7 +81,7 @@ public class PickerFragment extends android.app.DialogFragment {
 
     @OnClick(R.id.takeImage_tv)
     public void takeImage() {
-        Utilities.logFirebaseEvent(TAG, Constant.EVENT_TYPE_ACTION, "takeImage() called");
+        Utilities.logFirebaseEvents("take_image", TAG + ".takeImage");
 
         if (mSavedInstanceState == null) {
             output = new File(new File(getActivity().getFilesDir(), PHOTOS), FILENAME);
@@ -110,7 +110,7 @@ public class PickerFragment extends android.app.DialogFragment {
             try {
                 startActivityForResult(i, TAKE_PHOTO);
             } catch (ActivityNotFoundException e) {
-                Utilities.logFirebaseEvent(TAG, Constant.EVENT_TYPE_ERROR, "takeImage() catch " + e.getMessage());
+                Utilities.logFirebaseError("error_take_image", TAG + ".takeImage", e.getMessage());
             }
         } else {
             output = (File) mSavedInstanceState.getSerializable(EXTRA_FILENAME);
@@ -119,7 +119,7 @@ public class PickerFragment extends android.app.DialogFragment {
 
     @OnClick(R.id.pickImage_tv)
     public void pickImage() {
-        Utilities.logFirebaseEvent(TAG, Constant.EVENT_TYPE_ACTION, "pickImage() called");
+        Utilities.logFirebaseEvents("pick_image", TAG + ".pickImage");
 
         Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
         photoPickerIntent.setType("image/*");

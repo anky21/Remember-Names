@@ -60,7 +60,7 @@ public class SelectedConnectionsActivityPresenter implements SelectedConnections
 
                             @Override
                             public void onError(Throwable e) {
-                                Utilities.logFirebaseEvent(TAG, Constant.EVENT_TYPE_CRITICAL_ERROR, "loadTag onError " + e.getMessage());
+                                Utilities.logFirebaseError("error_load_tag", TAG + ".loadTag", e.getMessage());
                             }
                         });
     }
@@ -88,7 +88,7 @@ public class SelectedConnectionsActivityPresenter implements SelectedConnections
 
                             @Override
                             public void onError(Throwable e) {
-                                Utilities.logFirebaseEvent(TAG, Constant.EVENT_TYPE_CRITICAL_ERROR, "loadConnections onError " + e.getMessage());
+                                Utilities.logFirebaseError("error_load_connections", TAG + ".loadConnections", e.getMessage());
                             }
                         });
         compositeDisposable.add(disposableSingleObserver);

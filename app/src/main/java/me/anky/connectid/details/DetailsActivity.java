@@ -31,7 +31,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.reactivex.Single;
-import me.anky.connectid.Constant;
 import me.anky.connectid.R;
 import me.anky.connectid.Utilities;
 import me.anky.connectid.data.ConnectidConnection;
@@ -148,7 +147,7 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
         intent.setType("text/plain");
         intent.putExtra(Intent.EXTRA_TEXT, shareMessage);
 
-        Utilities.logFirebaseEvent(TAG, Constant.EVENT_TYPE_EVENT, "sharing connection " + shareMessage);
+        Utilities.logFirebaseEvents("create_share_intent", TAG + ".createShareIntent");
 
         return intent;
     }
@@ -159,7 +158,7 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
         switch (item.getItemId()) {
             case R.id.action_delete:
                 showDeleteDialog();
-                Utilities.logFirebaseEvent(TAG, Constant.EVENT_TYPE_ACTION, "delete connection btn clicked");
+                Utilities.logFirebaseEvents("delete_connection", TAG + "onOptionsItemSelected.action_delete");
                 break;
             case android.R.id.home:
 //                NavUtils.navigateUpFromSameTask(this);
@@ -272,7 +271,7 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
 
     @OnClick(R.id.edit_fab)
     public void launchEditActivity(View view) {
-        Utilities.logFirebaseEvent(TAG, Constant.EVENT_TYPE_ACTION, "FAB btn EditActivity clicked");
+        Utilities.logFirebaseEvents("click_edit_fab", TAG + ".launchEditActivity");
 
         Intent intent = new Intent(this, EditActivity.class);
         intent.putExtra("DETAILS", connection);
