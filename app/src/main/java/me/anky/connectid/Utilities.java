@@ -218,7 +218,7 @@ public class Utilities {
     /**
      *
      * @param context Activity or class where event is logged
-     * @param content The type of events: event, error, critical_error
+     * @param content The type of me.anky.connectid.events: event, error, critical_error
      * @param msg The actual content of the event, error message etc
      */
     public static void logFirebaseEvent(String context, String content, String msg) {

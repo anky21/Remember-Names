@@ -1,4 +1,4 @@
-package events;
+package me.anky.connectid.events;
 
 /**
  * Created by Anky An on 31/10/2017.

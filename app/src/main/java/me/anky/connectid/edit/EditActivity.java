@@ -42,7 +42,7 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import events.SetToUpdateTagTable;
+import me.anky.connectid.events.SetToUpdateTagTable;
 import io.reactivex.Single;
 import me.anky.connectid.Constant;
 import me.anky.connectid.R;

@@ -7,7 +7,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import events.SetToUpdateTagTable;
+import me.anky.connectid.events.SetToUpdateTagTable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.CompositeDisposable;
