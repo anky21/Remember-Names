@@ -34,6 +34,8 @@ import com.google.firebase.dynamiclinks.PendingDynamicLinkData;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.inject.Inject;
 
@@ -387,6 +389,14 @@ public class ConnectionsActivity extends AppCompatActivity implements
         if (!isBackBtnPressedOnce) {
             Toast.makeText(this, R.string.press_back_to_exit, Toast.LENGTH_SHORT).show();
             isBackBtnPressedOnce = true;
+
+            // if user doesn't press back btn again within 5 sec...
+            new Timer().schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    isBackBtnPressedOnce = false;
+                }
+            }, 5000);
         } else {
             finish();
             super.onBackPressed();
@@ -407,7 +417,6 @@ public class ConnectionsActivity extends AppCompatActivity implements
         }
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(R.string.confirm_to_exit);
-        builder.setCancelable(false);
         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
