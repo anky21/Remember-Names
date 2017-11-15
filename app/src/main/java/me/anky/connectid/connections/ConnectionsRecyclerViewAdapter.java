@@ -23,9 +23,10 @@ import me.anky.connectid.R;
 import me.anky.connectid.data.ConnectidConnection;
 
 public class ConnectionsRecyclerViewAdapter extends
-        RecyclerView.Adapter<ConnectionsRecyclerViewAdapter.ViewHolder>  {
+        RecyclerView.Adapter<ConnectionsRecyclerViewAdapter.ViewHolder> {
 
     private List<ConnectidConnection> connections = new ArrayList<>();
+    private List<ConnectidConnection> connectionsOriginal;
     private LayoutInflater inflater;
     private Context context;
     private RecyclerViewClickListener clickListener;
@@ -48,6 +49,8 @@ public class ConnectionsRecyclerViewAdapter extends
         final ViewHolder viewHolder = new ViewHolder(view);
 
         context = parent.getContext();
+        connectionsOriginal = new ArrayList<>(connections);
+
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -89,9 +92,12 @@ public class ConnectionsRecyclerViewAdapter extends
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.list_item_iv) ImageView listItemIv;
-        @BindView(R.id.list_name_tv) TextView listNameTv;
-        @BindView(R.id.list_feature_tv) TextView listFeatureTv;
+        @BindView(R.id.list_item_iv)
+        ImageView listItemIv;
+        @BindView(R.id.list_name_tv)
+        TextView listNameTv;
+        @BindView(R.id.list_feature_tv)
+        TextView listFeatureTv;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -109,5 +115,26 @@ public class ConnectionsRecyclerViewAdapter extends
             this.connections.addAll(connections);
             notifyDataSetChanged();
         }
+    }
+
+    public void filter(String text) {
+        connections.clear();
+        if (text.isEmpty()) {
+            connections.addAll(connectionsOriginal);
+        } else {
+            text = text.toLowerCase();
+            for (ConnectidConnection item : connectionsOriginal) {
+                if ((item.getAppearance() != null && item.getAppearance().toLowerCase().contains(text))
+                        || (item.getFeature() != null && item.getFeature().toLowerCase().contains(text))
+                        || (item.getDescription() != null && item.getDescription().toLowerCase().contains(text))
+                        || (item.getMeetVenue() != null && item.getMeetVenue().toLowerCase().contains(text))
+                        || (item.getTags() != null && item.getTags().contains(text))
+                        || (item.getFirstName() != null && item.getFirstName().toLowerCase().contains(text))
+                        || (item.getLastName() != null && item.getLastName().toLowerCase().contains(text))) {
+                    connections.add(item);
+                }
+            }
+        }
+        notifyDataSetChanged();
     }
 }
