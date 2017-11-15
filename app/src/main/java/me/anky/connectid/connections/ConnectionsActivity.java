@@ -249,16 +249,6 @@ public class ConnectionsActivity extends AppCompatActivity implements
         int id = item.getItemId();
 
         switch (id) {
-            case R.id.action_tag: {
-                closeNavigationMenu();
-
-                Utilities.logFirebaseEvents("start_tags_activity", TAG + ".nav btn tags clicked");
-
-                Intent intent = new Intent(this, TagsActivity.class);
-                startActivity(intent);
-                overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
-            }
-
             case R.id.sortby_date_new: {
                 closeNavigationMenu();
 

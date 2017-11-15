@@ -84,4 +84,11 @@
     <string name="nav_all_tags">All Tags</string>
     <string name="nav_invite_friends">Invite Friends</string>
     <string name="nav_exit">Exit</string>
+    <string name="search">Search</string>
+    <string name="newest_first_default">Newest first (default)</string>
+    <string name="oldest_first">Oldest first</string>
+    <string name="first_name_a_z"><![CDATA[First name A->Z]]></string>
+    <string name="first_name_z_a"><![CDATA[First name Z->A]]></string>
+    <string name="last_name_a_z"><![CDATA[Last name A->Z]]></string>
+    <string name="last_name_z_a"><![CDATA[Last name Z->A]]></string>
 </resources>
