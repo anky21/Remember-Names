@@ -61,6 +61,8 @@ public class ConnectionsActivity extends AppCompatActivity implements
     private final static String TAG = "ConnectionsActivity";
     private ActionBarDrawerToggle mToggle;
     private AlertDialog alertDialog;
+    private MenuItem searchItem;
+    private SearchView searchView;
 
     @BindView(R.id.connections_list_rv)
     RecyclerView recyclerView;
@@ -188,6 +190,15 @@ public class ConnectionsActivity extends AppCompatActivity implements
     }
 
     @Override
+    protected void onPause() {
+        if (searchView != null) {
+            searchView.setQuery("", false);
+            searchView.setIconified(true);
+        }
+        super.onPause();
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
         presenter.setView(this);
@@ -209,8 +220,8 @@ public class ConnectionsActivity extends AppCompatActivity implements
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_sortby, menu);
 
-        final MenuItem searchItem = menu.findItem(R.id.action_search);
-        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        searchItem = menu.findItem(R.id.action_search);
+        searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
         searchView.setOnQueryTextListener(queryTextListener);
 
         return super.onCreateOptionsMenu(menu);
