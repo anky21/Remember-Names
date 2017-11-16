@@ -230,12 +230,12 @@ public class ConnectionsActivity extends AppCompatActivity implements
     private SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
         @Override
         public boolean onQueryTextSubmit(String query) {
-            adapter.filter(query);
-            return true;
+            return false;
         }
 
         @Override
         public boolean onQueryTextChange(String newText) {
+            closeNavigationMenu(); // Close if it's open
             adapter.filter(newText);
             return true;
         }
@@ -299,7 +299,8 @@ public class ConnectionsActivity extends AppCompatActivity implements
     public void displayConnections(List<ConnectidConnection> connections) {
         emptyView.setVisibility(View.INVISIBLE);
         recyclerView.setVisibility(View.VISIBLE);
-
+        data = connections;
+        Log.v("testing", "data size " + data.size());
         adapter.setConnections(connections);
 
         if (shouldScrollToBottom) {
@@ -381,10 +382,10 @@ public class ConnectionsActivity extends AppCompatActivity implements
             if (resultCode == RESULT_OK) {
 
                 presenter.loadConnections(mSortByOption);
-                if(mSortByOption == 2) {
+                if (mSortByOption == 2) {
                     shouldScrollToBottom = true;
                 }
-                if(mSortByOption == 0 || mSortByOption == 1) {
+                if (mSortByOption == 0 || mSortByOption == 1) {
                     shouldScrollToTop = true;
                 }
                 Toast.makeText(this, R.string.new_profile_insertion_msg, Toast.LENGTH_SHORT).show();

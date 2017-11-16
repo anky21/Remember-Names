@@ -14,7 +14,8 @@
 
         <TextView
             style="@style/DescriptionEtLabelStyle"
-            android:text="@string/name" />
+            android:text="@string/name"
+            android:textColor="@color/colorPrimaryDark"/>
 
         <EditText
             android:id="@+id/first_name_et"
@@ -36,7 +37,8 @@
         style="@style/LinearLayoutStyle">
         <TextView
             style="@style/DescriptionEtLabelStyle"
-            android:text="@string/tags" />
+            android:text="@string/tags"
+            android:textColor="@color/colorPrimaryDark"/>
 
         <include layout="@layout/tags_view" />
 
@@ -76,7 +78,8 @@
 
         <TextView
             style="@style/DescriptionEtLabelStyle"
-            android:text="@string/what_is_special" />
+            android:text="@string/what_is_special"
+            android:textColor="@color/colorPrimaryDark"/>
 
         <EditText
             android:id="@+id/feature_et"

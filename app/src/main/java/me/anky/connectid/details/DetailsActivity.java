@@ -19,7 +19,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 
 import java.io.File;
@@ -222,10 +221,7 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
         String path = directory.getAbsolutePath() + "/" + imageName;
 
         RequestOptions myOptions = new RequestOptions()
-                .centerCrop()
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .skipMemoryCache(true)
-                .override(600, 600);
+                .centerCrop();
 
         Glide.with(this)
                 .applyDefaultRequestOptions(myOptions)
