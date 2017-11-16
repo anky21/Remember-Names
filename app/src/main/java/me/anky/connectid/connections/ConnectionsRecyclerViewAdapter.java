@@ -2,8 +2,12 @@ package me.anky.connectid.connections;
 
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.graphics.Color;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,16 +34,26 @@ public class ConnectionsRecyclerViewAdapter extends
     private LayoutInflater inflater;
     private Context context;
     private RecyclerViewClickListener clickListener;
+    private boolean searchMode;
+    private String searchKeyword;
 
     public interface RecyclerViewClickListener {
         void onItemClick(View view, int position);
     }
 
-    public ConnectionsRecyclerViewAdapter(Context context, List<ConnectidConnection> connections,
-                                          RecyclerViewClickListener clickListener) {
+    public ConnectionsRecyclerViewAdapter(Context context, List<ConnectidConnection> connections, boolean searchMode, RecyclerViewClickListener clickListener) {
         this.inflater = LayoutInflater.from(context);
         this.connections = connections;
+        this.searchMode = searchMode;
         this.clickListener = clickListener;
+        this.searchKeyword = "";
+    }
+
+    public void setNewData(boolean searchMode, String searchKeyword) {
+        this.searchMode = searchMode;
+        this.searchKeyword = searchKeyword;
+
+        notifyDataSetChanged();
     }
 
     // Inflates the item layout and returns the holder
@@ -77,9 +91,42 @@ public class ConnectionsRecyclerViewAdapter extends
                 .load(Uri.fromFile(new File(path)))
                 .apply(RequestOptions.circleCropTransform())
                 .into(holder.listItemIv);
-
-        holder.listNameTv.setText(firstName + " " + lastName);
+        String name = firstName + " " + lastName;
+        holder.listNameTv.setText(name);
         holder.listFeatureTv.setText(feature);
+
+        highlightSearchKeyword(holder, name, feature);
+    }
+
+    private void highlightSearchKeyword(ViewHolder holder, String name, String feature) {
+
+        if (searchMode && holder.listNameTv.getText().toString().toLowerCase().contains(searchKeyword)) {
+
+            Spannable spannable = new SpannableString(name);
+
+            int position = name.toLowerCase().indexOf(searchKeyword);
+
+            spannable.setSpan(new ForegroundColorSpan(Color.BLUE), position, position + searchKeyword.length(),
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+            holder.listNameTv.setText(spannable, TextView.BufferType.SPANNABLE);
+        } else {
+            holder.listNameTv.setText(name);
+        }
+
+        if (searchMode && holder.listFeatureTv.getText().toString().toLowerCase().contains(searchKeyword)) {
+
+            Spannable spannable = new SpannableString(feature);
+
+            int position = feature.toLowerCase().indexOf(searchKeyword);
+
+            spannable.setSpan(new ForegroundColorSpan(Color.BLUE), position, position + searchKeyword.length(),
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+            holder.listFeatureTv.setText(spannable, TextView.BufferType.SPANNABLE);
+        } else {
+            holder.listFeatureTv.setText(feature);
+        }
     }
 
     @Override
@@ -117,20 +164,20 @@ public class ConnectionsRecyclerViewAdapter extends
         }
     }
 
-    public void filter(String text) {
+    public void filter() {
         connections.clear();
-        if (text.isEmpty()) {
+        if (searchKeyword.isEmpty()) {
             connections.addAll(connectionsOriginal);
         } else {
-            text = text.toLowerCase();
+            searchKeyword = searchKeyword.toLowerCase();
             for (ConnectidConnection item : connectionsOriginal) {
-                if ((item.getAppearance() != null && item.getAppearance().toLowerCase().contains(text))
-                        || (item.getFeature() != null && item.getFeature().toLowerCase().contains(text))
-                        || (item.getDescription() != null && item.getDescription().toLowerCase().contains(text))
-                        || (item.getMeetVenue() != null && item.getMeetVenue().toLowerCase().contains(text))
-                        || (item.getTags() != null && item.getTags().contains(text))
-                        || (item.getFirstName() != null && item.getFirstName().toLowerCase().contains(text))
-                        || (item.getLastName() != null && item.getLastName().toLowerCase().contains(text))) {
+                if ((item.getAppearance() != null && item.getAppearance().toLowerCase().contains(searchKeyword))
+                        || (item.getFeature() != null && item.getFeature().toLowerCase().contains(searchKeyword))
+                        || (item.getDescription() != null && item.getDescription().toLowerCase().contains(searchKeyword))
+                        || (item.getMeetVenue() != null && item.getMeetVenue().toLowerCase().contains(searchKeyword))
+                        || (item.getTags() != null && item.getTags().contains(searchKeyword))
+                        || (item.getFirstName() != null && item.getFirstName().toLowerCase().contains(searchKeyword))
+                        || (item.getLastName() != null && item.getLastName().toLowerCase().contains(searchKeyword))) {
                     connections.add(item);
                 }
             }

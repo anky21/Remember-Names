@@ -122,7 +122,7 @@ public class ConnectionsActivity extends AppCompatActivity implements
             sharedPrefsHelper.put("profile_saved", true);
         }
 
-        adapter = new ConnectionsRecyclerViewAdapter(this, data, this);
+        adapter = new ConnectionsRecyclerViewAdapter(this, data, false, this);
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -236,7 +236,12 @@ public class ConnectionsActivity extends AppCompatActivity implements
         @Override
         public boolean onQueryTextChange(String newText) {
             closeNavigationMenu(); // Close if it's open
-            adapter.filter(newText);
+            if (newText.length() == 0) {
+                adapter.setNewData(false, newText);
+            } else {
+                adapter.setNewData(true, newText);
+            }
+            adapter.filter();
             return true;
         }
     };

@@ -56,7 +56,7 @@ public class SelectedConnectionsActivity extends AppCompatActivity implements
         String tag = intent.getStringExtra("tag");
         this.setTitle(String.format(getString(R.string.selected_connections_activity_title), tag));
 
-        adapter = new ConnectionsRecyclerViewAdapter(this, data, this);
+        adapter = new ConnectionsRecyclerViewAdapter(this, data, false, this);
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
