@@ -11,7 +11,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
-import me.anky.connectid.Constant;
 import me.anky.connectid.Utilities;
 import me.anky.connectid.data.ConnectionTag;
 import me.anky.connectid.data.ConnectionsDataSource;
@@ -60,6 +59,7 @@ public class EditTagActivityPresenter implements EditTagActivityMVP.Presenter {
                 for (int i = 0; i < connectionTags.size(); i++) {
                     if (connectionTags.get(i).equalsIgnoreCase(input)) {
                         existingTagPosition = i;
+                        break;
                     }
                 }
                 if (existingTagPosition == -1) {

@@ -10,7 +10,8 @@
     <LinearLayout
         android:id="@+id/empty_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:gravity="center_horizontal"
         android:orientation="vertical"
         android:paddingEnd="@dimen/margin_24dp"
@@ -29,13 +30,38 @@
             android:paddingTop="@dimen/margin_16dp"
             android:text="@string/put_a_name_on_this_tag"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
-
     </LinearLayout>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/selected_connections_rv"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scrollbars="vertical" />
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:scrollbars="vertical"
+        android:visibility="gone"/>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorPrimary" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:orientation="horizontal"
+        android:paddingTop="@dimen/margin_4dp">
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/button_record"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/text_or_icons"
+            android:paddingEnd="@dimen/margin_48dp"
+            android:paddingStart="@dimen/margin_48dp"
+            android:backgroundTint="@color/colorPrimary"
+            android:contentDescription="delete this tag"
+            android:text="@string/delete_tag" />
+
+    </LinearLayout>
 </LinearLayout>
