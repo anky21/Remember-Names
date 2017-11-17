@@ -93,8 +93,7 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
         getSupportActionBar().setHomeButtonEnabled(true);
 
         intent = getIntent();
-        ConnectidConnection intentConnection = intent.getParcelableExtra("DETAILS");
-        databaseId = intentConnection.getDatabaseId();
+        databaseId = intent.getIntExtra("id", 0);
     }
 
     @Override

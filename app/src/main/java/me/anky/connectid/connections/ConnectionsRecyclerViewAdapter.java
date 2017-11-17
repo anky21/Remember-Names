@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -65,18 +66,11 @@ public class ConnectionsRecyclerViewAdapter extends
         context = parent.getContext();
         connectionsOriginal = new ArrayList<>(connections);
 
-        view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                clickListener.onItemClick(v, viewHolder.getAdapterPosition());
-            }
-        });
-
         return viewHolder;
     }
 
     @Override
-    public void onBindViewHolder(ConnectionsRecyclerViewAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(ConnectionsRecyclerViewAdapter.ViewHolder holder, final int position) {
 
         String firstName = connections.get(position).getFirstName();
         String lastName = connections.get(position).getLastName();
@@ -94,6 +88,14 @@ public class ConnectionsRecyclerViewAdapter extends
         String name = firstName + " " + lastName;
         holder.listNameTv.setText(name);
         holder.listFeatureTv.setText(feature);
+
+        holder.container.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int databaseId = connections.get(position).getDatabaseId();
+                clickListener.onItemClick(v, databaseId);
+            }
+        });
 
         highlightSearchKeyword(holder, name, feature);
     }
@@ -145,6 +147,8 @@ public class ConnectionsRecyclerViewAdapter extends
         TextView listNameTv;
         @BindView(R.id.list_feature_tv)
         TextView listFeatureTv;
+        @BindView(R.id.list_item_container)
+        LinearLayout container;
 
         public ViewHolder(View itemView) {
             super(itemView);

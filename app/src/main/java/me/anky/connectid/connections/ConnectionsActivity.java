@@ -191,15 +191,15 @@ public class ConnectionsActivity extends AppCompatActivity implements
 
     @Override
     protected void onPause() {
-        if (searchView != null) {
-            searchView.setQuery("", false);
-            searchView.setIconified(true);
-        }
         super.onPause();
     }
 
     @Override
     protected void onResume() {
+        if (searchView != null) {
+            searchView.setQuery("", false);
+            searchView.setIconified(true);
+        }
         super.onResume();
         presenter.setView(this);
         // Get current sort by menu option
@@ -354,11 +354,9 @@ public class ConnectionsActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onItemClick(View view, int position) {
-//        Log.i("MVP view", "position " + position + " clicked");
-
+    public void onItemClick(View view, int id) {
         Intent intent = new Intent(this, DetailsActivity.class);
-        intent.putExtra("DETAILS", data.get(position));
+        intent.putExtra("id", id);
         startActivityForResult(intent, DETAILS_ACTIVITY_REQUEST);
         overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
     }
