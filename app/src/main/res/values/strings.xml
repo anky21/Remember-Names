@@ -75,7 +75,7 @@
     <string name="no_connection_tag">No connections for this tag.</string>
 
     <!-- SelectedConnectionsActivity-->
-    <string name="selected_connections_activity_title">Tag-%s</string>
+    <string name="selected_connections_activity_title">Tag - %s</string>
     <string name="put_a_name_on_this_tag">Put a name on this tag</string>
 
     <!-- Navigation menu-->

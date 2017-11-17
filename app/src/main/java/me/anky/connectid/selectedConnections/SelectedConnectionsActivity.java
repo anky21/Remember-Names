@@ -2,9 +2,12 @@ package me.anky.connectid.selectedConnections;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -31,6 +34,8 @@ public class SelectedConnectionsActivity extends AppCompatActivity implements
     private int tagId;
     public List<ConnectidConnection> data = new ArrayList<>();
     private static final int DETAILS_ACTIVITY_REQUEST = 100;
+    private MenuItem searchItem;
+    private SearchView searchView;
 
     ConnectionsRecyclerViewAdapter adapter;
 
@@ -67,7 +72,40 @@ public class SelectedConnectionsActivity extends AppCompatActivity implements
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_selected_connections, menu);
+
+        searchItem = menu.findItem(R.id.action_search);
+        searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        searchView.setOnQueryTextListener(queryTextListener);
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    private SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
+        @Override
+        public boolean onQueryTextSubmit(String query) {
+            return false;
+        }
+
+        @Override
+        public boolean onQueryTextChange(String newText) {
+            if (newText.length() == 0) {
+                adapter.setNewData(false, newText);
+            } else {
+                adapter.setNewData(true, newText);
+            }
+            adapter.filter();
+            return true;
+        }
+    };
+
+    @Override
     protected void onResume() {
+        if (searchView != null) {
+            searchView.setQuery("", false);
+            searchView.setIconified(true);
+        }
         super.onResume();
         presenter.setView(this);
         presenter.loadTag(tagId);
@@ -118,9 +156,9 @@ public class SelectedConnectionsActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onItemClick(View view, int position) {
+    public void onItemClick(View view, int id) {
         Intent intent = new Intent(this, DetailsActivity.class);
-        intent.putExtra("DETAILS", data.get(position));
+        intent.putExtra("id", id);
         startActivityForResult(intent, DETAILS_ACTIVITY_REQUEST);
         overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
     }
