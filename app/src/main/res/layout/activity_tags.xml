@@ -9,11 +9,11 @@
         android:id="@+id/empty_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center_horizontal"
+        android:gravity="center"
         android:orientation="vertical"
         android:paddingEnd="@dimen/margin_24dp"
         android:paddingStart="@dimen/margin_24dp"
-        android:paddingTop="@dimen/margin_48dp">
+        android:paddingBottom="@dimen/margin_48dp">
 
         <ImageView
             android:layout_width="@dimen/empty_view_image_size"

@@ -31,7 +31,7 @@ public class ConnectionsRecyclerViewAdapter extends
         RecyclerView.Adapter<ConnectionsRecyclerViewAdapter.ViewHolder> {
 
     private List<ConnectidConnection> connections = new ArrayList<>();
-    private List<ConnectidConnection> connectionsOriginal;
+    private List<ConnectidConnection> connectionsOriginal = new ArrayList<>();
     private LayoutInflater inflater;
     private Context context;
     private RecyclerViewClickListener clickListener;

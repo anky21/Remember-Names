@@ -119,7 +119,7 @@ public class SelectedConnectionsActivity extends AppCompatActivity implements
 
     @Override
     protected void onResume() {
-        if (searchView != null) {
+        if (searchView != null && !searchView.getQuery().equals("")) {
             searchView.setQuery("", false);
             searchView.setIconified(true);
         }
