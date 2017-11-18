@@ -168,6 +168,24 @@ public class ConnectionsLocalRepository implements ConnectionsDataSource {
     }
 
     @Override
+    public int updateConnectionWithTags(ConnectidConnection connection) {
+        Uri uri = ConnectidProvider.Connections.withId(connection.getDatabaseId());
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(ConnectidColumns.FIRST_NAME, connection.getFirstName());
+        contentValues.put(ConnectidColumns.LAST_NAME, connection.getLastName());
+        contentValues.put(ConnectidColumns.IMAGE_NAME, connection.getImageName());
+        contentValues.put(ConnectidColumns.MEET_WHERE, connection.getMeetVenue());
+        contentValues.put(ConnectidColumns.APPEARANCE, connection.getAppearance());
+        contentValues.put(ConnectidColumns.FEATURE, connection.getFeature());
+        contentValues.put(ConnectidColumns.COMMON_FRIENDS, connection.getCommonFriends());
+        contentValues.put(ConnectidColumns.DESCRIPTION, connection.getDescription());
+        contentValues.put(ConnectidColumns.TAGS, connection.getTags());
+
+        return context.getContentResolver().update(uri, contentValues, null, null);
+    }
+
+    @Override
     public Single<List<ConnectionTag>> getTags() {
         prepareTagsList();
 
@@ -246,6 +264,13 @@ public class ConnectionsLocalRepository implements ConnectionsDataSource {
         contentValues.put(TagsColumns.CONNECTION_IDS, tag.getConnection_ids());
 
         return context.getContentResolver().update(uri, contentValues, null, null);
+    }
+
+    @Override
+    public int deleteTag(int databaseId) {
+        Uri uri = ConnectidProvider.Tags.withId(databaseId);
+
+        return context.getContentResolver().delete(uri, null, null);
     }
 
     @Override

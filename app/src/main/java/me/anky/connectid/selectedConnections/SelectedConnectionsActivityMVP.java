@@ -28,6 +28,8 @@ public interface SelectedConnectionsActivityMVP {
 
         void loadConnections(List<String> idsList);
 
+        void deleteTag(int databaseId, String tag, List<ConnectidConnection> connections);
+
         void unsubscribe();
     }
 }

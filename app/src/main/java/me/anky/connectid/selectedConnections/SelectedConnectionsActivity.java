@@ -1,16 +1,23 @@
 package me.anky.connectid.selectedConnections;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,11 +26,13 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import me.anky.connectid.R;
 import me.anky.connectid.connections.ConnectionsRecyclerViewAdapter;
 import me.anky.connectid.connections.DividerItemDecoration;
 import me.anky.connectid.data.ConnectidConnection;
 import me.anky.connectid.details.DetailsActivity;
+import me.anky.connectid.events.TagDeleted;
 import me.anky.connectid.root.ConnectidApplication;
 
 public class SelectedConnectionsActivity extends AppCompatActivity implements
@@ -32,10 +41,12 @@ public class SelectedConnectionsActivity extends AppCompatActivity implements
     private final static String TAG = "SelectedConnectionsActivity";
 
     private int tagId;
+    private String mTag;
     public List<ConnectidConnection> data = new ArrayList<>();
     private static final int DETAILS_ACTIVITY_REQUEST = 100;
     private MenuItem searchItem;
     private SearchView searchView;
+    private AlertDialog alertDialog;
 
     ConnectionsRecyclerViewAdapter adapter;
 
@@ -58,8 +69,8 @@ public class SelectedConnectionsActivity extends AppCompatActivity implements
 
         Intent intent = getIntent();
         tagId = intent.getIntExtra("tagId", -1);
-        String tag = intent.getStringExtra("tag");
-        this.setTitle(String.format(getString(R.string.selected_connections_activity_title), tag));
+        mTag = intent.getStringExtra("tag");
+        this.setTitle(String.format(getString(R.string.selected_connections_activity_title), mTag));
 
         adapter = new ConnectionsRecyclerViewAdapter(this, data, false, this);
 
@@ -101,6 +112,12 @@ public class SelectedConnectionsActivity extends AppCompatActivity implements
     };
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
     protected void onResume() {
         if (searchView != null) {
             searchView.setQuery("", false);
@@ -111,10 +128,10 @@ public class SelectedConnectionsActivity extends AppCompatActivity implements
         presenter.loadTag(tagId);
     }
 
-
     @Override
     protected void onStop() {
         super.onStop();
+        EventBus.getDefault().unregister(this);
         presenter.unsubscribe();
     }
 
@@ -136,8 +153,15 @@ public class SelectedConnectionsActivity extends AppCompatActivity implements
         return super.onOptionsItemSelected(item);
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void setToUpdateTagTable(TagDeleted event) {
+        finish();
+    }
+
     @Override
     public void displayConnections(List<ConnectidConnection> connections) {
+        data.addAll(connections);
+        Log.v("testing", "data size " + data.size());
         recyclerView.setVisibility(View.VISIBLE);
         emptyView.setVisibility(View.GONE);
 
@@ -172,5 +196,27 @@ public class SelectedConnectionsActivity extends AppCompatActivity implements
                 presenter.loadTag(tagId);
             }
         }
+    }
+
+    @OnClick(R.id.btn_delete)
+    public void tagDeleteBtnClicked(View view) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Connections with this tag won't be deleted. Do you want to delete this tag?");
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                presenter.deleteTag(tagId, mTag, data);
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (dialog != null) {
+                    dialog.dismiss();
+                }
+            }
+        });
+        // Create and show the AlertDialog
+        alertDialog = builder.show();
     }
 }

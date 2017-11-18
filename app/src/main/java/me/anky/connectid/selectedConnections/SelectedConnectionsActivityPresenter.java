@@ -1,5 +1,7 @@
 package me.anky.connectid.selectedConnections;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -11,11 +13,11 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
-import me.anky.connectid.Constant;
 import me.anky.connectid.Utilities;
 import me.anky.connectid.data.ConnectidConnection;
 import me.anky.connectid.data.ConnectionTag;
 import me.anky.connectid.data.ConnectionsDataSource;
+import me.anky.connectid.events.TagDeleted;
 
 /**
  * Created by Anky An on 8/11/2017.
@@ -92,6 +94,32 @@ public class SelectedConnectionsActivityPresenter implements SelectedConnections
                             }
                         });
         compositeDisposable.add(disposableSingleObserver);
+    }
+
+    @Override
+    public void deleteTag(int databaseId, String tag, List<ConnectidConnection> connections) {
+        dataSource.deleteTag(databaseId);
+
+        // Remove this tag from connections
+        if (connections != null && connections.size() != 0) {
+            for (ConnectidConnection connection : connections) {
+                String tags = connection.getTags();
+                String newTags;
+                List<String> tagsList = new ArrayList(Arrays.asList(tags.split(", ")));
+                if (tagsList.size() == 1) {
+                    newTags = null;
+                } else {
+                    tagsList.remove(tag);
+                    newTags = tagsList.toString();
+                    newTags = newTags.substring(1, newTags.length() -1 );
+                }
+                connection.setTags(newTags);
+                dataSource.updateConnectionWithTags(connection);
+            }
+
+            EventBus.getDefault().post(new TagDeleted());
+        }
+
     }
 
     @Override
