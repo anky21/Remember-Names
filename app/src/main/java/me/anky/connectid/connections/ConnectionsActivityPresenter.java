@@ -1,7 +1,5 @@
 package me.anky.connectid.connections;
 
-import android.util.Log;
-
 import java.util.List;
 
 import javax.inject.Inject;
@@ -35,7 +33,7 @@ public class ConnectionsActivityPresenter implements ConnectionsActivityMVP.Pres
 
     @Override
     public void loadConnections(Integer integer) {
-        Log.v("testing", "load connections");
+//        Log.v("testing", "load connections");
         DisposableSingleObserver<List<ConnectidConnection>> disposableSingleObserver =
                 connectionsDataSource.getConnections(integer)
                         .subscribeOn(Schedulers.io())

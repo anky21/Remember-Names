@@ -78,6 +78,9 @@
     <string name="selected_connections_activity_title">Tag - %s</string>
     <string name="put_a_name_on_this_tag">Put a name on this tag</string>
     <string name="delete_tag">DELETE TAG</string>
+    <string name="yes">Yes</string>
+    <string name="cancel">Cancel</string>
+    <string name="delete_tag_msg">Connections with this tag won\'t be deleted. Do you want to delete this tag?</string>
 
     <!-- Navigation menu-->
     <string name="open">Open</string>
@@ -92,4 +95,5 @@
     <string name="first_name_z_a"><![CDATA[First name Z->A]]></string>
     <string name="last_name_a_z"><![CDATA[Last name A->Z]]></string>
     <string name="last_name_z_a"><![CDATA[Last name Z->A]]></string>
+
 </resources>

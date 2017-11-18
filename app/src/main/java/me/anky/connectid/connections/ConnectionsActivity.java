@@ -305,7 +305,7 @@ public class ConnectionsActivity extends AppCompatActivity implements
         emptyView.setVisibility(View.INVISIBLE);
         recyclerView.setVisibility(View.VISIBLE);
         data = connections;
-        Log.v("testing", "data size " + data.size());
+//        Log.v("testing", "data size " + data.size());
         adapter.setConnections(connections);
 
         if (shouldScrollToBottom) {

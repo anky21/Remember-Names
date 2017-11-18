@@ -8,7 +8,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +23,7 @@ import me.anky.connectid.root.ConnectidApplication;
 import me.anky.connectid.selectedConnections.SelectedConnectionsActivity;
 
 public class TagsActivity extends AppCompatActivity implements TagsActivityMVP.View,
-TagsRecyclerViewAdapter.RecyclerViewClickListener{
+        TagsRecyclerViewAdapter.RecyclerViewClickListener {
     private final static String TAG = "TagsActivity";
 
     public List<ConnectionTag> data = new ArrayList<>();
@@ -105,16 +104,11 @@ TagsRecyclerViewAdapter.RecyclerViewClickListener{
     @Override
     public void onItemClick(View view, int position) {
         ConnectionTag connectionTag = data.get(position);
-        String ids = connectionTag.getConnection_ids();
-        if (ids == null || ids.length() == 0) {
-            Toast.makeText(this, R.string.no_connection_tag, Toast.LENGTH_SHORT).show();
-        } else {
-            Intent selectedConnectionsIntent = new Intent(TagsActivity.this, SelectedConnectionsActivity.class);
-            selectedConnectionsIntent.putExtra("tagId", connectionTag.getDatabaseId());
-            selectedConnectionsIntent.putExtra("ids", ids);
-            selectedConnectionsIntent.putExtra("tag", connectionTag.getTag());
-            startActivity(selectedConnectionsIntent);
-            overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
-        }
+
+        Intent selectedConnectionsIntent = new Intent(TagsActivity.this, SelectedConnectionsActivity.class);
+        selectedConnectionsIntent.putExtra("tagId", connectionTag.getDatabaseId());
+        selectedConnectionsIntent.putExtra("tag", connectionTag.getTag());
+        startActivity(selectedConnectionsIntent);
+        overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
     }
 }

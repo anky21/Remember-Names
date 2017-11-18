@@ -116,10 +116,8 @@ public class SelectedConnectionsActivityPresenter implements SelectedConnections
                 connection.setTags(newTags);
                 dataSource.updateConnectionWithTags(connection);
             }
-
-            EventBus.getDefault().post(new TagDeleted());
         }
-
+        EventBus.getDefault().post(new TagDeleted());
     }
 
     @Override

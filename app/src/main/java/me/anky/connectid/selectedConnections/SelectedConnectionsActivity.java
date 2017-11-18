@@ -9,7 +9,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -161,7 +160,7 @@ public class SelectedConnectionsActivity extends AppCompatActivity implements
     @Override
     public void displayConnections(List<ConnectidConnection> connections) {
         data.addAll(connections);
-        Log.v("testing", "data size " + data.size());
+//        Log.v("testing", "data size " + data.size());
         recyclerView.setVisibility(View.VISIBLE);
         emptyView.setVisibility(View.GONE);
 
@@ -201,14 +200,14 @@ public class SelectedConnectionsActivity extends AppCompatActivity implements
     @OnClick(R.id.btn_delete)
     public void tagDeleteBtnClicked(View view) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("Connections with this tag won't be deleted. Do you want to delete this tag?");
-        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+        builder.setMessage(R.string.delete_tag_msg);
+        builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 presenter.deleteTag(tagId, mTag, data);
             }
         });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if (dialog != null) {
