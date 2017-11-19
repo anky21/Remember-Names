@@ -67,6 +67,10 @@ public class ConnectionsLocalRepository implements ConnectionsDataSource {
             }
         }
 
+        if (cursor != null) {
+            cursor.close();
+        }
+
         return Single.fromCallable(new Callable<ConnectidConnection>() {
             @Override
             public ConnectidConnection call() throws Exception {
@@ -219,6 +223,10 @@ public class ConnectionsLocalRepository implements ConnectionsDataSource {
                 tags.add(new ConnectionTag(databaseId, tag, connectionIds));
             }
         }
+
+        if (cursor != null) {
+            cursor.close();
+        }
     }
 
     @Override
@@ -234,6 +242,10 @@ public class ConnectionsLocalRepository implements ConnectionsDataSource {
 
                 connectionTag = new ConnectionTag(data_id, tag, connectionIds);
             }
+        }
+
+        if (cursor != null) {
+            cursor.close();
         }
 
         return Single.fromCallable(new Callable<ConnectionTag>() {

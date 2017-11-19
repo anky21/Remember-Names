@@ -109,7 +109,9 @@ public class ConnectionsActivity extends AppCompatActivity implements
         mDrawerLayout.addDrawerListener(mToggle);
         mToggle.syncState();
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
         mNavigationView.setItemIconTintList(null);
 
         mNavigationView.setNavigationItemSelectedListener(navigationItemSelectedListener);

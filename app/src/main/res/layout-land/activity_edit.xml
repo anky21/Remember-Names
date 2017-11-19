@@ -14,7 +14,9 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
-            android:src="@drawable/profile_picture" />
+            android:src="@drawable/profile_picture"
+            android:contentDescription="@string/image_of_the_connection"
+            />
 
         <ImageView
             android:layout_width="wrap_content"
@@ -23,7 +25,8 @@
             android:layout_alignParentEnd="true"
             android:layout_marginBottom="@dimen/margin_16dp"
             android:layout_marginEnd="@dimen/margin_16dp"
-            android:src="@drawable/ic_camera" />
+            android:src="@drawable/ic_camera"
+            android:contentDescription="@string/icon_of_a_camera"/>
     </RelativeLayout>
 
     <ScrollView

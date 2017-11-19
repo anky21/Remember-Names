@@ -18,7 +18,8 @@
         <ImageView
             android:layout_width="@dimen/empty_view_image_size"
             android:layout_height="@dimen/empty_view_image_size"
-            android:src="@drawable/tags" />
+            android:src="@drawable/tags"
+            android:contentDescription="@string/image_shown_for_no_tags"/>
 
         <TextView
             android:id="@+id/empty_tags_tv"

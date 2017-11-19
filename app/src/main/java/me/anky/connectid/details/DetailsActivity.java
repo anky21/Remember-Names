@@ -89,8 +89,10 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
 
         // Set a Toolbar to act as the ActionBar for this Activity window
         setSupportActionBar(mToolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeButtonEnabled(true);
+        }
 
         intent = getIntent();
         databaseId = intent.getIntExtra("id", 0);
@@ -200,7 +202,9 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
         mFirstName = connection.getFirstName();
         mLastName = connection.getLastName();
 
-        getSupportActionBar().setTitle(mFirstName + " " + mLastName);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(mFirstName + " " + mLastName);
+        }
         String imageName = connection.getImageName();
         mMeetVenue = connection.getMeetVenue();
         mAppearance = connection.getAppearance();

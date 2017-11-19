@@ -120,7 +120,7 @@ public class DetailsActivityPresenter implements DetailsActivityMVP.Presenter {
                 List<String> idsList = new ArrayList(Arrays.asList(ids.split(", ")));
                 idsList.remove(databaseId);
                 String newIdsString;
-                if (idsList == null || idsList.size() == 0) {
+                if (idsList.size() == 0) {
                     newIdsString = null;
                 } else {
                     newIdsString = idsList.toString();

@@ -21,7 +21,8 @@
         <ImageView
             android:layout_width="@dimen/empty_view_image_size"
             android:layout_height="@dimen/empty_view_image_size"
-            android:src="@drawable/empty_tag" />
+            android:src="@drawable/empty_tag"
+            android:contentDescription="@string/image_shown_for_tag_with_no_connections"/>
 
         <TextView
             android:layout_width="wrap_content"

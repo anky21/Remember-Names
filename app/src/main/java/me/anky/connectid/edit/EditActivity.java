@@ -122,8 +122,10 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
 
         ((ConnectidApplication) getApplication()).getApplicationComponent().inject(this);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeButtonEnabled(true);
+        }
 
         Intent intent = getIntent();
         if (intent.hasExtra("DETAILS")) {
@@ -234,7 +236,7 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
                 }
                 // Check if first name is provided
                 String firstName = mFirstNameEt.getText().toString().trim();
-                if (firstName == null || firstName.equals("")) {
+                if (firstName.equals("")) {
                     Toast.makeText(this, R.string.first_name_required, Toast.LENGTH_SHORT).show();
                     return true;
                 }
@@ -351,7 +353,7 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
         }
         // Check if first name is provided
         String firstName = mFirstNameEt.getText().toString().trim();
-        if (firstName == null || firstName.equals("")) {
+        if (firstName.equals("")) {
             Toast.makeText(this, R.string.first_name_required, Toast.LENGTH_SHORT).show();
             return;
         }

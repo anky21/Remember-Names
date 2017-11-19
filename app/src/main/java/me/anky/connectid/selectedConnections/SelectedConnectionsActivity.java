@@ -155,6 +155,7 @@ public class SelectedConnectionsActivity extends AppCompatActivity implements
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void setToUpdateTagTable(TagDeleted event) {
         finish();
+        overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
     }
 
     @Override

@@ -157,7 +157,7 @@ public class Utilities {
 
         int count = 0;
         int currentWidth = 0;
-        boolean isNewLine = false;
+        boolean isNewLine;
         boolean isFirstLine = true;
 
         for (String tag : tags) {

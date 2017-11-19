@@ -44,7 +44,8 @@
             android:layout_weight="4"
             android:scaleType="centerCrop"
             android:src="@drawable/profile_picture"
-            app:layout_collapseMode="parallax" />
+            app:layout_collapseMode="parallax"
+            android:contentDescription="@string/image_of_the_connection"/>
 
         <android.support.v4.widget.NestedScrollView
             android:id="@+id/scrollview"

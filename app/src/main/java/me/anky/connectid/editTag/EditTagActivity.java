@@ -245,7 +245,7 @@ public class EditTagActivity extends AppCompatActivity implements EditTagActivit
 
         int count = 0;
         int currentWidth = 0;
-        boolean isNewLine = false;
+        boolean isNewLine;
         boolean isFirstLine = true;
 
         this.allTags = allTags;
@@ -352,7 +352,7 @@ public class EditTagActivity extends AppCompatActivity implements EditTagActivit
 
         int count = 0;
         int currentWidth = 0;
-        boolean isNewLine = false;
+        boolean isNewLine;
         boolean isFirstLine = true;
 
         if (connectionTags.size() > 0) {
