@@ -273,4 +273,10 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
         startActivity(intent);
         overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
     }
+
+    @OnClick(R.id.btn_delete)
+    public void deleteConnection(View view) {
+        showDeleteDialog();
+        Utilities.logFirebaseEvents("delete_connection", TAG + ".deleteConnection");
+    }
 }

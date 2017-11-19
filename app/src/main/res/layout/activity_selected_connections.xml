@@ -50,7 +50,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:orientation="horizontal"
-        android:paddingTop="@dimen/margin_4dp"
+        android:paddingTop="@dimen/margin_2dp"
         android:paddingStart="@dimen/margin_16dp"
         android:paddingEnd="@dimen/margin_16dp">
 

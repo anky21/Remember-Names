@@ -96,4 +96,6 @@
     <string name="last_name_a_z"><![CDATA[Last name A->Z]]></string>
     <string name="last_name_z_a"><![CDATA[Last name Z->A]]></string>
 
+    <string name="delete_this_connection">DELETE THIS CONNECTION</string>
+
 </resources>
