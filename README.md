@@ -1,4 +1,4 @@
-<a href="https://c9479.app.goo.gl/"><img src="/demo/get_it_on_google_play.png" width="200" height="59" alt="Remember names on Google Play"></a>
+<a href="https://c9479.app.goo.gl/eNh4"><img src="/demo/get_it_on_google_play.png" width="200" height="59" alt="Remember names on Google Play"></a>
 
 Remember Names
 ========
@@ -11,7 +11,6 @@ DEMO
 ![alt text](/demo/menu.png)
 ![alt text](/demo/search.png)
 ![alt text](/demo/detail.png)
-![alt text](/demo/edit.png)
 ![alt text](/demo/add_tag.png)
 ![alt text](/demo/tags.png)
 ![alt text](/demo/tag.png)
