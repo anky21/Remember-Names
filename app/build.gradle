@@ -22,7 +22,7 @@ android {
         applicationId "me.anky.connectid"
         minSdkVersion 21
         targetSdkVersion 25
-        versionCode 5
+        versionCode 7
         versionName "2.0.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
