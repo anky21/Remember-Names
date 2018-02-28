@@ -6,10 +6,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.ShareActionProvider;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -125,18 +123,6 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_detail, menu);
-        // Create the Share action
-        MenuItem item = menu.add(R.string.share);
-        item.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-        ShareActionProvider mShareActionProvider = new ShareActionProvider(this) {
-            @Override
-            public View onCreateActionView() {
-                return null;
-            }
-        };
-        mShareActionProvider.setShareIntent(createShareIntent());
-        item.setIcon(R.drawable.abc_ic_menu_share_mtrl_alpha);
-        MenuItemCompat.setActionProvider(item, mShareActionProvider);
         return true;
     }
 
@@ -144,10 +130,11 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
         String shareMessage = getString(R.string.share_profile_text, mFirstName, mLastName, mMeetVenue,
                 mAppearance, mFeature, mCommonFriends, mDescription);
         Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
         intent.setType("text/plain");
         intent.putExtra(Intent.EXTRA_TEXT, shareMessage);
 
-        Utilities.logFirebaseEvents("create_share_intent", TAG + ".createShareIntent");
+        Utilities.logFirebaseEvents("create_share_intent", shareMessage);
 
         return intent;
     }
@@ -156,6 +143,12 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
+            case R.id.menu_item_share:
+                Intent intent = createShareIntent();
+                if (intent != null) {
+                    startActivity(Intent.createChooser(intent, "Share this profile"));
+                }
+                break;
             case R.id.action_delete:
                 showDeleteDialog();
                 Utilities.logFirebaseEvents("delete_connection", TAG + "onOptionsItemSelected.action_delete");
