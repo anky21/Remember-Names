@@ -33,6 +33,9 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.appinvite.FirebaseAppInvite;
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
 import com.google.firebase.dynamiclinks.PendingDynamicLinkData;
+import com.microsoft.appcenter.AppCenter;
+import com.microsoft.appcenter.analytics.Analytics;
+import com.microsoft.appcenter.crashes.Crashes;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -100,6 +103,10 @@ public class ConnectionsActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
+
+        // Start AppCenter
+        AppCenter.start(getApplication(), "95faa06f-7159-44cf-b14a-f7d0cfeaf584",
+                Analytics.class, Crashes.class);
 
         ButterKnife.bind(this);
 

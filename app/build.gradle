@@ -45,6 +45,7 @@ repositories {
 ext {
     supportLibVersion = '25.3.1'
     firebase = '11.6.0'
+    appCenterSdkVersion = '1.4.0'
 }
 
 dependencies {
@@ -67,6 +68,10 @@ dependencies {
     compile 'com.theartofdev.edmodo:android-image-cropper:2.4.+'
     compile 'com.androidsx:rate-me:4.0.3'
     compile 'org.greenrobot:eventbus:3.0.0'
+
+    // App Center
+    compile "com.microsoft.appcenter:appcenter-analytics:${appCenterSdkVersion}"
+    compile "com.microsoft.appcenter:appcenter-crashes:${appCenterSdkVersion}"
 
     // Firebase
     compile "com.google.firebase:firebase-core:${firebase}"
