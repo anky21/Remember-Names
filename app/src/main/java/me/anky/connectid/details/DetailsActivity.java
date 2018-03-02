@@ -127,14 +127,49 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
     }
 
     private Intent createShareIntent() {
-        String shareMessage = getString(R.string.share_profile_text, mFirstName, mLastName, mMeetVenue,
-                mAppearance, mFeature, mCommonFriends, mDescription);
+        StringBuffer sb = new StringBuffer();
+        StringBuffer sbAnalytics = new StringBuffer();
+        sb.append("Hey, I'm sharing this profile with you. First name: " + mFirstName);
+        if (!mLastName.equals("")) {
+            sb.append(". Last name: " + mLastName);
+        }
+        if (!mMeetVenue.equals("")) {
+            sb.append(". We met at: " + mMeetVenue);
+            sbAnalytics.append(". We met at: " + mMeetVenue);
+        }
+
+        if (!mAppearance.equals("")) {
+            sb.append(". Appearance: " + mAppearance);
+            sbAnalytics.append(". Appearance: " + mAppearance);
+        }
+
+        if (!mFeature.equals("")) {
+            sb.append(". Feature: " + mFeature);
+            sbAnalytics.append(". Feature: " + mFeature);
+        }
+
+        if (!mCommonFriends.equals("")) {
+            sb.append(". Common friends: " + mCommonFriends);
+            sbAnalytics.append(". Common friends: " + mCommonFriends);
+        }
+
+        if (!mDescription.equals("")) {
+            sb.append(". Description: " + mDescription);
+            sbAnalytics.append(". Description: " + mDescription);
+        }
+
+        int okUnicode = 0x1F44C;
+        String okEmoji = new String(Character.toChars(okUnicode));
+        sb.append(" " + okEmoji);
+
+        String shareMsg = sb.toString();
+
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
         intent.setType("text/plain");
-        intent.putExtra(Intent.EXTRA_TEXT, shareMessage);
+        intent.putExtra(Intent.EXTRA_TEXT, shareMsg);
 
-        Utilities.logFirebaseEvents("create_share_intent", shareMessage);
+        Utilities.logFirebaseEvents("create_share_intent", sbAnalytics.toString());
 
         return intent;
     }

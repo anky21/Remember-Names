@@ -29,12 +29,6 @@
     <string name="delete_success_msg">A profile has been deleted!</string>
     <string name="share">Share</string>
 
-    <string name="share_profile_text">Sharing profile: <xliff:g id="first name">%1$s</xliff:g>
-        <xliff:g id="last name">%2$s</xliff:g>. <xliff:g id="meet venue">%3$s</xliff:g>.
-        <xliff:g id="appearance">%4$s</xliff:g>. <xliff:g id="feature">%5$s</xliff:g>. Common
-        friends: <xliff:g id="common friends">%6$s</xliff:g>. <xliff:g id="description">%7$s</xliff:g>.</string>
-    <string name="crop_action_error_msg">Whoops - your device doesn\'t support the crop action!</string>
-
     <!-- Edit activity -->
     <string name="where_did_you_meet">Where did you meet?</string>
     <string name="anything_significant_about_appearance">Anything significant about his/her looks?</string>
