@@ -72,6 +72,7 @@ dependencies {
     // App Center
     compile "com.microsoft.appcenter:appcenter-analytics:${appCenterSdkVersion}"
     compile "com.microsoft.appcenter:appcenter-crashes:${appCenterSdkVersion}"
+    compile "com.microsoft.appcenter:appcenter-push:${appCenterSdkVersion}"
 
     // Firebase
     compile "com.google.firebase:firebase-core:${firebase}"

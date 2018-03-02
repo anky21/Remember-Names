@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.microsoft.appcenter.analytics.Analytics;
 
 import java.io.File;
 import java.util.concurrent.Callable;
@@ -310,5 +311,6 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
     public void deleteConnection(View view) {
         showDeleteDialog();
         Utilities.logFirebaseEvents("delete_connection", TAG + ".deleteConnection");
+        Analytics.trackEvent("delete_connection");
     }
 }

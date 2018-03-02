@@ -36,6 +36,7 @@ import com.google.firebase.dynamiclinks.PendingDynamicLinkData;
 import com.microsoft.appcenter.AppCenter;
 import com.microsoft.appcenter.analytics.Analytics;
 import com.microsoft.appcenter.crashes.Crashes;
+import com.microsoft.appcenter.push.Push;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -105,8 +106,11 @@ public class ConnectionsActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_list);
 
         // Start AppCenter
+        Push.setSenderId("784660097082");
         AppCenter.start(getApplication(), "95faa06f-7159-44cf-b14a-f7d0cfeaf584",
-                Analytics.class, Crashes.class);
+                Analytics.class, Crashes.class, Push.class);
+        
+        AppCenter.getInstallId();
 
         ButterKnife.bind(this);
 
