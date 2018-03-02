@@ -106,6 +106,7 @@ public class ConnectionsActivity extends AppCompatActivity implements
 
         // Start AppCenter
         Push.setSenderId("784660097082");
+        Push.enableFirebaseAnalytics(getApplication());
         AppCenter.start(getApplication(), "95faa06f-7159-44cf-b14a-f7d0cfeaf584",
                 Analytics.class, Crashes.class, Push.class);
 
