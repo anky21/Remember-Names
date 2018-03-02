@@ -24,7 +24,6 @@ import java.io.File;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import me.anky.connectid.Constant;
 import me.anky.connectid.R;
 import me.anky.connectid.Utilities;
 
@@ -81,7 +80,7 @@ public class PickerFragment extends android.app.DialogFragment {
 
     @OnClick(R.id.takeImage_tv)
     public void takeImage() {
-        Utilities.logFirebaseEvents("take_image", TAG + ".takeImage");
+        Utilities.eventsOneParam("type", "take_image", "Get Image");
 
         if (mSavedInstanceState == null) {
             output = new File(new File(getActivity().getFilesDir(), PHOTOS), FILENAME);
@@ -119,7 +118,7 @@ public class PickerFragment extends android.app.DialogFragment {
 
     @OnClick(R.id.pickImage_tv)
     public void pickImage() {
-        Utilities.logFirebaseEvents("pick_image", TAG + ".pickImage");
+        Utilities.eventsOneParam("type", "pick_image", "Get Image");
 
         Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
         photoPickerIntent.setType("image/*");

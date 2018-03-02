@@ -170,7 +170,7 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
         intent.setType("text/plain");
         intent.putExtra(Intent.EXTRA_TEXT, shareMsg);
 
-        Utilities.logFirebaseEvents("create_share_intent", sbAnalytics.toString());
+        Utilities.eventsOneParam("Message", sbAnalytics.toString(), "Share Profile Msg");
 
         return intent;
     }
@@ -187,7 +187,8 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
                 break;
             case R.id.action_delete:
                 showDeleteDialog();
-                Utilities.logFirebaseEvents("delete_connection", TAG + "onOptionsItemSelected.action_delete");
+                Utilities.eventsOneParam("click", "menu_button", "Delete Connection");
+
                 break;
             case android.R.id.home:
 //                NavUtils.navigateUpFromSameTask(this);
@@ -299,7 +300,7 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
 
     @OnClick(R.id.edit_fab)
     public void launchEditActivity(View view) {
-        Utilities.logFirebaseEvents("click_edit_fab", TAG + ".launchEditActivity");
+        Analytics.trackEvent("Click Edit FAB");
 
         Intent intent = new Intent(this, EditActivity.class);
         intent.putExtra("DETAILS", connection);
@@ -310,7 +311,7 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
     @OnClick(R.id.btn_delete)
     public void deleteConnection(View view) {
         showDeleteDialog();
-        Utilities.logFirebaseEvents("delete_connection", TAG + ".deleteConnection");
-        Analytics.trackEvent("delete_connection");
+
+        Utilities.eventsOneParam("click", "bottom_button", "Delete Connection");
     }
 }

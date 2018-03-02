@@ -17,7 +17,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -109,7 +108,7 @@ public class ConnectionsActivity extends AppCompatActivity implements
         Push.setSenderId("784660097082");
         AppCenter.start(getApplication(), "95faa06f-7159-44cf-b14a-f7d0cfeaf584",
                 Analytics.class, Crashes.class, Push.class);
-        
+
         AppCenter.getInstallId();
 
         ButterKnife.bind(this);
@@ -271,41 +270,42 @@ public class ConnectionsActivity extends AppCompatActivity implements
                 closeNavigationMenu();
 
                 sharedPrefsHelper.put(Utilities.SORTBY, 1);
-                Utilities.logFirebaseEvents("connections_sort_order", TAG + ".new first clicked");
+                Utilities.eventsOneParam("sort_order", "new_first", "Connections Sort Order");
             }
             break;
             case R.id.sortby_date_old: {
                 closeNavigationMenu();
 
                 sharedPrefsHelper.put(Utilities.SORTBY, 2);
-                Utilities.logFirebaseEvents("connections_sort_order", TAG + ".old first clicked");
+                Utilities.eventsOneParam("sort_order", "old_first", "Connections Sort Order");
             }
             break;
             case R.id.sortby_fname_a: {
                 closeNavigationMenu();
 
                 sharedPrefsHelper.put(Utilities.SORTBY, 3);
-                Utilities.logFirebaseEvents("connections_sort_order", TAG + ".first name a-z clicked");
+                Utilities.eventsOneParam("sort_order", "first name a-z", "Connections Sort Order");
             }
             break;
             case R.id.sortby_fname_z: {
                 closeNavigationMenu();
 
                 sharedPrefsHelper.put(Utilities.SORTBY, 4);
-                Utilities.logFirebaseEvents("connections_sort_order", TAG + ".first name z-a clicked");
+                Utilities.eventsOneParam("sort_order", "first name Z-A", "Connections Sort Order");
+
             }
             break;
             case R.id.sortby_lname_a: {
                 closeNavigationMenu();
 
                 sharedPrefsHelper.put(Utilities.SORTBY, 5);
-                Utilities.logFirebaseEvents("connections_sort_order", TAG + ".last name a-z clicked");
+                Utilities.eventsOneParam("sort_order", "last name a-z", "Connections Sort Order");
             }
             break;
             case R.id.sortby_lname_z: {
                 closeNavigationMenu();
                 sharedPrefsHelper.put(Utilities.SORTBY, 6);
-                Utilities.logFirebaseEvents("connections_sort_order", TAG + ".last name z-a clicked");
+                Utilities.eventsOneParam("sort_order", "last name Z-A", "Connections Sort Order");
             }
             break;
         }
@@ -380,8 +380,7 @@ public class ConnectionsActivity extends AppCompatActivity implements
         startActivityForResult(intent, NEW_CONNECTION_REQUEST);
         overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
 
-        Utilities.logFirebaseEvents("fab_new_connection", TAG + ".fab launch edit activity clicked");
-
+        Analytics.trackEvent("FAB New Connection");
     }
 
     @Override
@@ -413,8 +412,8 @@ public class ConnectionsActivity extends AppCompatActivity implements
                 // Get the invitation IDs of all sent messages
                 String[] ids = AppInviteInvitation.getInvitationIds(resultCode, data);
                 for (String id : ids) {
-                    Log.d(TAG, "onActivityResult: sent invitation " + id);
-                    Utilities.logFirebaseEvents("invite_friends_result", TAG + "." + id);
+//                    Log.d(TAG, "onActivityResult: sent invitation " + id);
+                    Utilities.eventsOneParam("invitation_id", id, "Invite Friends Result");
                 }
             } else {
                 Toast.makeText(this, getString(R.string.send_failed), Toast.LENGTH_SHORT).show();
@@ -480,7 +479,7 @@ public class ConnectionsActivity extends AppCompatActivity implements
                 public boolean onNavigationItemSelected(MenuItem menuItem) {
                     switch (menuItem.getItemId()) {
                         case (R.id.nav_tags):
-                            Utilities.logFirebaseEvents("start_tags_activity", TAG + ".nav btn tags clicked");
+                            Utilities.eventsOneParam("click", "nav_button", "Start Tags Activity");
 
                             closeNavigationMenu();
                             Intent intent = new Intent(getApplicationContext(), TagsActivity.class);
@@ -489,7 +488,7 @@ public class ConnectionsActivity extends AppCompatActivity implements
                             overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
                             break;
                         case (R.id.nav_invite):
-                            Utilities.logFirebaseEvents("nav_invite_friends", TAG + ".nav btn invite friends clicked");
+                            Analytics.trackEvent("Nav Invite Friends");
                             closeNavigationMenu();
                             Intent inviteIntent = new AppInviteInvitation.IntentBuilder(getString(R.string.invitation_title))
                                     .setMessage(getString(R.string.invitation_message))

@@ -24,6 +24,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.microsoft.appcenter.analytics.Analytics;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -292,7 +293,7 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
 
     @OnClick(R.id.edit_portrait_iv)
     public void changePortraitPhoto() {
-        Utilities.logFirebaseEvents("click_to_change_portrait_photo", TAG + ".changePortraitPhoto");
+        Analytics.trackEvent("Change Portrait Photo");
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         PickerFragment newFragment = new PickerFragment();
@@ -302,7 +303,7 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
 
     @OnClick(R.id.tags_linear_layout)
     public void launchEditTagActivity(View view) {
-        Utilities.logFirebaseEvents("launch_edit_tag_activity", TAG + ".launchEditTagActivity");
+        Analytics.trackEvent("Launch Edit Tag Activity");
 
         Intent intent = new Intent(this, EditTagActivity.class);
         if (mDatabaseId != -1) {

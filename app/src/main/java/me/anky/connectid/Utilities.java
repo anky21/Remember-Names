@@ -15,13 +15,16 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.microsoft.appcenter.analytics.Analytics;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import me.anky.connectid.data.source.local.ConnectidColumns;
@@ -216,17 +219,17 @@ public class Utilities {
     }
 
     /**
+     * Log app center events with 1 param
      *
-     * @param event Content of the events
-     * @param origin Activity + class name
+     * @param param One property of the event
+     * @param value Value of the parameter
+     * @param event Event name
      */
-    public static void logFirebaseEvents(String event, String origin) {
-        application = ConnectidApplication.getAppInstance();
-        mFirebaseAnalytics = application.getAnalyticsInstance();
+    public static void eventsOneParam(String param, String value, String event) {
+        Map<String, String> properties = new HashMap<>();
+        properties.put(param, value);
 
-        Bundle params = new Bundle();
-        params.putString(FirebaseAnalytics.Param.ORIGIN, origin);
-        mFirebaseAnalytics.logEvent(event, params);
+        Analytics.trackEvent(event, properties);
     }
 
     /**
