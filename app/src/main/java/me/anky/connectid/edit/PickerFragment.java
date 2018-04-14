@@ -81,6 +81,7 @@ public class PickerFragment extends android.app.DialogFragment {
     @OnClick(R.id.takeImage_tv)
     public void takeImage() {
         Utilities.eventsOneParam("type", "take_image", "Get Image");
+        Utilities.logFirebaseEvents("Get image", "take_image");
 
         if (mSavedInstanceState == null) {
             output = new File(new File(getActivity().getFilesDir(), PHOTOS), FILENAME);
@@ -119,6 +120,7 @@ public class PickerFragment extends android.app.DialogFragment {
     @OnClick(R.id.pickImage_tv)
     public void pickImage() {
         Utilities.eventsOneParam("type", "pick_image", "Get Image");
+        Utilities.logFirebaseEvents("Get image", "pick_image");
 
         Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
         photoPickerIntent.setType("image/*");

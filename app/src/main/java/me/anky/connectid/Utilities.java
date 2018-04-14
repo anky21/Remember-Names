@@ -247,4 +247,29 @@ public class Utilities {
         params.putString(FirebaseAnalytics.Param.ITEM_NAME, msg);
         mFirebaseAnalytics.logEvent(event, params);
     }
+
+    /**
+     *
+     * @param event Content of the events
+     * @param content Activity + class name
+     */
+    public static void logFirebaseEvents(String event, String content) {
+        application = ConnectidApplication.getAppInstance();
+        mFirebaseAnalytics = application.getAnalyticsInstance();
+
+        Bundle params = new Bundle();
+        params.putString(FirebaseAnalytics.Param.CONTENT, content);
+        mFirebaseAnalytics.logEvent(event, params);
+    }
+
+    /**
+     *
+     * @param event Content of the events
+     */
+    public static void logFirebaseEventWithNoParams(String event) {
+        application = ConnectidApplication.getAppInstance();
+        mFirebaseAnalytics = application.getAnalyticsInstance();
+
+        mFirebaseAnalytics.logEvent(event, null);
+    }
 }

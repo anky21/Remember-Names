@@ -131,6 +131,7 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
         StringBuffer sb = new StringBuffer();
         StringBuffer sbAnalytics = new StringBuffer();
         sb.append("Hey, I'm sharing this profile with you. First name: " + mFirstName);
+        sbAnalytics.append("First name: " + mFirstName);
         if (!mLastName.equals("")) {
             sb.append(". Last name: " + mLastName);
         }
@@ -171,6 +172,7 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
         intent.putExtra(Intent.EXTRA_TEXT, shareMsg);
 
         Utilities.eventsOneParam("Message", sbAnalytics.toString(), "Share Profile Msg");
+        Utilities.logFirebaseEvents("Share profile msg", sbAnalytics.toString());
 
         return intent;
     }
@@ -188,6 +190,7 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
             case R.id.action_delete:
                 showDeleteDialog();
                 Utilities.eventsOneParam("click", "menu_button", "Delete Connection");
+                Utilities.logFirebaseEvents("Delete connection", "menu_button");
 
                 break;
             case android.R.id.home:
@@ -301,6 +304,7 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
     @OnClick(R.id.edit_fab)
     public void launchEditActivity(View view) {
         Analytics.trackEvent("Click Edit FAB");
+        Utilities.logFirebaseEventWithNoParams("Click edit FAB");
 
         Intent intent = new Intent(this, EditActivity.class);
         intent.putExtra("DETAILS", connection);
@@ -313,5 +317,7 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
         showDeleteDialog();
 
         Utilities.eventsOneParam("click", "bottom_button", "Delete Connection");
+        Utilities.logFirebaseEvents("Delete connection", "bottom_button");
+
     }
 }

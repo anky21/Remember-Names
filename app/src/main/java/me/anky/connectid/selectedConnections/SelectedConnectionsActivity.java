@@ -29,6 +29,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import me.anky.connectid.R;
+import me.anky.connectid.Utilities;
 import me.anky.connectid.connections.ConnectionsRecyclerViewAdapter;
 import me.anky.connectid.connections.DividerItemDecoration;
 import me.anky.connectid.data.ConnectidConnection;
@@ -209,6 +210,7 @@ public class SelectedConnectionsActivity extends AppCompatActivity implements
             public void onClick(DialogInterface dialog, int which) {
                 presenter.deleteTag(tagId, mTag, data);
                 Analytics.trackEvent("Delete A Tag");
+                Utilities.logFirebaseEvents("Delete a tag", mTag);
             }
         });
         builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {

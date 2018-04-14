@@ -40,6 +40,7 @@ public class EditTagActivityPresenter implements EditTagActivityMVP.Presenter {
     @Override
     public void createNewTag(String input, List<String> connectionTags, List<ConnectionTag> allTags) {
         Utilities.eventsOneParam("name", input, "Create New Tag");
+        Utilities.logFirebaseEvents("Create New Tag", input);
 
         int existingTagPosition = -1;
 

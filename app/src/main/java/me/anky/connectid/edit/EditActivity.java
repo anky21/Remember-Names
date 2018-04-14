@@ -294,6 +294,7 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
     @OnClick(R.id.edit_portrait_iv)
     public void changePortraitPhoto() {
         Analytics.trackEvent("Change Portrait Photo");
+        Utilities.logFirebaseEventWithNoParams("Change portrait photo");
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         PickerFragment newFragment = new PickerFragment();
@@ -304,6 +305,7 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
     @OnClick(R.id.tags_linear_layout)
     public void launchEditTagActivity(View view) {
         Analytics.trackEvent("Launch Edit Tag Activity");
+        Utilities.logFirebaseEventWithNoParams("Launch edit tag act");
 
         Intent intent = new Intent(this, EditTagActivity.class);
         if (mDatabaseId != -1) {

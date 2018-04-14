@@ -272,6 +272,7 @@ public class ConnectionsActivity extends AppCompatActivity implements
 
                 sharedPrefsHelper.put(Utilities.SORTBY, 1);
                 Utilities.eventsOneParam("sort_order", "new_first", "Connections Sort Order");
+                Utilities.logFirebaseEvents("Connections Sort Order", "new_first");
             }
             break;
             case R.id.sortby_date_old: {
@@ -279,6 +280,7 @@ public class ConnectionsActivity extends AppCompatActivity implements
 
                 sharedPrefsHelper.put(Utilities.SORTBY, 2);
                 Utilities.eventsOneParam("sort_order", "old_first", "Connections Sort Order");
+                Utilities.logFirebaseEvents("Connections Sort Order", "old_first");
             }
             break;
             case R.id.sortby_fname_a: {
@@ -286,6 +288,7 @@ public class ConnectionsActivity extends AppCompatActivity implements
 
                 sharedPrefsHelper.put(Utilities.SORTBY, 3);
                 Utilities.eventsOneParam("sort_order", "first name a-z", "Connections Sort Order");
+                Utilities.logFirebaseEvents("Connections Sort Order", "first name a-z");
             }
             break;
             case R.id.sortby_fname_z: {
@@ -293,7 +296,7 @@ public class ConnectionsActivity extends AppCompatActivity implements
 
                 sharedPrefsHelper.put(Utilities.SORTBY, 4);
                 Utilities.eventsOneParam("sort_order", "first name Z-A", "Connections Sort Order");
-
+                Utilities.logFirebaseEvents("Connections Sort Order", "first name Z-A");
             }
             break;
             case R.id.sortby_lname_a: {
@@ -301,12 +304,14 @@ public class ConnectionsActivity extends AppCompatActivity implements
 
                 sharedPrefsHelper.put(Utilities.SORTBY, 5);
                 Utilities.eventsOneParam("sort_order", "last name a-z", "Connections Sort Order");
+                Utilities.logFirebaseEvents("Connections Sort Order", "last name a-z");
             }
             break;
             case R.id.sortby_lname_z: {
                 closeNavigationMenu();
                 sharedPrefsHelper.put(Utilities.SORTBY, 6);
                 Utilities.eventsOneParam("sort_order", "last name Z-A", "Connections Sort Order");
+                Utilities.logFirebaseEvents("Connections Sort Order", "last name Z-A");
             }
             break;
         }
@@ -382,6 +387,7 @@ public class ConnectionsActivity extends AppCompatActivity implements
         overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
 
         Analytics.trackEvent("FAB New Connection");
+        Utilities.logFirebaseEventWithNoParams("FAB New Connection");
     }
 
     @Override
@@ -415,6 +421,7 @@ public class ConnectionsActivity extends AppCompatActivity implements
                 for (String id : ids) {
 //                    Log.d(TAG, "onActivityResult: sent invitation " + id);
                     Utilities.eventsOneParam("invitation_id", id, "Invite Friends Result");
+                    Utilities.logFirebaseEvents("Invite Result id", id);
                 }
             } else {
                 Toast.makeText(this, getString(R.string.send_failed), Toast.LENGTH_SHORT).show();
@@ -481,6 +488,7 @@ public class ConnectionsActivity extends AppCompatActivity implements
                     switch (menuItem.getItemId()) {
                         case (R.id.nav_tags):
                             Utilities.eventsOneParam("click", "nav_button", "Start Tags Activity");
+                            Utilities.logFirebaseEventWithNoParams("Start Tags Activity");
 
                             closeNavigationMenu();
                             Intent intent = new Intent(getApplicationContext(), TagsActivity.class);
@@ -490,6 +498,8 @@ public class ConnectionsActivity extends AppCompatActivity implements
                             break;
                         case (R.id.nav_invite):
                             Analytics.trackEvent("Nav Invite Friends");
+                            Utilities.logFirebaseEventWithNoParams("Nav Invite Friends");
+
                             closeNavigationMenu();
                             Intent inviteIntent = new AppInviteInvitation.IntentBuilder(getString(R.string.invitation_title))
                                     .setMessage(getString(R.string.invitation_message))
