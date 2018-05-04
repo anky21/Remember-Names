@@ -17,7 +17,7 @@ android {
     }
 
     compileSdkVersion 27
-    buildToolsVersion "26.0.2"
+    buildToolsVersion "27.0.3"
     defaultConfig {
         applicationId "me.anky.connectid"
         minSdkVersion 21
@@ -43,16 +43,16 @@ repositories {
 }
 
 ext {
-    supportLibVersion = '27.0.2'
+    supportLibVersion = '27.1.1'
     firebase = '11.6.0'
     appCenterSdkVersion = '1.4.0'
 }
 
 configurations.all {
     resolutionStrategy {
-        force 'com.android.support:design:27.0.2'
-        force 'com.android.support:support-v4:27.0.2'
-        force 'com.android.support:appcompat-v7:27.0.2'
+        force 'com.android.support:design:27.1.1'
+        force 'com.android.support:support-v4:27.1.1'
+        force 'com.android.support:appcompat-v7:27.1.1'
     }
 }
 
@@ -63,8 +63,8 @@ dependencies {
     compile "com.android.support:recyclerview-v7:${supportLibVersion}"
     compile "com.android.support:support-v4:${supportLibVersion}"
     testCompile 'junit:junit:4.12'
-    compile 'com.github.bumptech.glide:glide:4.3.1'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.3.1'
+    implementation 'com.github.bumptech.glide:glide:4.7.1'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.7.1'
     compile 'net.simonvt.schematic:schematic:0.7.0'
     compile 'com.jakewharton:butterknife:8.6.0'
     compile 'com.facebook.stetho:stetho:1.5.0'
