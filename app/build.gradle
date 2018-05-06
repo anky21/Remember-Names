@@ -1,4 +1,6 @@
 apply plugin: 'com.android.application'
+// Firebase crashlytics
+apply plugin: 'io.fabric'
 
 // Initialise the keystorePropertiesFile
 def keystorePropertiesFile = rootProject.file("keystore.properties")
@@ -75,6 +77,8 @@ dependencies {
     compile 'com.theartofdev.edmodo:android-image-cropper:2.4.+'
     compile 'com.androidsx:rate-me:4.0.3'
     compile 'org.greenrobot:eventbus:3.0.0'
+    // Firebase crashlytics
+    implementation 'com.crashlytics.sdk.android:crashlytics:2.9.1'
 
     // App Center
     compile "com.microsoft.appcenter:appcenter-analytics:${appCenterSdkVersion}"
