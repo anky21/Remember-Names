@@ -130,40 +130,40 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
     private Intent createShareIntent() {
         StringBuffer sb = new StringBuffer();
         StringBuffer sbAnalytics = new StringBuffer();
-        sb.append("Hey, I'm sharing this profile with you. First name: " + mFirstName);
+        sb.append(getString(R.string.share_msg_1) + mFirstName);
         sbAnalytics.append("First name: " + mFirstName);
         if (!mLastName.equals("")) {
             sb.append(". Last name: " + mLastName);
         }
         if (!mMeetVenue.equals("")) {
-            sb.append(". We met at: " + mMeetVenue);
+            sb.append(getString(R.string.share_msg_2) + mMeetVenue);
             sbAnalytics.append(". We met at: " + mMeetVenue);
         }
 
         if (!mAppearance.equals("")) {
-            sb.append(". Appearance: " + mAppearance);
+            sb.append(getString(R.string.share_msg_3) + mAppearance);
             sbAnalytics.append(". Appearance: " + mAppearance);
         }
 
         if (!mFeature.equals("")) {
-            sb.append(". Feature: " + mFeature);
+            sb.append(getString(R.string.share_msg_4) + mFeature);
             sbAnalytics.append(". Feature: " + mFeature);
         }
 
         if (!mCommonFriends.equals("")) {
-            sb.append(". Common friends: " + mCommonFriends);
+            sb.append(getString(R.string.share_msg_5) + mCommonFriends);
             sbAnalytics.append(". Common friends: " + mCommonFriends);
         }
 
+
         if (!mDescription.equals("")) {
-            sb.append(". Description: " + mDescription);
+            sb.append(getString(R.string.share_msg_6) + mDescription);
             sbAnalytics.append(". Description: " + mDescription);
         }
 
         int okUnicode = 0x1F44C;
         String okEmoji = new String(Character.toChars(okUnicode));
         sb.append(" " + okEmoji);
-
         String shareMsg = sb.toString();
 
         Intent intent = new Intent(Intent.ACTION_SEND);
@@ -184,7 +184,7 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
             case R.id.menu_item_share:
                 Intent intent = createShareIntent();
                 if (intent != null) {
-                    startActivity(Intent.createChooser(intent, "Share this profile"));
+                    startActivity(Intent.createChooser(intent, getString(R.string.share_this_profile)));
                 }
                 break;
             case R.id.action_delete:

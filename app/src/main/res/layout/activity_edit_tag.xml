@@ -45,7 +45,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/margin_8dp"
-        android:text="All Tags:" />
+        android:text="@string/all_tags" />
 
     <ScrollView
         android:id="@+id/all_tags_scroll"
