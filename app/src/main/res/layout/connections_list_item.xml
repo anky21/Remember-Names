@@ -1,51 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/list_item_container"
     android:layout_width="match_parent"
-    android:layout_height="100dp"
-    android:gravity="center"
-    android:orientation="horizontal">
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
-    <FrameLayout
-        android:id="@+id/list_image_container"
-        android:layout_width="108dp"
-        android:layout_height="108dp"
-        android:padding="@dimen/margin_8dp">
+    <RelativeLayout
+        android:id="@+id/view_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorPrimary">
 
         <ImageView
-            android:id="@+id/list_item_iv"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:src="@drawable/profile_picture"
-            android:contentDescription="@string/image_of_the_connection"/>
-    </FrameLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:paddingEnd="@dimen/margin_16dp"
-        android:orientation="vertical">
+            android:id="@+id/delete_icon"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="20dp"
+            android:src="@drawable/ic_delete_white_24px" />
 
         <TextView
-            android:id="@+id/list_name_tv"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:textColor="@android:color/black"
-            android:paddingBottom="@dimen/margin_8dp"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            tools:text="Shrek - met in swamp" />
-
-        <TextView
-            android:id="@+id/list_feature_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:maxLines="2"
-            android:ellipsize="end"
-            tools:text="special feature"/>
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:layout_toLeftOf="@id/delete_icon"
+            android:text="@string/action_delete"
+            android:textAllCaps="true"
+            android:textColor="#fff"
+            android:textSize="13dp" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/list_item_container"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:background="@android:color/white"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <FrameLayout
+            android:id="@+id/list_image_container"
+            android:layout_width="108dp"
+            android:layout_height="108dp"
+            android:padding="@dimen/margin_8dp">
+
+            <ImageView
+                android:id="@+id/list_item_iv"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="@string/image_of_the_connection"
+                android:scaleType="centerCrop"
+                android:src="@drawable/profile_picture" />
+        </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:orientation="vertical"
+            android:paddingEnd="@dimen/margin_16dp">
+
+            <TextView
+                android:id="@+id/list_name_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:paddingBottom="@dimen/margin_8dp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="@android:color/black"
+                tools:text="Shrek - met in swamp" />
+
+            <TextView
+                android:id="@+id/list_feature_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="2"
+                tools:text="special feature" />
+        </LinearLayout>
     </LinearLayout>
-</LinearLayout>
+</FrameLayout>

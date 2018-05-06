@@ -117,6 +117,9 @@ public class DetailsActivityPresenter implements DetailsActivityMVP.Presenter {
         for (ConnectionTag connectionTag : allTags) {
             if (tagsList.contains(connectionTag.getTag())) {
                 String ids = connectionTag.getConnection_ids();
+
+                if (ids == null) return;
+
                 List<String> idsList = new ArrayList(Arrays.asList(ids.split(", ")));
                 idsList.remove(databaseId);
                 String newIdsString;

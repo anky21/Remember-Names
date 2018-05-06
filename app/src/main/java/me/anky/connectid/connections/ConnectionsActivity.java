@@ -17,6 +17,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -57,7 +58,7 @@ import me.anky.connectid.root.ConnectidApplication;
 import me.anky.connectid.tags.TagsActivity;
 
 public class ConnectionsActivity extends AppCompatActivity implements
-        ConnectionsActivityMVP.View,
+        ConnectionsActivityMVP.View, RecyclerItemTouchHelper.RecyclerItemTouchHelperListener,
         ConnectionsRecyclerViewAdapter.RecyclerViewClickListener {
 
     public List<ConnectidConnection> data = new ArrayList<>();
@@ -144,6 +145,10 @@ public class ConnectionsActivity extends AppCompatActivity implements
                 DividerItemDecoration.VERTICAL_LIST);
         recyclerView.addItemDecoration(dividerItemDecoration);
         setScrollListener(recyclerView);
+
+        ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new RecyclerItemTouchHelper(0,
+                ItemTouchHelper.LEFT, this);
+        new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(recyclerView);
 
         FirebaseDynamicLinks.getInstance().getDynamicLink(getIntent())
                 .addOnSuccessListener(this, new OnSuccessListener<PendingDynamicLinkData>() {
@@ -519,4 +524,9 @@ public class ConnectionsActivity extends AppCompatActivity implements
                     return true;
                 }
             };
+
+    @Override
+    public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, int position) {
+        Toast.makeText(this, "swiped", Toast.LENGTH_SHORT).show();
+    }
 }
