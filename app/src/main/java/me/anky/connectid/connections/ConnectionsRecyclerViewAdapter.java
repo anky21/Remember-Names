@@ -140,6 +140,14 @@ public class ConnectionsRecyclerViewAdapter extends
         }
     }
 
+    @Override
+    public long getItemId(int position) {
+        if (connections != null && connections.size() != 0) {
+            return connections.get(position).getDatabaseId();
+        }
+        return -1;
+    }
+
     class ViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.list_item_iv)
         ImageView listItemIv;

@@ -3,6 +3,7 @@ package me.anky.connectid.connections;
 import java.util.List;
 
 import me.anky.connectid.data.ConnectidConnection;
+import me.anky.connectid.data.ConnectionTag;
 
 public interface ConnectionsActivityMVP {
 
@@ -30,5 +31,13 @@ public interface ConnectionsActivityMVP {
         void handleSortByOptionChange();
 
         void unsubscribe();
+
+        void loadConnection(int data_id);
+
+        void deliverDatabaseIdToDelete(int databaseId);
+
+        void loadAndUpdateTagTable(String databaseId, String tags);
+
+        void deleteIdsFromTag(String databaseId, String tags, List<ConnectionTag> allTags);
     }
 }

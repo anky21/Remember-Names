@@ -527,6 +527,9 @@ public class ConnectionsActivity extends AppCompatActivity implements
 
     @Override
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, int position) {
-        Toast.makeText(this, "swiped", Toast.LENGTH_SHORT).show();
+        long rowId = adapter.getItemId(viewHolder.getAdapterPosition());
+        if (rowId != -1) {
+        presenter.loadConnection((int)rowId);
+        }
     }
 }
