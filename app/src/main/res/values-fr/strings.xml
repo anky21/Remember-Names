@@ -50,8 +50,6 @@
     <string name="yes">Oui</string>
     <string name="cancel">Annuler</string>
     <string name="delete_tag_msg">" Les connexions avec ce mot-clé ne seront pas supprimées. Voulez-vous supprimer ce mot-clé?"</string>
-    <string name="open">Ouvrir</string>
-    <string name="close">Fermer</string>
     <string name="nav_all_tags">Tous les mots-clés</string>
     <string name="all_tags">Tous les mots-clés:</string>
     <string name="nav_invite_friends">Inviter des amis</string>
