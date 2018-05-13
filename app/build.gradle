@@ -24,8 +24,8 @@ android {
         applicationId "me.anky.connectid"
         minSdkVersion 21
         targetSdkVersion 27
-        versionCode 8
-        versionName "2.1.0"
+        versionCode 9
+        versionName "2.2.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
@@ -74,7 +74,7 @@ dependencies {
     annotationProcessor 'net.simonvt.schematic:schematic-compiler:0.7.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.6.0'
     compile 'com.commonsware.cwac:provider:0.5.0'
-    compile 'com.theartofdev.edmodo:android-image-cropper:2.4.+'
+    compile 'com.theartofdev.edmodo:android-image-cropper:2.7.+'
     compile 'com.androidsx:rate-me:4.0.3'
     compile 'org.greenrobot:eventbus:3.0.0'
     // Firebase crashlytics

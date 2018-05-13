@@ -15,7 +15,7 @@
         android:layout_marginEnd="@dimen/margin_4dp"
         android:layout_marginStart="@dimen/margin_4dp"
         android:background="@drawable/round_bg_gray"
-        android:hint="Add a Tag"
+        android:hint="@string/add_a_tag"
         android:layout_marginBottom="@dimen/margin_8dp"
         android:inputType="text"
         android:maxLength="30"

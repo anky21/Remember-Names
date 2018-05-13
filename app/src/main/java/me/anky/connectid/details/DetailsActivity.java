@@ -106,7 +106,11 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
     protected void onResume() {
         super.onResume();
         presenter.setView(this);
-        presenter.loadConnection(databaseId);
+        if (databaseId != -1) {
+            presenter.loadConnection(databaseId);
+        } else {
+            Toast.makeText(this, R.string.data_load_error, Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -133,7 +137,7 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
         sb.append(getString(R.string.share_msg_1) + mFirstName);
         sbAnalytics.append("First name: " + mFirstName);
         if (!mLastName.equals("")) {
-            sb.append(". Last name: " + mLastName);
+            sb.append(getString(R.string.share_msg_7) + mLastName);
         }
         if (!mMeetVenue.equals("")) {
             sb.append(getString(R.string.share_msg_2) + mMeetVenue);

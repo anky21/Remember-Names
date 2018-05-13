@@ -71,7 +71,10 @@
     <string name="share_msg_1">Hey, je partage ce profil avec vous. Prénom:</string>
     <string name="share_msg_2">". nous nous sommes rencontrés à: "</string>
     <string name="share_msg_3">". Apparence: "</string>
-    <string name="share_msg_4">. Fonctionnalité:</string>
+    <string name="share_msg_4">. Particularité:</string>
     <string name="share_msg_5">".Amis communs: "</string>
     <string name="share_msg_6">. La description:</string>
+    <string name="share_msg_7">". Nom de famille: "</string>
+    <string name="add_a_tag">Ajouter un mot-clé</string>
+    <string name="data_load_error">Erreur. Veuillez réessayer plus tard.</string>
 </resources>

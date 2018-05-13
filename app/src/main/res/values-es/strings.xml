@@ -18,7 +18,7 @@
     <string name="delete_success_msg">¡El perfíl ha sido eliminado!</string>
     <string name="share">Compartir</string>
     <string name="share_this_profile">Compartir perfíl:</string>
-    <string name="share_msg_1">Oye, estoy compartiendo este perfíl contigo. Nombre:</string>
+    <string name="share_msg_1">Hola, estoy compartiendo este perfíl contigo. Nombre:</string>
     <string name="share_msg_5">". Amigos en común: "</string>
     <string name="where_did_you_meet">¿Donde se conocieron?</string>
     <string name="anything_significant_about_appearance">¿Algo significativo sobre su apariencia?</string>
@@ -74,4 +74,7 @@
     <string name="image_shown_for_tag_with_no_connections">imagen que se muestra cuando esta etiqueta no tiene contactos</string>
     <string name="image_shown_for_no_tags">imagen que se muestra cuando no hay tags.</string>
     <string name="share_msg_4">". Característica: "</string>
+    <string name="share_msg_7">". Apellido: "</string>
+    <string name="add_a_tag">Crea un tag</string>
+    <string name="data_load_error">Error. Por favor, inténtelo de nuevo más tarde.</string>
 </resources>
