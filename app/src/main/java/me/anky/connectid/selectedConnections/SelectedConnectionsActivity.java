@@ -14,8 +14,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 
-import com.microsoft.appcenter.analytics.Analytics;
-
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -209,7 +207,6 @@ public class SelectedConnectionsActivity extends AppCompatActivity implements
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 presenter.deleteTag(tagId, mTag, data);
-                Analytics.trackEvent("Delete A Tag");
                 Utilities.logFirebaseEvents("Delete a tag", mTag);
             }
         });
