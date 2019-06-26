@@ -26,7 +26,7 @@ android {
         targetSdkVersion 28
         versionCode 9
         versionName "2.2.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
@@ -35,6 +35,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.config
         }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 
@@ -45,68 +49,59 @@ repositories {
 }
 
 ext {
-    supportLibVersion = '28.0.0'
+    supportLibVersion = '1.0.0-beta01'
     firebase = '11.6.0'
     appCenterSdkVersion = '1.4.0'
 }
 
-configurations.all {
-    resolutionStrategy {
-        force 'com.android.support:design:28.0.0'
-        force 'com.android.support:support-v4:28.0.0'
-        force 'com.android.support:appcompat-v7:28.0.0'
-    }
-}
-
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile "com.android.support:appcompat-v7:${supportLibVersion}"
-    compile "com.android.support:design:${supportLibVersion}"
-    compile "com.android.support:recyclerview-v7:${supportLibVersion}"
-    compile "com.android.support:support-v4:${supportLibVersion}"
-    testCompile 'junit:junit:4.12'
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation "androidx.appcompat:appcompat:${supportLibVersion}"
+    implementation "com.google.android.material:material:${supportLibVersion}"
+    implementation "androidx.recyclerview:recyclerview:${supportLibVersion}"
+    implementation "androidx.legacy:legacy-support-v4:${supportLibVersion}"
     implementation 'com.github.bumptech.glide:glide:4.7.1'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.7.1'
-    compile 'net.simonvt.schematic:schematic:0.7.0'
-    compile 'com.jakewharton:butterknife:8.6.0'
-    compile 'com.facebook.stetho:stetho:1.5.0'
-    testCompile 'junit:junit:4.12'
+    implementation 'net.simonvt.schematic:schematic:0.7.0'
+    implementation 'com.jakewharton:butterknife:10.1.0'
+    implementation 'com.facebook.stetho:stetho:1.5.0'
+    testImplementation "junit:junit:4.12"
     annotationProcessor 'net.simonvt.schematic:schematic-compiler:0.7.0'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:8.6.0'
-    compile 'com.commonsware.cwac:provider:0.5.0'
-    compile 'com.theartofdev.edmodo:android-image-cropper:2.7.+'
-    compile 'com.androidsx:rate-me:4.0.3'
-    compile 'org.greenrobot:eventbus:3.0.0'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:10.1.0'
+    implementation 'com.commonsware.cwac:provider:0.5.0'
+    implementation 'com.theartofdev.edmodo:android-image-cropper:2.7.+'
+    implementation 'com.androidsx:rate-me:4.0.3'
+    implementation 'org.greenrobot:eventbus:3.0.0'
     // Firebase crashlytics
     implementation 'com.crashlytics.sdk.android:crashlytics:2.9.1'
 
     // App Center
-    compile "com.microsoft.appcenter:appcenter-analytics:${appCenterSdkVersion}"
-    compile "com.microsoft.appcenter:appcenter-crashes:${appCenterSdkVersion}"
-    compile "com.microsoft.appcenter:appcenter-push:${appCenterSdkVersion}"
+    implementation "com.microsoft.appcenter:appcenter-analytics:${appCenterSdkVersion}"
+    implementation "com.microsoft.appcenter:appcenter-crashes:${appCenterSdkVersion}"
+    implementation "com.microsoft.appcenter:appcenter-push:${appCenterSdkVersion}"
 
     // Firebase
-    compile "com.google.firebase:firebase-core:${firebase}"
-    compile "com.google.firebase:firebase-messaging:${firebase}"
-    compile "com.google.firebase:firebase-invites:${firebase}"
+    implementation "com.google.firebase:firebase-core:${firebase}"
+    implementation "com.google.firebase:firebase-messaging:${firebase}"
+    implementation "com.google.firebase:firebase-invites:${firebase}"
 
     // RxJava
-    compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
-    compile 'io.reactivex.rxjava2:rxjava:2.1.0'
+    implementation 'io.reactivex.rxjava2:rxandroid:2.0.1'
+    implementation 'io.reactivex.rxjava2:rxjava:2.1.0'
 
     // Dagger 2
-    compile 'com.google.dagger:dagger:2.9'
+    implementation 'com.google.dagger:dagger:2.9'
     annotationProcessor "com.google.dagger:dagger-compiler:2.9"
-    provided 'javax.annotation:jsr250-api:1.0'
+    compileOnly 'javax.annotation:jsr250-api:1.0'
 
     // Mockito
-    testCompile 'org.mockito:mockito-core:2.8.9'
+    testImplementation 'org.mockito:mockito-core:2.8.9'
 
     // Espresso
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+    androidTestImplementation('androidx.test.espresso:espresso-core:3.1.0-alpha4', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    androidTestCompile 'com.android.support.test.espresso:espresso-contrib:2.2.2', {
+    androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.1.0-alpha4', {
         exclude group: 'com.android.support', module: 'support-annotations'
         exclude group: 'com.android.support', module: 'support-v4'
         exclude group: 'com.android.support', module: 'design'
