@@ -6,17 +6,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.navigation.NavigationView;
-import androidx.core.view.MenuItemCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.appcompat.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,13 +18,11 @@ import com.facebook.stetho.Stetho;
 import com.google.android.gms.appinvite.AppInviteInvitation;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.appinvite.FirebaseAppInvite;
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
 import com.google.firebase.dynamiclinks.PendingDynamicLinkData;
-import com.microsoft.appcenter.AppCenter;
-import com.microsoft.appcenter.analytics.Analytics;
-import com.microsoft.appcenter.crashes.Crashes;
-import com.microsoft.appcenter.push.Push;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +31,15 @@ import java.util.TimerTask;
 
 import javax.inject.Inject;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
+import androidx.core.view.MenuItemCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -103,14 +99,6 @@ public class ConnectionsActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
-
-        // Start AppCenter
-        Push.setSenderId("784660097082");
-        Push.enableFirebaseAnalytics(getApplication());
-        AppCenter.start(getApplication(), "95faa06f-7159-44cf-b14a-f7d0cfeaf584",
-                Analytics.class, Crashes.class, Push.class);
-
-        AppCenter.getInstallId();
 
         ButterKnife.bind(this);
 
@@ -271,7 +259,6 @@ public class ConnectionsActivity extends AppCompatActivity implements
                 closeNavigationMenu();
 
                 sharedPrefsHelper.put(Utilities.SORTBY, 1);
-                Utilities.eventsOneParam("sort_order", "new_first", "Connections Sort Order");
                 Utilities.logFirebaseEvents("Connections Sort Order", "new_first");
             }
             break;
@@ -279,7 +266,6 @@ public class ConnectionsActivity extends AppCompatActivity implements
                 closeNavigationMenu();
 
                 sharedPrefsHelper.put(Utilities.SORTBY, 2);
-                Utilities.eventsOneParam("sort_order", "old_first", "Connections Sort Order");
                 Utilities.logFirebaseEvents("Connections Sort Order", "old_first");
             }
             break;
@@ -287,7 +273,6 @@ public class ConnectionsActivity extends AppCompatActivity implements
                 closeNavigationMenu();
 
                 sharedPrefsHelper.put(Utilities.SORTBY, 3);
-                Utilities.eventsOneParam("sort_order", "first name a-z", "Connections Sort Order");
                 Utilities.logFirebaseEvents("Connections Sort Order", "first name a-z");
             }
             break;
@@ -295,7 +280,6 @@ public class ConnectionsActivity extends AppCompatActivity implements
                 closeNavigationMenu();
 
                 sharedPrefsHelper.put(Utilities.SORTBY, 4);
-                Utilities.eventsOneParam("sort_order", "first name Z-A", "Connections Sort Order");
                 Utilities.logFirebaseEvents("Connections Sort Order", "first name Z-A");
             }
             break;
@@ -303,14 +287,12 @@ public class ConnectionsActivity extends AppCompatActivity implements
                 closeNavigationMenu();
 
                 sharedPrefsHelper.put(Utilities.SORTBY, 5);
-                Utilities.eventsOneParam("sort_order", "last name a-z", "Connections Sort Order");
                 Utilities.logFirebaseEvents("Connections Sort Order", "last name a-z");
             }
             break;
             case R.id.sortby_lname_z: {
                 closeNavigationMenu();
                 sharedPrefsHelper.put(Utilities.SORTBY, 6);
-                Utilities.eventsOneParam("sort_order", "last name Z-A", "Connections Sort Order");
                 Utilities.logFirebaseEvents("Connections Sort Order", "last name Z-A");
             }
             break;
@@ -386,7 +368,6 @@ public class ConnectionsActivity extends AppCompatActivity implements
         startActivityForResult(intent, NEW_CONNECTION_REQUEST);
         overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
 
-        Analytics.trackEvent("FAB New Connection");
         Utilities.logFirebaseEventWithNoParams("FAB New Connection");
     }
 
@@ -420,7 +401,6 @@ public class ConnectionsActivity extends AppCompatActivity implements
                 String[] ids = AppInviteInvitation.getInvitationIds(resultCode, data);
                 for (String id : ids) {
 //                    Log.d(TAG, "onActivityResult: sent invitation " + id);
-                    Utilities.eventsOneParam("invitation_id", id, "Invite Friends Result");
                     Utilities.logFirebaseEvents("Invite Result id", id);
                 }
             } else {
@@ -487,7 +467,6 @@ public class ConnectionsActivity extends AppCompatActivity implements
                 public boolean onNavigationItemSelected(MenuItem menuItem) {
                     switch (menuItem.getItemId()) {
                         case (R.id.nav_tags):
-                            Utilities.eventsOneParam("click", "nav_button", "Start Tags Activity");
                             Utilities.logFirebaseEventWithNoParams("Start Tags Activity");
 
                             closeNavigationMenu();
@@ -497,7 +476,6 @@ public class ConnectionsActivity extends AppCompatActivity implements
                             overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
                             break;
                         case (R.id.nav_invite):
-                            Analytics.trackEvent("Nav Invite Friends");
                             Utilities.logFirebaseEventWithNoParams("Nav Invite Friends");
 
                             closeNavigationMenu();
