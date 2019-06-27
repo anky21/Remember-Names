@@ -1,6 +1,7 @@
 package me.anky.connectid.root;
 
 import android.app.Application;
+import android.os.StrictMode;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
 
@@ -32,6 +33,9 @@ public class ConnectidApplication extends Application {
         component = DaggerApplicationComponent.builder()
                 .applicationModule(new ApplicationModule(this))
                 .build();
+
+        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+        StrictMode.setVmPolicy(builder.build());
     }
 
     public FirebaseAnalytics getAnalyticsInstance() {

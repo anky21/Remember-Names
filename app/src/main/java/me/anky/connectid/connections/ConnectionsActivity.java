@@ -1,7 +1,8 @@
 package me.anky.connectid.connections;
 
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -24,6 +25,8 @@ import com.google.firebase.appinvite.FirebaseAppInvite;
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
 import com.google.firebase.dynamiclinks.PendingDynamicLinkData;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -45,8 +48,10 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import me.anky.connectid.R;
 import me.anky.connectid.Utilities;
+import me.anky.connectid.Utils.SqliteExporter;
 import me.anky.connectid.data.ConnectidConnection;
 import me.anky.connectid.data.SharedPrefsHelper;
+import me.anky.connectid.data.source.local.generated.ConnectidDatabase;
 import me.anky.connectid.details.DetailsActivity;
 import me.anky.connectid.edit.EditActivity;
 import me.anky.connectid.root.ConnectidApplication;
@@ -443,18 +448,10 @@ public class ConnectionsActivity extends AppCompatActivity implements
         }
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(R.string.confirm_to_exit);
-        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                finish();
-            }
-        });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                if (dialog != null) {
-                    dialog.dismiss();
-                }
+        builder.setPositiveButton("Yes", (dialog, which) -> finish());
+        builder.setNegativeButton("Cancel", (dialog, which) -> {
+            if (dialog != null) {
+                dialog.dismiss();
             }
         });
         // Create and show the AlertDialog
@@ -462,39 +459,58 @@ public class ConnectionsActivity extends AppCompatActivity implements
     }
 
     private NavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
-            new NavigationView.OnNavigationItemSelectedListener() {
-                @Override
-                public boolean onNavigationItemSelected(MenuItem menuItem) {
-                    switch (menuItem.getItemId()) {
-                        case (R.id.nav_tags):
-                            Utilities.logFirebaseEventWithNoParams("Start Tags Activity");
+            menuItem -> {
+                switch (menuItem.getItemId()) {
+                    case (R.id.nav_tags):
+                        Utilities.logFirebaseEventWithNoParams("Start Tags Activity");
 
-                            closeNavigationMenu();
-                            Intent intent = new Intent(getApplicationContext(), TagsActivity.class);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            startActivity(intent);
-                            overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
-                            break;
-                        case (R.id.nav_invite):
-                            Utilities.logFirebaseEventWithNoParams("Nav Invite Friends");
+                        closeNavigationMenu();
+                        Intent intent = new Intent(getApplicationContext(), TagsActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
+                        overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+                        break;
+                    case (R.id.nav_invite):
+                        Utilities.logFirebaseEventWithNoParams("Nav Invite Friends");
 
-                            closeNavigationMenu();
-                            Intent inviteIntent = new AppInviteInvitation.IntentBuilder(getString(R.string.invitation_title))
-                                    .setMessage(getString(R.string.invitation_message))
-                                    .setDeepLink(Uri.parse(getString(R.string.invitation_deep_link)))
-                                    .setCustomImage(Uri.parse(getString(R.string.invitation_custom_image)))
-                                    .setCallToActionText(getString(R.string.invitation_cta))
-                                    .build();
-                            startActivityForResult(inviteIntent, REQUEST_INVITE);
-                            break;
-                        case (R.id.nav_exit):
-                            closeNavigationMenu();
-                            showExitDialog();
-                            break;
-                        default:
-                            break;
-                    }
-                    return true;
+                        closeNavigationMenu();
+                        Intent inviteIntent = new AppInviteInvitation.IntentBuilder(getString(R.string.invitation_title))
+                                .setMessage(getString(R.string.invitation_message))
+                                .setDeepLink(Uri.parse(getString(R.string.invitation_deep_link)))
+                                .setCustomImage(Uri.parse(getString(R.string.invitation_custom_image)))
+                                .setCallToActionText(getString(R.string.invitation_cta))
+                                .build();
+                        startActivityForResult(inviteIntent, REQUEST_INVITE);
+                        break;
+                    case (R.id.nav_email_csv):
+                        SQLiteOpenHelper database = ConnectidDatabase.getInstance(ConnectionsActivity.this);
+                        SQLiteDatabase db = database.getWritableDatabase();
+                        try {
+                            String csvPath = SqliteExporter.export(db, ConnectionsActivity.this);
+
+                            if (csvPath != null && !csvPath.isEmpty()) {
+                                File file = new File(csvPath);
+                                Uri uri = Uri.fromFile(file);
+
+                                Intent emailIntent = new Intent(Intent.ACTION_SEND);
+                                emailIntent.setType("text/plain");
+                                emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Remember Names database in CSV");
+                                emailIntent.putExtra(Intent.EXTRA_TEXT, "body text");
+
+                                emailIntent.putExtra(Intent.EXTRA_STREAM, uri);
+                                startActivity(Intent.createChooser(emailIntent, "Pick an Email provider"));
+                            }
+                        } catch (IOException e) {
+
+                        }
+                        break;
+                    case (R.id.nav_exit):
+                        closeNavigationMenu();
+                        showExitDialog();
+                        break;
+                    default:
+                        break;
                 }
+                return true;
             };
 }

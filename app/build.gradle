@@ -87,5 +87,7 @@ dependencies {
     implementation 'com.google.dagger:dagger:2.9'
     annotationProcessor "com.google.dagger:dagger-compiler:2.9"
     compileOnly 'javax.annotation:jsr250-api:1.0'
+
+    implementation group: 'com.opencsv', name: 'opencsv', version: '4.1'
 }
 apply plugin: 'com.google.gms.google-services'
