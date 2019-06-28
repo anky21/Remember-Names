@@ -34,6 +34,7 @@ public class ConnectidApplication extends Application {
                 .applicationModule(new ApplicationModule(this))
                 .build();
 
+        // Allow to expose file uri when creating the csv file
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
     }

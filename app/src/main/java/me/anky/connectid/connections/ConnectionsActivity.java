@@ -494,14 +494,14 @@ public class ConnectionsActivity extends AppCompatActivity implements
 
                                 Intent emailIntent = new Intent(Intent.ACTION_SEND);
                                 emailIntent.setType("text/plain");
-                                emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Remember Names database in CSV");
-                                emailIntent.putExtra(Intent.EXTRA_TEXT, "body text");
+                                emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Remember Names database backup");
+                                emailIntent.putExtra(Intent.EXTRA_TEXT, "Thank you for using this app. \nYou can email this file to yourself or save it to your cloud drive. This file can be opened by Microsoft Excel.");
 
                                 emailIntent.putExtra(Intent.EXTRA_STREAM, uri);
                                 startActivity(Intent.createChooser(emailIntent, "Pick an Email provider"));
                             }
                         } catch (IOException e) {
-
+                            e.printStackTrace();
                         }
                         break;
                     case (R.id.nav_exit):
