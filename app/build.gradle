@@ -2,6 +2,9 @@ apply plugin: 'com.android.application'
 // Firebase crashlytics
 apply plugin: 'io.fabric'
 
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+
 // Initialise the keystorePropertiesFile
 def keystorePropertiesFile = rootProject.file("keystore.properties")
 def keystoreProperties = new Properties()
@@ -95,5 +98,7 @@ dependencies {
     compileOnly 'javax.annotation:jsr250-api:1.0'
 
     implementation group: 'com.opencsv', name: 'opencsv', version: '4.1'
+
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
 apply plugin: 'com.google.gms.google-services'
