@@ -77,4 +77,7 @@
     <string name="share_msg_7">". Apellido: "</string>
     <string name="add_a_tag">Crea un tag</string>
     <string name="data_load_error">Error. Por favor, inténtelo de nuevo más tarde.</string>
+    <string name="email_the_database">Enviar la base de datos por correo electrónico</string>
+    <string name="export_databse_title">Exportar y enviar por correo electrónico la base de datos</string>
+    <string name="export_database_msg">¿Te gustaría exportar la base de datos y enviarla por correo electrónico a ti mismo? A continuación, puede abrirlo en su dispositivo móvil o en un escritorio.</string>
 </resources>
