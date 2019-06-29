@@ -48,6 +48,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import me.anky.connectid.R;
 import me.anky.connectid.Utilities;
+import me.anky.connectid.Utils.DialogUtils;
 import me.anky.connectid.Utils.SqliteExporter;
 import me.anky.connectid.data.ConnectidConnection;
 import me.anky.connectid.data.SharedPrefsHelper;
@@ -483,26 +484,9 @@ public class ConnectionsActivity extends AppCompatActivity implements
                         startActivityForResult(inviteIntent, REQUEST_INVITE);
                         break;
                     case (R.id.nav_email_csv):
-                        SQLiteOpenHelper database = ConnectidDatabase.getInstance(ConnectionsActivity.this);
-                        SQLiteDatabase db = database.getWritableDatabase();
-                        try {
-                            String csvPath = SqliteExporter.export(db, ConnectionsActivity.this);
-
-                            if (csvPath != null && !csvPath.isEmpty()) {
-                                File file = new File(csvPath);
-                                Uri uri = Uri.fromFile(file);
-
-                                Intent emailIntent = new Intent(Intent.ACTION_SEND);
-                                emailIntent.setType("text/plain");
-                                emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Remember Names database backup");
-                                emailIntent.putExtra(Intent.EXTRA_TEXT, "Thank you for using this app. \nYou can email this file to yourself or save it to your cloud drive. This file can be opened by Microsoft Excel.");
-
-                                emailIntent.putExtra(Intent.EXTRA_STREAM, uri);
-                                startActivity(Intent.createChooser(emailIntent, "Pick an Email provider"));
-                            }
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+                        DialogUtils.askQuestionAndThenCancelable(ConnectionsActivity.this,
+                                getString(R.string.export_databse_title), getString(R.string.export_database_msg),
+                                getString(R.string.yes), getString(R.string.cancel), object -> exportAndEmailCsv(), null);
                         break;
                     case (R.id.nav_exit):
                         closeNavigationMenu();
@@ -513,4 +497,27 @@ public class ConnectionsActivity extends AppCompatActivity implements
                 }
                 return true;
             };
+
+    private void exportAndEmailCsv() {
+        SQLiteOpenHelper database = ConnectidDatabase.getInstance(ConnectionsActivity.this);
+        SQLiteDatabase db = database.getWritableDatabase();
+        try {
+            String csvPath = SqliteExporter.export(db, ConnectionsActivity.this);
+
+            if (csvPath != null && !csvPath.isEmpty()) {
+                File file = new File(csvPath);
+                Uri uri = Uri.fromFile(file);
+
+                Intent emailIntent = new Intent(Intent.ACTION_SEND);
+                emailIntent.setType("text/plain");
+                emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Remember Names database backup");
+                emailIntent.putExtra(Intent.EXTRA_TEXT, "Thank you for using this app. \nYou can email this file to yourself or save it to your cloud drive. This file can be opened by Microsoft Excel.");
+
+                emailIntent.putExtra(Intent.EXTRA_STREAM, uri);
+                startActivity(Intent.createChooser(emailIntent, "Pick an Email provider"));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

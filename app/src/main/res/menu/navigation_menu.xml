@@ -13,8 +13,8 @@
 
     <item
         android:id="@+id/nav_email_csv"
-        android:icon="@drawable/ic_invite_friends"
-        android:title="Backup through email" />
+        android:icon="@drawable/ic_send"
+        android:title="@string/email_the_database" />
 
     <item
         android:id="@+id/nav_exit"
