@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.androidsx.rateme.RateMeDialog;
 import com.androidsx.rateme.RateMeDialogTimer;
 import com.facebook.stetho.Stetho;
+import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.appinvite.AppInviteInvitation;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -105,6 +106,9 @@ public class ConnectionsActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
+
+        // Initialise google ads
+        MobileAds.initialize(this, "ca-app-pub-3940256099942544~3347511713");
 
         ButterKnife.bind(this);
 
