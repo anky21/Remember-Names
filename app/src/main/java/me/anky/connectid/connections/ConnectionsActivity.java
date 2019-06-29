@@ -16,15 +16,14 @@ import android.widget.Toast;
 import com.androidsx.rateme.RateMeDialog;
 import com.androidsx.rateme.RateMeDialogTimer;
 import com.facebook.stetho.Stetho;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.appinvite.AppInviteInvitation;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.appinvite.FirebaseAppInvite;
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
-import com.google.firebase.dynamiclinks.PendingDynamicLinkData;
 
 import java.io.File;
 import java.io.IOException;
@@ -35,7 +34,6 @@ import java.util.TimerTask;
 
 import javax.inject.Inject;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -85,6 +83,9 @@ public class ConnectionsActivity extends AppCompatActivity implements
     @BindView(R.id.navigation_view)
     NavigationView mNavigationView;
 
+    @BindView(R.id.adView)
+    AdView mAdView;
+
     @Inject
     SharedPrefsHelper sharedPrefsHelper;
 
@@ -108,9 +109,12 @@ public class ConnectionsActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_list);
 
         // Initialise google ads
-        MobileAds.initialize(this, "ca-app-pub-3940256099942544~3347511713");
+        MobileAds.initialize(this, getString(R.string.ad_mob_id));
 
         ButterKnife.bind(this);
+
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
 
         ((ConnectidApplication) getApplication()).getApplicationComponent().inject(this);
 
@@ -144,40 +148,33 @@ public class ConnectionsActivity extends AppCompatActivity implements
         setScrollListener(recyclerView);
 
         FirebaseDynamicLinks.getInstance().getDynamicLink(getIntent())
-                .addOnSuccessListener(this, new OnSuccessListener<PendingDynamicLinkData>() {
-                    @Override
-                    public void onSuccess(PendingDynamicLinkData data) {
-                        if (data == null) {
-                            Utilities.logFirebaseError("get_invitation_no_data", TAG + ".onSuccess", "no data");
-                            return;
-                        }
+                .addOnSuccessListener(this, data -> {
+                    if (data == null) {
+                        Utilities.logFirebaseError("get_invitation_no_data", TAG + ".onSuccess", "no data");
+                        return;
+                    }
 
-                        // Get the deep link
-                        Uri deepLink = data.getLink();
+                    // Get the deep link
+                    Uri deepLink = data.getLink();
 
-                        // Extract invite
-                        FirebaseAppInvite invite = FirebaseAppInvite.getInvitation(data);
-                        if (invite != null) {
-                            String invitationId = invite.getInvitationId();
-                        }
+                    // Extract invite
+                    FirebaseAppInvite invite = FirebaseAppInvite.getInvitation(data);
+                    if (invite != null) {
+                        String invitationId = invite.getInvitationId();
+                    }
 
-                        // Handle the deep link
+                    // Handle the deep link
 //                        Log.d(TAG, "deepLink:" + deepLink);
-                        if (deepLink != null) {
-                            Intent intent = new Intent(Intent.ACTION_VIEW);
-                            intent.setPackage(getPackageName());
-                            intent.setData(deepLink);
+                    if (deepLink != null) {
+                        Intent intent = new Intent(Intent.ACTION_VIEW);
+                        intent.setPackage(getPackageName());
+                        intent.setData(deepLink);
 
-                            startActivity(intent);
-                        }
+                        startActivity(intent);
                     }
                 })
-                .addOnFailureListener(this, new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Utilities.logFirebaseError("invite_friends_failed", TAG + ".addOnFailureListener", e.getMessage());
-                    }
-                });
+                .addOnFailureListener(this,
+                        e -> Utilities.logFirebaseError("invite_friends_failed", TAG + ".addOnFailureListener", e.getMessage()));
     }
 
     @Override

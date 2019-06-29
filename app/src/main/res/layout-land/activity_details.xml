@@ -1,6 +1,5 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/coordinator_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -42,10 +41,10 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="4"
+            android:contentDescription="@string/image_of_the_connection"
             android:scaleType="centerCrop"
             android:src="@drawable/profile_picture"
-            app:layout_collapseMode="parallax"
-            android:contentDescription="@string/image_of_the_connection"/>
+            app:layout_collapseMode="parallax" />
 
         <androidx.core.widget.NestedScrollView
             android:id="@+id/scrollview"
@@ -64,9 +63,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|right"
-        android:layout_margin="@dimen/fab_margin"
-        android:layout_marginBottom="@dimen/fab_margin"
-        android:layout_marginRight="@dimen/fab_margin"
+        android:layout_marginStart="@dimen/fab_margin"
+        android:layout_marginTop="@dimen/fab_margin"
+        android:layout_marginEnd="@dimen/fab_margin"
+        android:layout_marginBottom="66dp"
         android:onClick="launchEditActivity"
         android:src="@drawable/ic_edit" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

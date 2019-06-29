@@ -15,6 +15,8 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 
 import java.io.File;
 import java.util.concurrent.Callable;
@@ -74,6 +76,9 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
     @BindView(R.id.tags_tv)
     TextView mTagsTv;
 
+    @BindView(R.id.adView)
+    AdView mAdView;
+
     @Inject
     DetailsActivityPresenter presenter;
 
@@ -82,6 +87,9 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details);
         ButterKnife.bind(this);
+
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
 
         ((ConnectidApplication) getApplication()).getApplicationComponent().inject(this);
 
