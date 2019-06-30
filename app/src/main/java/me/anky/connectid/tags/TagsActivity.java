@@ -2,18 +2,21 @@ package me.anky.connectid.tags;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
+
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import me.anky.connectid.R;
@@ -34,6 +37,9 @@ public class TagsActivity extends AppCompatActivity implements TagsActivityMVP.V
     @BindView(R.id.empty_view)
     LinearLayout emptyView;
 
+    @BindView(R.id.adView)
+    AdView mAdView;
+
     TagsRecyclerViewAdapter adapter;
 
     @Inject
@@ -44,6 +50,9 @@ public class TagsActivity extends AppCompatActivity implements TagsActivityMVP.V
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tags);
         ButterKnife.bind(this);
+
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
 
         ((ConnectidApplication) getApplication()).getApplicationComponent().inject(this);
 

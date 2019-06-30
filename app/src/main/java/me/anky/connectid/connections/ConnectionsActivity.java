@@ -1,22 +1,12 @@
 package me.anky.connectid.connections;
 
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.NavigationView;
-import android.support.v4.view.MenuItemCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,13 +16,17 @@ import android.widget.Toast;
 import com.androidsx.rateme.RateMeDialog;
 import com.androidsx.rateme.RateMeDialogTimer;
 import com.facebook.stetho.Stetho;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.appinvite.AppInviteInvitation;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.appinvite.FirebaseAppInvite;
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
-import com.google.firebase.dynamiclinks.PendingDynamicLinkData;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -40,13 +34,24 @@ import java.util.TimerTask;
 
 import javax.inject.Inject;
 
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
+import androidx.core.view.MenuItemCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import me.anky.connectid.R;
 import me.anky.connectid.Utilities;
+import me.anky.connectid.Utils.DialogUtils;
+import me.anky.connectid.Utils.SqliteExporter;
 import me.anky.connectid.data.ConnectidConnection;
 import me.anky.connectid.data.SharedPrefsHelper;
+import me.anky.connectid.data.source.local.generated.ConnectidDatabase;
 import me.anky.connectid.details.DetailsActivity;
 import me.anky.connectid.edit.EditActivity;
 import me.anky.connectid.root.ConnectidApplication;
@@ -78,6 +83,9 @@ public class ConnectionsActivity extends AppCompatActivity implements
     @BindView(R.id.navigation_view)
     NavigationView mNavigationView;
 
+    @BindView(R.id.adView)
+    AdView mAdView;
+
     @Inject
     SharedPrefsHelper sharedPrefsHelper;
 
@@ -100,7 +108,13 @@ public class ConnectionsActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
 
+        // Initialise google ads
+        MobileAds.initialize(this, getString(R.string.ad_mob_id));
+
         ButterKnife.bind(this);
+
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
 
         ((ConnectidApplication) getApplication()).getApplicationComponent().inject(this);
 
@@ -134,40 +148,33 @@ public class ConnectionsActivity extends AppCompatActivity implements
         setScrollListener(recyclerView);
 
         FirebaseDynamicLinks.getInstance().getDynamicLink(getIntent())
-                .addOnSuccessListener(this, new OnSuccessListener<PendingDynamicLinkData>() {
-                    @Override
-                    public void onSuccess(PendingDynamicLinkData data) {
-                        if (data == null) {
-                            Utilities.logFirebaseError("get_invitation_no_data", TAG + ".onSuccess", "no data");
-                            return;
-                        }
+                .addOnSuccessListener(this, data -> {
+                    if (data == null) {
+                        Utilities.logFirebaseError("get_invitation_no_data", TAG + ".onSuccess", "no data");
+                        return;
+                    }
 
-                        // Get the deep link
-                        Uri deepLink = data.getLink();
+                    // Get the deep link
+                    Uri deepLink = data.getLink();
 
-                        // Extract invite
-                        FirebaseAppInvite invite = FirebaseAppInvite.getInvitation(data);
-                        if (invite != null) {
-                            String invitationId = invite.getInvitationId();
-                        }
+                    // Extract invite
+                    FirebaseAppInvite invite = FirebaseAppInvite.getInvitation(data);
+                    if (invite != null) {
+                        String invitationId = invite.getInvitationId();
+                    }
 
-                        // Handle the deep link
+                    // Handle the deep link
 //                        Log.d(TAG, "deepLink:" + deepLink);
-                        if (deepLink != null) {
-                            Intent intent = new Intent(Intent.ACTION_VIEW);
-                            intent.setPackage(getPackageName());
-                            intent.setData(deepLink);
+                    if (deepLink != null) {
+                        Intent intent = new Intent(Intent.ACTION_VIEW);
+                        intent.setPackage(getPackageName());
+                        intent.setData(deepLink);
 
-                            startActivity(intent);
-                        }
+                        startActivity(intent);
                     }
                 })
-                .addOnFailureListener(this, new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Utilities.logFirebaseError("invite_friends_failed", TAG + ".addOnFailureListener", e.getMessage());
-                    }
-                });
+                .addOnFailureListener(this,
+                        e -> Utilities.logFirebaseError("invite_friends_failed", TAG + ".addOnFailureListener", e.getMessage()));
     }
 
     @Override
@@ -443,18 +450,10 @@ public class ConnectionsActivity extends AppCompatActivity implements
         }
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(R.string.confirm_to_exit);
-        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                finish();
-            }
-        });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                if (dialog != null) {
-                    dialog.dismiss();
-                }
+        builder.setPositiveButton("Yes", (dialog, which) -> finish());
+        builder.setNegativeButton("Cancel", (dialog, which) -> {
+            if (dialog != null) {
+                dialog.dismiss();
             }
         });
         // Create and show the AlertDialog
@@ -462,39 +461,64 @@ public class ConnectionsActivity extends AppCompatActivity implements
     }
 
     private NavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
-            new NavigationView.OnNavigationItemSelectedListener() {
-                @Override
-                public boolean onNavigationItemSelected(MenuItem menuItem) {
-                    switch (menuItem.getItemId()) {
-                        case (R.id.nav_tags):
-                            Utilities.logFirebaseEventWithNoParams("Start Tags Activity");
+            menuItem -> {
+                switch (menuItem.getItemId()) {
+                    case (R.id.nav_tags):
+                        Utilities.logFirebaseEventWithNoParams("Start Tags Activity");
 
-                            closeNavigationMenu();
-                            Intent intent = new Intent(getApplicationContext(), TagsActivity.class);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            startActivity(intent);
-                            overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
-                            break;
-                        case (R.id.nav_invite):
-                            Utilities.logFirebaseEventWithNoParams("Nav Invite Friends");
+                        closeNavigationMenu();
+                        Intent intent = new Intent(getApplicationContext(), TagsActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
+                        overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+                        break;
+                    case (R.id.nav_invite):
+                        Utilities.logFirebaseEventWithNoParams("Nav Invite Friends");
 
-                            closeNavigationMenu();
-                            Intent inviteIntent = new AppInviteInvitation.IntentBuilder(getString(R.string.invitation_title))
-                                    .setMessage(getString(R.string.invitation_message))
-                                    .setDeepLink(Uri.parse(getString(R.string.invitation_deep_link)))
-                                    .setCustomImage(Uri.parse(getString(R.string.invitation_custom_image)))
-                                    .setCallToActionText(getString(R.string.invitation_cta))
-                                    .build();
-                            startActivityForResult(inviteIntent, REQUEST_INVITE);
-                            break;
-                        case (R.id.nav_exit):
-                            closeNavigationMenu();
-                            showExitDialog();
-                            break;
-                        default:
-                            break;
-                    }
-                    return true;
+                        closeNavigationMenu();
+                        Intent inviteIntent = new AppInviteInvitation.IntentBuilder(getString(R.string.invitation_title))
+                                .setMessage(getString(R.string.invitation_message))
+                                .setDeepLink(Uri.parse(getString(R.string.invitation_deep_link)))
+                                .setCustomImage(Uri.parse(getString(R.string.invitation_custom_image)))
+                                .setCallToActionText(getString(R.string.invitation_cta))
+                                .build();
+                        startActivityForResult(inviteIntent, REQUEST_INVITE);
+                        break;
+                    case (R.id.nav_email_csv):
+                        DialogUtils.askQuestionAndThenCancelable(ConnectionsActivity.this,
+                                getString(R.string.export_databse_title), getString(R.string.export_database_msg),
+                                getString(R.string.yes), getString(R.string.cancel), object -> exportAndEmailCsv(), null);
+                        break;
+                    case (R.id.nav_exit):
+                        closeNavigationMenu();
+                        showExitDialog();
+                        break;
+                    default:
+                        break;
                 }
+                return true;
             };
+
+    private void exportAndEmailCsv() {
+        SQLiteOpenHelper database = ConnectidDatabase.getInstance(ConnectionsActivity.this);
+        SQLiteDatabase db = database.getWritableDatabase();
+        try {
+            String csvPath = SqliteExporter.export(db, ConnectionsActivity.this);
+
+            if (csvPath != null && !csvPath.isEmpty()) {
+                File file = new File(csvPath);
+                Uri uri = Uri.fromFile(file);
+
+                Intent emailIntent = new Intent(Intent.ACTION_SEND);
+                emailIntent.setType("text/plain");
+                emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Remember Names database backup");
+                emailIntent.putExtra(Intent.EXTRA_TEXT, "Thank you for using this app. \nYou can email this file to yourself or save it to your cloud drive. This file can be opened by Microsoft Excel.");
+
+                emailIntent.putExtra(Intent.EXTRA_STREAM, uri);
+                startActivity(Intent.createChooser(emailIntent, "Pick an Email provider"));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

@@ -1,25 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <LinearLayout
         android:id="@+id/empty_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_above="@id/adView"
         android:gravity="center"
         android:orientation="vertical"
-        android:paddingEnd="@dimen/margin_24dp"
         android:paddingStart="@dimen/margin_24dp"
+        android:paddingEnd="@dimen/margin_24dp"
         android:paddingBottom="@dimen/margin_48dp">
 
         <ImageView
             android:layout_width="@dimen/empty_view_image_size"
             android:layout_height="@dimen/empty_view_image_size"
-            android:src="@drawable/tags"
-            android:contentDescription="@string/image_shown_for_no_tags"/>
+            android:contentDescription="@string/image_shown_for_no_tags"
+            android:src="@drawable/tags" />
 
         <TextView
             android:id="@+id/empty_tags_tv"
@@ -33,9 +35,19 @@
 
     </LinearLayout>
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/all_tags_recyclerview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="me.anky.connectid.tags.TagsActivity"></android.support.v7.widget.RecyclerView>
-</LinearLayout>
+        android:layout_above="@id/adView"
+        tools:context="me.anky.connectid.tags.TagsActivity" />
+
+    <com.google.android.gms.ads.AdView
+        android:id="@+id/adView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        ads:adSize="BANNER"
+        ads:adUnitId="@string/ad_unit_id_tag" />
+</RelativeLayout>

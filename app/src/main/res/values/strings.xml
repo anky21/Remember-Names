@@ -106,5 +106,14 @@
     <string name="share_msg_7">. Last name:</string>
     <string name="add_a_tag">Add a Tag</string>
     <string name="data_load_error">Error. Please try again later.</string>
+    <string name="email_the_database">Email the Database</string>
+    <string name="export_databse_title">Export and Email the Database</string>
+    <string name="export_database_msg">Would you like to export the database and email it to yourself? You can then open it on your mobile device or a desktop.</string>
+
+    <!-- Ad mob ids-->
+    <string name="ad_mob_id">ca-app-pub-3948866619950800~1396624452</string>
+    <string name="ad_unit_id_main">ca-app-pub-3948866619950800/9403693719</string>
+    <string name="ad_unit_id_tag">ca-app-pub-3948866619950800/3116954136</string>
+    <string name="ad_unit_id_connection">ca-app-pub-3948866619950800/5094829338</string>
 
 </resources>

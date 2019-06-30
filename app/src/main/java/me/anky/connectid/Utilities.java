@@ -6,7 +6,6 @@ import android.content.ContextWrapper;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.WindowManager;
@@ -24,6 +23,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Random;
 
+import androidx.core.content.ContextCompat;
 import me.anky.connectid.data.source.local.ConnectidColumns;
 import me.anky.connectid.root.ConnectidApplication;
 

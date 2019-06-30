@@ -12,6 +12,11 @@
         android:title="@string/nav_invite_friends" />
 
     <item
+        android:id="@+id/nav_email_csv"
+        android:icon="@drawable/ic_send"
+        android:title="@string/email_the_database" />
+
+    <item
         android:id="@+id/nav_exit"
         android:icon="@drawable/ic_log_out"
         android:title="@string/nav_exit" />

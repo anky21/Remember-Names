@@ -77,4 +77,7 @@
     <string name="share_msg_7">". Nom de famille: "</string>
     <string name="add_a_tag">Ajouter un mot-clé</string>
     <string name="data_load_error">Erreur. Veuillez réessayer plus tard.</string>
+    <string name="email_the_database">Email de la base de données</string>
+    <string name="export_databse_title">Exporter et envoyer la base de données par courrier électronique</string>
+    <string name="export_database_msg">Souhaitez-vous exporter la base de données et l\'envoyer par e-mail? Vous pouvez ensuite l\'ouvrir sur votre appareil mobile ou sur un ordinateur de bureau.</string>
 </resources>
