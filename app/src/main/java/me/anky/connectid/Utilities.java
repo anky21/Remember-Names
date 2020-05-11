@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -55,12 +56,7 @@ public class Utilities {
 
     // Generate a 6 character token
     public static String generateImageName() {
-        int length = 6;
-        StringBuilder token = new StringBuilder(length);
-        for (int i = 0; i < length; i++) {
-            token.append(CHARS.charAt(random.nextInt(CHARS.length())));
-        }
-        return token.toString() + ".jpg";
+        return String.valueOf(System.currentTimeMillis());
     }
 
     // Save Bitmap to internal storage

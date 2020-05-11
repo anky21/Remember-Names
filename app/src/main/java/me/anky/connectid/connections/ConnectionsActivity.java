@@ -45,6 +45,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import me.anky.connectid.NewAppActivity;
 import me.anky.connectid.R;
 import me.anky.connectid.Utilities;
 import me.anky.connectid.Utils.DialogUtils;
@@ -492,6 +493,13 @@ public class ConnectionsActivity extends AppCompatActivity implements
                     case (R.id.nav_exit):
                         closeNavigationMenu();
                         showExitDialog();
+                        break;
+                    case (R.id.nav_new_app):
+                        closeNavigationMenu();
+                        Intent newAppIntent = new Intent(getApplicationContext(), NewAppActivity.class);
+                        newAppIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(newAppIntent);
+                        overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
                         break;
                     default:
                         break;

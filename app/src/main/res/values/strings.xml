@@ -115,5 +115,7 @@
     <string name="ad_unit_id_main">ca-app-pub-3948866619950800/9403693719</string>
     <string name="ad_unit_id_tag">ca-app-pub-3948866619950800/3116954136</string>
     <string name="ad_unit_id_connection">ca-app-pub-3948866619950800/5094829338</string>
+    <string name="never_lose_your_data">Never Lose Your Data?</string>
+    <string name="new_app_available">New App Available</string>
 
 </resources>
