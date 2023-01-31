@@ -146,35 +146,6 @@ public class ConnectionsActivity extends AppCompatActivity implements
                 DividerItemDecoration.VERTICAL_LIST);
         recyclerView.addItemDecoration(dividerItemDecoration);
         setScrollListener(recyclerView);
-
-        FirebaseDynamicLinks.getInstance().getDynamicLink(getIntent())
-                .addOnSuccessListener(this, data -> {
-                    if (data == null) {
-                        Utilities.logFirebaseError("get_invitation_no_data", TAG + ".onSuccess", "no data");
-                        return;
-                    }
-
-                    // Get the deep link
-                    Uri deepLink = data.getLink();
-
-                    // Extract invite
-                    FirebaseAppInvite invite = FirebaseAppInvite.getInvitation(data);
-                    if (invite != null) {
-                        String invitationId = invite.getInvitationId();
-                    }
-
-                    // Handle the deep link
-//                        Log.d(TAG, "deepLink:" + deepLink);
-                    if (deepLink != null) {
-                        Intent intent = new Intent(Intent.ACTION_VIEW);
-                        intent.setPackage(getPackageName());
-                        intent.setData(deepLink);
-
-                        startActivity(intent);
-                    }
-                })
-                .addOnFailureListener(this,
-                        e -> Utilities.logFirebaseError("invite_friends_failed", TAG + ".addOnFailureListener", e.getMessage()));
     }
 
     @Override
@@ -474,15 +445,13 @@ public class ConnectionsActivity extends AppCompatActivity implements
                         break;
                     case (R.id.nav_invite):
                         Utilities.logFirebaseEventWithNoParams("Nav Invite Friends");
-
                         closeNavigationMenu();
-                        Intent inviteIntent = new AppInviteInvitation.IntentBuilder(getString(R.string.invitation_title))
-                                .setMessage(getString(R.string.invitation_message))
-                                .setDeepLink(Uri.parse(getString(R.string.invitation_deep_link)))
-                                .setCustomImage(Uri.parse(getString(R.string.invitation_custom_image)))
-                                .setCallToActionText(getString(R.string.invitation_cta))
-                                .build();
-                        startActivityForResult(inviteIntent, REQUEST_INVITE);
+                        Intent sendIntent = new Intent();
+                        sendIntent.setAction(Intent.ACTION_SEND);
+                        sendIntent.putExtra(Intent.EXTRA_TEXT, "Hi. This app can help you remember people's names and organise your contacts. You can download it here: https://c9479.app.goo.gl/eNh4");
+                        sendIntent.setType("text/plain");
+                        Intent shareIntent = Intent.createChooser(sendIntent, null);
+                        startActivity(shareIntent);
                         break;
                     case (R.id.nav_email_csv):
                         DialogUtils.askQuestionAndThenCancelable(ConnectionsActivity.this,
