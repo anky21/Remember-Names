@@ -6,7 +6,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -38,6 +40,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
+import androidx.core.content.FileProvider;
 import androidx.core.view.MenuItemCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -473,18 +476,25 @@ public class ConnectionsActivity extends AppCompatActivity implements
         SQLiteDatabase db = database.getWritableDatabase();
         try {
             String csvPath = SqliteExporter.export(db, ConnectionsActivity.this);
-
+            Log.d(TAG, "csv path:" + csvPath);
             if (csvPath != null && !csvPath.isEmpty()) {
                 File file = new File(csvPath);
-                Uri uri = Uri.fromFile(file);
+                Uri uri;
+                if (Build.VERSION.SDK_INT>24){
+                    uri = FileProvider.getUriForFile(this, "me.anky.connectid.fileprovider",file);
+                }else{
+                    uri = Uri.fromFile(file);
+                }
 
                 Intent emailIntent = new Intent(Intent.ACTION_SEND);
+                emailIntent.addFlags(
+                        Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 emailIntent.setType("text/plain");
                 emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Remember Names database backup");
                 emailIntent.putExtra(Intent.EXTRA_TEXT, "Thank you for using this app. \nYou can email this file to yourself or save it to your cloud drive. This file can be opened by Microsoft Excel.");
-
                 emailIntent.putExtra(Intent.EXTRA_STREAM, uri);
                 startActivity(Intent.createChooser(emailIntent, "Pick an Email provider"));
+
             }
         } catch (IOException e) {
             e.printStackTrace();

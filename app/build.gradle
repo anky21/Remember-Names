@@ -63,7 +63,9 @@ ext {
 }
 
 dependencies {
+    def core_version = "1.7.0"
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation "androidx.core:core:$core_version"
     implementation "androidx.appcompat:appcompat:${supportLibVersion}"
     implementation "com.google.android.material:material:${supportLibVersion}"
     implementation "androidx.recyclerview:recyclerview:${supportLibVersion}"

@@ -3,4 +3,7 @@
     <files-path
         name="p"
         path="photos" />
+    <external-files-path
+        name="export"
+        path="." />
 </paths>
