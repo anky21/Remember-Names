@@ -1,7 +1,6 @@
 package me.anky.connectid.edit;
 
 import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.DialogInterface;
@@ -38,6 +37,8 @@ import javax.inject.Inject;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentTransaction;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -293,11 +294,10 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
     @OnClick(R.id.edit_portrait_iv)
     public void changePortraitPhoto() {
         Utilities.logFirebaseEventWithNoParams("Change portrait photo");
-        FragmentManager fm = getFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         PickerFragment newFragment = new PickerFragment();
-        newFragment.show(fm, "dialog");
-        ft.commit();
+        newFragment.show(ft, "dialog");
+
     }
 
     @OnClick(R.id.tags_linear_layout)

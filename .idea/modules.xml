@@ -4,6 +4,9 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/Remember-Names.iml" filepath="$PROJECT_DIR$/.idea/modules/Remember-Names.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/Remember-Names.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/Remember-Names.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/Remember-Names.app.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/Remember-Names.app.androidTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/Remember-Names.app.main.iml" filepath="$PROJECT_DIR$/.idea/modules/app/Remember-Names.app.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/Remember-Names.app.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/Remember-Names.app.unitTest.iml" />
     </modules>
   </component>
 </project>
