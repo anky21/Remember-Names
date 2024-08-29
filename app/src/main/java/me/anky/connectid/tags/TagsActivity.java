@@ -6,9 +6,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,9 +34,6 @@ public class TagsActivity extends AppCompatActivity implements TagsActivityMVP.V
     @BindView(R.id.empty_view)
     LinearLayout emptyView;
 
-    @BindView(R.id.adView)
-    AdView mAdView;
-
     TagsRecyclerViewAdapter adapter;
 
     @Inject
@@ -50,9 +44,6 @@ public class TagsActivity extends AppCompatActivity implements TagsActivityMVP.V
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tags);
         ButterKnife.bind(this);
-
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
 
         ((ConnectidApplication) getApplication()).getApplicationComponent().inject(this);
 

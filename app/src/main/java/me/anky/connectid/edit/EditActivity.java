@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -35,6 +36,7 @@ import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
@@ -52,6 +54,15 @@ import me.anky.connectid.events.SetToUpdateTagTable;
 import me.anky.connectid.root.ConnectidApplication;
 
 import static me.anky.connectid.Utilities.resizeBitmap;
+
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.FullScreenContentCallback;
+import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.AdError;
+import com.google.android.gms.ads.interstitial.InterstitialAd;
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
+
+import android.content.SharedPreferences;
 
 public class EditActivity extends AppCompatActivity implements EditActivityMVP.View {
     private final static String TAG = EditActivity.class.getSimpleName();
@@ -115,6 +126,53 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
     @Inject
     EditActivityPresenter presenter;
 
+    private InterstitialAd mInterstitialAd;
+    private int adActionCount;
+    private static final String PREFS_NAME = "AdActionPrefs";
+    private static final String AD_ACTION_COUNT_KEY = "adActionCount";
+    private SharedPreferences sharedPreferences;
+
+    void showInterstitialAd(){
+        if(mInterstitialAd!=null){
+            mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback(){
+                @Override
+                public void onAdClicked() {
+                    // Called when a click is recorded for an ad.
+                    Log.d(TAG, "Ad was clicked.");
+                }
+
+                @Override
+                public void onAdDismissedFullScreenContent() {
+                    // Called when ad is dismissed.
+                    // Set the ad reference to null so you don't show the ad a second time.
+                    Log.d(TAG, "Ad dismissed fullscreen content.");
+                    mInterstitialAd = null;
+                }
+
+                @Override
+                public void onAdFailedToShowFullScreenContent(AdError adError) {
+                    // Called when ad fails to show.
+                    Log.e(TAG, "Ad failed to show fullscreen content.");
+                    mInterstitialAd = null;
+                }
+
+                @Override
+                public void onAdImpression() {
+                    // Called when an impression is recorded for an ad.
+                    Log.d(TAG, "Ad recorded an impression.");
+                }
+
+                @Override
+                public void onAdShowedFullScreenContent() {
+                    // Called when ad is shown.
+                    Log.d(TAG, "Ad showed fullscreen content.");
+                }
+            });
+            mInterstitialAd.show(this);
+        }else{
+            Log.d("TAG", "The interstitial ad wasn't loaded.");
+        }
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -182,6 +240,42 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
         } else {
             EditActivity.this.setTitle(getString(R.string.title_add_new_connection));
         }
+
+        //
+        //init interstitial ad and show every 5 times
+        //
+        sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        adActionCount = sharedPreferences.getInt(AD_ACTION_COUNT_KEY, 0);
+
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt(AD_ACTION_COUNT_KEY, adActionCount+1);
+        editor.apply();
+
+        if(adActionCount % 5 == 0){
+            AdRequest adRequest = new AdRequest.Builder().build();
+            //ca-app-pub-9341383437171371/7023517119
+            InterstitialAd.load(this,"ca-app-pub-3940256099942544/1033173712", adRequest,
+                    new InterstitialAdLoadCallback() {
+                        @Override
+                        public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
+                            // The mInterstitialAd reference will be null until
+                            // an ad is loaded.
+                            mInterstitialAd = interstitialAd;
+                            Log.i(TAG, "onAdLoaded");
+                            showInterstitialAd();
+                        }
+
+                        @Override
+                        public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                            // Handle the error
+                            Log.d(TAG, loadAdError.toString());
+                            mInterstitialAd = null;
+                        }
+                    });
+        }else{
+            Log.i(TAG, String.format("skip to show ad - count = %d",adActionCount));
+        }
+
     }
 
     private void displayTags(String tags) {

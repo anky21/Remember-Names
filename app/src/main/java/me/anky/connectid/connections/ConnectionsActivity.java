@@ -19,6 +19,7 @@ import com.androidsx.rateme.RateMeDialog;
 import com.androidsx.rateme.RateMeDialogTimer;
 import com.facebook.stetho.Stetho;
 import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.appinvite.AppInviteInvitation;
@@ -112,10 +113,16 @@ public class ConnectionsActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_list);
 
         // Initialise google ads
-        MobileAds.initialize(this, getString(R.string.ad_mob_id));
+        new Thread(
+                () -> {
+                    // Initialize the Google Mobile Ads SDK on a background thread.
+                    MobileAds.initialize(this, initializationStatus -> {});
+                })
+                .start();
 
         ButterKnife.bind(this);
 
+        //load banner ads
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
 
