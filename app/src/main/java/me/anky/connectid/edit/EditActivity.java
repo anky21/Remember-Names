@@ -241,41 +241,6 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
             EditActivity.this.setTitle(getString(R.string.title_add_new_connection));
         }
 
-        //
-        //init interstitial ad and show every 5 times
-        //
-        sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-        adActionCount = sharedPreferences.getInt(AD_ACTION_COUNT_KEY, 0);
-
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putInt(AD_ACTION_COUNT_KEY, adActionCount+1);
-        editor.apply();
-
-        if(adActionCount % 5 == 0){
-            AdRequest adRequest = new AdRequest.Builder().build();
-            //ca-app-pub-9341383437171371/7023517119
-            InterstitialAd.load(this,"ca-app-pub-3940256099942544/1033173712", adRequest,
-                    new InterstitialAdLoadCallback() {
-                        @Override
-                        public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
-                            // The mInterstitialAd reference will be null until
-                            // an ad is loaded.
-                            mInterstitialAd = interstitialAd;
-                            Log.i(TAG, "onAdLoaded");
-                            showInterstitialAd();
-                        }
-
-                        @Override
-                        public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
-                            // Handle the error
-                            Log.d(TAG, loadAdError.toString());
-                            mInterstitialAd = null;
-                        }
-                    });
-        }else{
-            Log.i(TAG, String.format("skip to show ad - count = %d",adActionCount));
-        }
-
     }
 
     private void displayTags(String tags) {
@@ -483,6 +448,40 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
                     mTags);
 
             presenter.deliverNewConnection();
+        }
+        //
+        //init interstitial ad and show every 5 times
+        //
+        sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        adActionCount = sharedPreferences.getInt(AD_ACTION_COUNT_KEY, 0);
+
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt(AD_ACTION_COUNT_KEY, adActionCount+1);
+        editor.apply();
+
+        if(adActionCount != 0 && adActionCount % 5 == 0){
+            AdRequest adRequest = new AdRequest.Builder().build();
+            //ca-app-pub-9341383437171371/7023517119
+            InterstitialAd.load(this,"ca-app-pub-3940256099942544/1033173712", adRequest,
+                    new InterstitialAdLoadCallback() {
+                        @Override
+                        public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
+                            // The mInterstitialAd reference will be null until
+                            // an ad is loaded.
+                            mInterstitialAd = interstitialAd;
+                            Log.i(TAG, "onAdLoaded");
+                            showInterstitialAd();
+                        }
+
+                        @Override
+                        public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                            // Handle the error
+                            Log.d(TAG, loadAdError.toString());
+                            mInterstitialAd = null;
+                        }
+                    });
+        }else{
+            Log.i(TAG, String.format("skip to show ad - count = %d",adActionCount));
         }
     }
 
