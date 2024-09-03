@@ -113,6 +113,6 @@
     <!-- Ad mob ids-->
     <string name="ad_mob_id">ca-app-pub-9341383437171371~8368388375</string>
     <!--    ca-app-pub-9341383437171371/9246355770-->
-    <string name="ad_unit_id_banner">ca-app-pub-3940256099942544/9214589741</string>
+    <string name="ad_unit_id_banner">ca-app-pub-9341383437171371/9246355770</string>
 
 </resources>
