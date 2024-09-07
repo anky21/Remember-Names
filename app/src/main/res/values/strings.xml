@@ -111,8 +111,8 @@
     <string name="export_database_msg">Would you like to export the database and email it to yourself? You can then open it on your mobile device or a desktop.</string>
 
     <!-- Ad mob ids-->
-    <string name="ad_mob_id">ca-app-pub-9341383437171371~8368388375</string>
+    <string name="ad_mob_id">ca-app-pub-5943597081127232~7518699924</string>
     <!--    ca-app-pub-9341383437171371/9246355770-->
-    <string name="ad_unit_id_banner">ca-app-pub-9341383437171371/9246355770</string>
+    <string name="ad_unit_id_banner">ca-app-pub-5943597081127232/3001666575</string>
 
 </resources>
