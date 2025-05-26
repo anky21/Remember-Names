@@ -72,4 +72,71 @@ public class ConnectionsActivityPresenter implements ConnectionsActivityMVP.Pres
     public void unsubscribe() {
         compositeDisposable.clear();
     }
+
+    @Override
+    public void addTagToSelectedConnections(List<Integer> connectionIds, String tagName) {
+        if (view == null) return; // View is not available
+
+        DisposableSingleObserver<Boolean> disposableSingleObserver =
+                Single.fromCallable(() -> connectionsDataSource.batchAddTagToConnections(connectionIds, tagName))
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeWith(new DisposableSingleObserver<Boolean>() {
+                            @Override
+                            public void onSuccess(@NonNull Boolean success) {
+                                if (view != null) {
+                                    String message = success ? "Tag '" + tagName + "' added to selected connections."
+                                            : "Failed to add tag.";
+                                    view.onBatchTagOperationCompleted(message, success);
+                                    if (success) {
+                                        // Optionally, reload connections if tags affect display or sorting
+                                        // For now, just a message. DetailsActivity will refresh on its own if opened.
+                                        // loadConnections(view.getSortByOption()); // Example if refresh is needed
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onError(@NonNull Throwable e) {
+                                if (view != null) {
+                                    view.onBatchTagOperationCompleted("Error adding tag: " + e.getMessage(), false);
+                                }
+                                Utilities.logFirebaseError("error_batch_add_tag", TAG + ".addTagToSelectedConnections", e.getMessage());
+                            }
+                        });
+        compositeDisposable.add(disposableSingleObserver);
+    }
+
+    @Override
+    public void removeTagFromSelectedConnections(List<Integer> connectionIds, String tagName) {
+        if (view == null) return; // View is not available
+
+        DisposableSingleObserver<Boolean> disposableSingleObserver =
+                Single.fromCallable(() -> connectionsDataSource.batchRemoveTagFromConnections(connectionIds, tagName))
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeWith(new DisposableSingleObserver<Boolean>() {
+                            @Override
+                            public void onSuccess(@NonNull Boolean success) {
+                                if (view != null) {
+                                    String message = success ? "Tag '" + tagName + "' removed from selected connections."
+                                            : "Failed to remove tag.";
+                                    view.onBatchTagOperationCompleted(message, success);
+                                    if (success) {
+                                        // Optionally, reload connections
+                                        // loadConnections(view.getSortByOption());
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onError(@NonNull Throwable e) {
+                                if (view != null) {
+                                    view.onBatchTagOperationCompleted("Error removing tag: " + e.getMessage(), false);
+                                }
+                                Utilities.logFirebaseError("error_batch_remove_tag", TAG + ".removeTagFromSelectedConnections", e.getMessage());
+                            }
+                        });
+        compositeDisposable.add(disposableSingleObserver);
+    }
 }

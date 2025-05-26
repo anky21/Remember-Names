@@ -319,4 +319,182 @@ public class ConnectionsLocalRepository implements ConnectionsDataSource {
             return 1;
         }
     }
+
+    // Helper method to update a connection's TAGS string
+    private boolean updateConnectionTags(int connectionId, String newTags) {
+        Uri uri = ConnectidProvider.Connections.withId(connectionId);
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(ConnectidColumns.TAGS, newTags);
+        int updatedRows = context.getContentResolver().update(uri, contentValues, null, null);
+        return updatedRows > 0;
+    }
+
+    // Helper method to get a connection's current TAGS string
+    private String getConnectionTags(int connectionId) {
+        Uri uri = ConnectidProvider.Connections.withId(connectionId);
+        Cursor cursor = context.getContentResolver().query(uri, new String[]{ConnectidColumns.TAGS}, null, null, null);
+        String tags = "";
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                tags = cursor.getString(cursor.getColumnIndex(ConnectidColumns.TAGS));
+            }
+            cursor.close();
+        }
+        return tags == null ? "" : tags;
+    }
+
+    // Helper method to get Tag ID and its associated connection IDs
+    private ConnectionTag getTagDataByName(String tagName) {
+        Cursor cursor = context.getContentResolver().query(
+                ConnectidProvider.Tags.CONTENT_URI,
+                null,
+                TagsColumns.TAG + " = ?",
+                new String[]{tagName},
+                null);
+
+        ConnectionTag tagData = null;
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                int id = cursor.getInt(cursor.getColumnIndex(TagsColumns._ID));
+                String currentConnectionIds = cursor.getString(cursor.getColumnIndex(TagsColumns.CONNECTION_IDS));
+                tagData = new ConnectionTag(id, tagName, currentConnectionIds);
+            }
+            cursor.close();
+        }
+        return tagData;
+    }
+
+    // Helper method to insert a new tag and return its ID (or URI's last segment)
+    private int insertNewTagByName(String tagName, String initialConnectionId) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(TagsColumns.TAG, tagName);
+        contentValues.put(TagsColumns.CONNECTION_IDS, String.valueOf(initialConnectionId)); // Start with the first connection ID
+        Uri uri = context.getContentResolver().insert(ConnectidProvider.Tags.CONTENT_URI, contentValues);
+        if (uri != null) {
+            return Integer.parseInt(uri.getLastPathSegment());
+        }
+        return -1; // Error
+    }
+
+    // Helper method to update a tag's CONNECTION_IDS string
+    private boolean updateTagConnectionIds(int tagId, String newConnectionIds) {
+        Uri uri = ConnectidProvider.Tags.withId(tagId);
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(TagsColumns.CONNECTION_IDS, newConnectionIds);
+        int updatedRows = context.getContentResolver().update(uri, contentValues, null, null);
+        return updatedRows > 0;
+    }
+
+
+    @Override
+    public boolean batchAddTagToConnections(List<Integer> connectionIds, String tagName) {
+        if (tagName == null || tagName.trim().isEmpty()) {
+            return false;
+        }
+        // For ContentProvider, true atomicity across operations requires applyBatch.
+        // Here, we'll do our best by updating records one by one.
+        // This is not truly atomic if one of the later updates fails.
+
+        ConnectionTag existingTag = getTagDataByName(tagName);
+        int tagId;
+        String currentTagConnectionIds = "";
+
+        if (existingTag == null) {
+            // If tag doesn't exist, create it. For simplicity, we'll add the first connectionId.
+            // A more robust way would be to insert the tag first, then update its connection_ids.
+            // However, insertNewTagByName is designed to take an initial ID.
+            // Let's assume connectionIds is not empty.
+            if (connectionIds.isEmpty()) return false; // Cannot create a tag without any connection.
+
+            // To avoid issues with insertNewTagByName needing an initial ID, and then having to merge,
+            // let's handle it differently: insert tag with empty connections, then update.
+            ContentValues newTagValues = new ContentValues();
+            newTagValues.put(TagsColumns.TAG, tagName);
+            newTagValues.put(TagsColumns.CONNECTION_IDS, ""); // Initially empty
+            Uri newTagUri = context.getContentResolver().insert(ConnectidProvider.Tags.CONTENT_URI, newTagValues);
+            if (newTagUri == null) return false; // Failed to insert new tag
+            tagId = Integer.parseInt(newTagUri.getLastPathSegment());
+            // existingTag = new ConnectionTag(tagId, tagName, ""); // re-assign
+        } else {
+            tagId = existingTag.getDatabaseId();
+            currentTagConnectionIds = existingTag.getConnection_ids() == null ? "" : existingTag.getConnection_ids();
+        }
+        
+        List<String> tagConnectionIdList = Utilities.getListFromCommaSeparatedString(currentTagConnectionIds);
+
+        boolean overallSuccess = true;
+
+        for (int connectionId : connectionIds) {
+            // Update Connections table: Append tag to TAGS column
+            String connectionTagsStr = getConnectionTags(connectionId);
+            List<String> connectionTagsList = Utilities.getListFromCommaSeparatedString(connectionTagsStr);
+            if (!connectionTagsList.contains(tagName)) {
+                connectionTagsList.add(tagName);
+                String newConnectionTagsStr = Utilities.getCommaSeparatedStringFromList(connectionTagsList);
+                if (!updateConnectionTags(connectionId, newConnectionTagsStr)) {
+                    overallSuccess = false; // Log this error or handle more gracefully
+                }
+            }
+
+            // Update Tags table: Add connectionId to CONNECTION_IDS for this tag
+            String connIdStr = String.valueOf(connectionId);
+            if (!tagConnectionIdList.contains(connIdStr)) {
+                tagConnectionIdList.add(connIdStr);
+            }
+        }
+        
+        // Update the tag's CONNECTION_IDS string once after processing all connections
+        String finalTagConnectionIds = Utilities.getCommaSeparatedStringFromList(tagConnectionIdList);
+        if (existingTag != null && existingTag.getConnection_ids() != null && existingTag.getConnection_ids().equals(finalTagConnectionIds)) {
+            // No change in connection IDs for the tag, no need to update
+        } else {
+             if (!updateTagConnectionIds(tagId, finalTagConnectionIds)) {
+                overallSuccess = false;
+            }
+        }
+
+        return overallSuccess;
+    }
+
+    @Override
+    public boolean batchRemoveTagFromConnections(List<Integer> connectionIds, String tagName) {
+        if (tagName == null || tagName.trim().isEmpty()) {
+            return false;
+        }
+
+        ConnectionTag tagToRemove = getTagDataByName(tagName);
+        if (tagToRemove == null) {
+            return true; // Tag doesn't exist, so effectively removed from all.
+        }
+
+        boolean overallSuccess = true;
+        List<String> currentTagConnectionIdList = Utilities.getListFromCommaSeparatedString(tagToRemove.getConnection_ids());
+
+        for (int connectionId : connectionIds) {
+            // Update Connections table: Remove tag from TAGS column
+            String connectionTagsStr = getConnectionTags(connectionId);
+            List<String> connectionTagsList = Utilities.getListFromCommaSeparatedString(connectionTagsStr);
+            if (connectionTagsList.contains(tagName)) {
+                connectionTagsList.remove(tagName);
+                String newConnectionTagsStr = Utilities.getCommaSeparatedStringFromList(connectionTagsList);
+                if (!updateConnectionTags(connectionId, newConnectionTagsStr)) {
+                    overallSuccess = false; // Log or handle
+                }
+            }
+
+            // Remove from the list for the tag's CONNECTION_IDS
+            currentTagConnectionIdList.remove(String.valueOf(connectionId));
+        }
+
+        // Update the tag's CONNECTION_IDS string
+        String finalTagConnectionIds = Utilities.getCommaSeparatedStringFromList(currentTagConnectionIdList);
+        if (!updateTagConnectionIds(tagToRemove.getDatabaseId(), finalTagConnectionIds)) {
+            overallSuccess = false;
+        }
+        
+        // Optional: If finalTagConnectionIds is empty, consider deleting the tag itself if it's an orphaned tag.
+        // For now, we keep the tag.
+
+        return overallSuccess;
+    }
 }

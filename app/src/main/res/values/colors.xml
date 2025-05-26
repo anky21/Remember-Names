@@ -8,4 +8,12 @@
     <color name="linear_layout_background">#333</color>
     <color name="text_or_icons">#FFFFFF</color>
     <color name="color_light_primary">#B2DFDB</color>
+
+    <!-- Dark Theme Colors -->
+    <color name="colorPrimaryDarkTheme">#0D82B9</color> <!-- Slightly lighter blue than primary -->
+    <color name="colorAccentDarkTheme">#007AB6</color> <!-- Same as light theme accent, or choose a new one -->
+    <color name="backgroundColorDarkTheme">#121212</color> <!-- Standard dark theme background -->
+    <color name="surfaceColorDarkTheme">#1E1E1E</color> <!-- Slightly lighter than background for surfaces -->
+    <color name="textColorPrimaryDarkTheme">#FFFFFF</color> <!-- White text -->
+    <color name="textColorSecondaryDarkTheme">#B3FFFFFF</color> <!-- Semi-transparent white for secondary text -->
 </resources>

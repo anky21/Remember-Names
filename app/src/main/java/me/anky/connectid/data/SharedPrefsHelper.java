@@ -11,6 +11,12 @@ import javax.inject.Inject;
 
 public class SharedPrefsHelper {
     public static String PREF_KEY_ACCESS_TOKEN = "access-token";
+    public static final String PREF_KEY_THEME = "theme_preference";
+
+    // Theme constants
+    public static final int THEME_LIGHT = 1;
+    public static final int THEME_DARK = 2;
+    public static final int THEME_SYSTEM_DEFAULT = 0; // Or -1, following AppCompatDelegate constants
 
     private SharedPreferences mSharedPreferences;
 
@@ -53,5 +59,14 @@ public class SharedPrefsHelper {
 
     public void deleteSavedData(String key) {
         mSharedPreferences.edit().remove(key).apply();
+    }
+
+    public void setThemePreference(int themeValue) {
+        put(PREF_KEY_THEME, themeValue);
+    }
+
+    public int getThemePreference() {
+        // Default to System Default if no preference is set
+        return get(PREF_KEY_THEME, THEME_SYSTEM_DEFAULT);
     }
 }

@@ -37,5 +37,7 @@ public interface ApplicationComponent {
 
     void inject(SelectedConnectionsActivity selectedConnectionsActivity);
 
+    void inject(me.anky.connectid.settings.SettingsActivity settingsActivity); // Added for SettingsActivity
+
     SharedPrefsHelper getPreferenceHelper();
 }

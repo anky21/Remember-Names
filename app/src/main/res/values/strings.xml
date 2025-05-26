@@ -115,4 +115,21 @@
     <!--    ca-app-pub-9341383437171371/9246355770-->
     <string name="ad_unit_id_banner">ca-app-pub-5943597081127232/3001666575</string>
 
+    <!-- Settings Screen -->
+    <string name="nav_settings">Settings</string>
+    <string name="title_activity_settings">Settings</string>
+    <string name="theme_selection_title">Choose Theme</string>
+    <string name="theme_light">Light</string>
+    <string name="theme_dark">Dark</string>
+    <string name="theme_system_default">System Default</string>
+
+    <!-- Batch Tagging Dialogs -->
+    <string name="dialog_title_add_tag_batch">Add Tag to Selected</string>
+    <string name="dialog_title_remove_tag_batch">Remove Tag from Selected</string>
+    <string name="hint_tag_name">Tag name</string>
+    <string name="button_add_tag">Add Tag</string>
+    <string name="button_remove_tag">Remove Tag</string>
+    <string name="cab_add_tag_title">Add Tag(s)</string>
+    <string name="cab_remove_tag_title">Remove Tag(s)</string>
+
 </resources>

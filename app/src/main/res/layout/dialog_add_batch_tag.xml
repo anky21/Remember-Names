@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/dialog_title_add_tag_batch"
+        android:textAppearance="@style/TextAppearance.AppCompat.Title"
+        android:layout_marginBottom="16dp"/>
+
+    <EditText
+        android:id="@+id/et_tag_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/hint_tag_name"
+        android:inputType="text"
+        android:maxLines="1" />
+
+    <!-- Buttons will be handled by AlertDialog.Builder, no need to define them here
+         unless we want fully custom buttons within the layout.
+         Standard positive/negative buttons are preferred for consistency. -->
+
+</LinearLayout>

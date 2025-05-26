@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_add_tags_contextual"
+        android:icon="@drawable/ic_tag_blue"
+        android:title="Add Tag(s)"
+        app:showAsAction="ifRoom|withText" />
+
+    <item
+        android:id="@+id/action_remove_tags_contextual"
+        android:icon="@drawable/ic_tag_blue"
+        android:title="Remove Tag(s)"
+        app:showAsAction="ifRoom|withText" />
+    <!-- Using ic_tag_blue as a placeholder icon, ideally, these actions would have distinct icons -->
+</menu>

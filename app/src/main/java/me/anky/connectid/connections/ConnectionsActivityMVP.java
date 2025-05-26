@@ -19,6 +19,9 @@ public interface ConnectionsActivityMVP {
         void closeNavigationMenu();
 
         void showExitDialog();
+
+        // Callbacks for batch tagging operations
+        void onBatchTagOperationCompleted(String message, boolean success);
     }
 
     interface Presenter {
@@ -30,5 +33,10 @@ public interface ConnectionsActivityMVP {
         void handleSortByOptionChange();
 
         void unsubscribe();
+
+        // Batch tagging methods
+        void addTagToSelectedConnections(List<Integer> connectionIds, String tagName);
+
+        void removeTagFromSelectedConnections(List<Integer> connectionIds, String tagName);
     }
 }

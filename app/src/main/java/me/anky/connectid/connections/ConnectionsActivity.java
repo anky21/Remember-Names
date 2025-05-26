@@ -7,11 +7,15 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -38,8 +42,10 @@ import java.util.TimerTask;
 import javax.inject.Inject;
 
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.view.ActionMode;
 import androidx.appcompat.widget.SearchView;
 import androidx.core.content.FileProvider;
 import androidx.core.view.MenuItemCompat;
@@ -59,11 +65,13 @@ import me.anky.connectid.data.source.local.generated.ConnectidDatabase;
 import me.anky.connectid.details.DetailsActivity;
 import me.anky.connectid.edit.EditActivity;
 import me.anky.connectid.root.ConnectidApplication;
+import me.anky.connectid.settings.SettingsActivity;
 import me.anky.connectid.tags.TagsActivity;
 
 public class ConnectionsActivity extends AppCompatActivity implements
         ConnectionsActivityMVP.View,
-        ConnectionsRecyclerViewAdapter.RecyclerViewClickListener {
+        ConnectionsRecyclerViewAdapter.RecyclerViewClickListener,
+        ConnectionsRecyclerViewAdapter.MultiSelectListener { // Implement MultiSelectListener
 
     public List<ConnectidConnection> data = new ArrayList<>();
     private final static String TAG = "ConnectionsActivity";
@@ -71,6 +79,8 @@ public class ConnectionsActivity extends AppCompatActivity implements
     private AlertDialog alertDialog;
     private MenuItem searchItem;
     private SearchView searchView;
+    private ActionMode actionMode;
+    private ActionMode.Callback actionModeCallback;
 
     @BindView(R.id.connections_list_rv)
     RecyclerView recyclerView;
@@ -147,7 +157,11 @@ public class ConnectionsActivity extends AppCompatActivity implements
             sharedPrefsHelper.put("profile_saved", true);
         }
 
-        adapter = new ConnectionsRecyclerViewAdapter(this, data, false, this);
+        // Initialize ActionModeCallback
+        initializeActionModeCallback();
+
+        // Pass 'this' for both listeners
+        adapter = new ConnectionsRecyclerViewAdapter(this, data, this, this);
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -343,11 +357,154 @@ public class ConnectionsActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onItemClick(View view, int id) {
-        Intent intent = new Intent(this, DetailsActivity.class);
-        intent.putExtra("id", id);
-        startActivityForResult(intent, DETAILS_ACTIVITY_REQUEST);
-        overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+    public void onItemClick(View view, int databaseId, int position) { // Updated signature
+        if (adapter.isMultiSelectEnabled()) {
+            // This case should ideally be handled by the adapter's own click listener
+            // when multi-select is active. If MultiSelectListener.onItemSelectedStateChanged
+            // is called, this direct call might be redundant or could be used for other logic.
+            // For now, let adapter's click listener handle toggling and CAB update.
+        } else {
+            Intent intent = new Intent(this, DetailsActivity.class);
+            intent.putExtra("id", databaseId);
+            startActivityForResult(intent, DETAILS_ACTIVITY_REQUEST);
+            overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+        }
+    }
+
+
+    // Implementation of ConnectionsRecyclerViewAdapter.MultiSelectListener
+    @Override
+    public void onMultiSelectStart() {
+        if (actionMode == null) {
+            actionMode = startSupportActionMode(actionModeCallback);
+        }
+        // FAB should be hidden when CAB is active
+        if (fab != null) {
+            fab.hide();
+        }
+    }
+
+    @Override
+    public void onItemSelectedStateChanged() {
+        if (actionMode != null) {
+            int selectedCount = adapter.getSelectedItemCount();
+            if (selectedCount > 0) {
+                actionMode.setTitle(String.valueOf(selectedCount) + " selected");
+            } else {
+                actionMode.finish(); // Automatically close CAB if no items are selected
+            }
+        }
+    }
+
+    @Override
+    public void onMultiSelectEnd() {
+        if (actionMode != null) {
+            actionMode.finish(); // This will trigger onDestroyActionMode
+        }
+    }
+
+    private void initializeActionModeCallback() {
+        actionModeCallback = new ActionMode.Callback() {
+            @Override
+            public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+                MenuInflater inflater = mode.getMenuInflater();
+                inflater.inflate(R.menu.contextual_connections_menu, menu);
+                if (fab != null) { // Hide FAB when CAB is created
+                    fab.hide();
+                }
+                return true;
+            }
+
+            @Override
+            public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+                // Can be used to show/hide menu items based on selection
+                return false; // Return false if nothing is done
+            }
+
+            @Override
+            public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+                List<Integer> selectedItemIds = adapter.getSelectedItems();
+                if (selectedItemIds.isEmpty()) {
+                    mode.finish();
+                    return true;
+                }
+
+                switch (item.getItemId()) {
+                    case R.id.action_add_tags_contextual:
+                        showAddBatchTagDialog(selectedItemIds, mode);
+                        return true;
+                    case R.id.action_remove_tags_contextual:
+                        showRemoveBatchTagDialog(selectedItemIds, mode);
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+
+            @Override
+            public void onDestroyActionMode(ActionMode mode) {
+                actionMode = null;
+                adapter.clearSelections(); // This will also call adapter.setMultiSelectEnabled(false)
+                // Show FAB again when CAB is closed
+                if (fab != null) {
+                    fab.show();
+                }
+            }
+        };
+    }
+
+    private void showAddBatchTagDialog(final List<Integer> selectedItemIds, final ActionMode actionMode) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = this.getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.dialog_add_batch_tag, null);
+        final EditText etTagName = dialogView.findViewById(R.id.et_tag_name);
+
+        builder.setView(dialogView)
+                .setPositiveButton(R.string.button_add_tag, (dialog, id) -> {
+                    String tagName = etTagName.getText().toString().trim();
+                    if (!tagName.isEmpty()) {
+                        Log.d(TAG, "Add tag: " + tagName + " to " + selectedItemIds.size() + " items.");
+                        // Call presenter to add tag
+                        presenter.addTagToSelectedConnections(selectedItemIds, tagName);
+                    } else {
+                        Toast.makeText(ConnectionsActivity.this, "Tag name cannot be empty", Toast.LENGTH_SHORT).show();
+                    }
+                    // ActionMode is finished in onBatchTagOperationCompleted or if dialog is cancelled by negative button
+                    // if (actionMode != null) actionMode.finish(); // CAB will be closed by presenter callback or negative button
+                })
+                .setNegativeButton(R.string.cancel, (dialog, id) -> {
+                    if (actionMode != null) actionMode.finish(); // Close CAB if user cancels dialog
+                    dialog.cancel();
+                });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+    private void showRemoveBatchTagDialog(final List<Integer> selectedItemIds, final ActionMode actionMode) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = this.getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.dialog_remove_batch_tag, null);
+        final EditText etTagNameRemove = dialogView.findViewById(R.id.et_tag_name_remove);
+
+        builder.setView(dialogView)
+                .setPositiveButton(R.string.button_remove_tag, (dialog, id) -> {
+                    String tagName = etTagNameRemove.getText().toString().trim();
+                    if (!tagName.isEmpty()) {
+                        Log.d(TAG, "Remove tag: " + tagName + " from " + selectedItemIds.size() + " items.");
+                        // Call presenter to remove tag
+                        presenter.removeTagFromSelectedConnections(selectedItemIds, tagName);
+                    } else {
+                        Toast.makeText(ConnectionsActivity.this, "Tag name cannot be empty", Toast.LENGTH_SHORT).show();
+                    }
+                    // ActionMode is finished in onBatchTagOperationCompleted or if dialog is cancelled by negative button
+                    // if (actionMode != null) actionMode.finish(); // CAB will be closed by presenter callback or negative button
+                })
+                .setNegativeButton(R.string.cancel, (dialog, id) -> {
+                    if (actionMode != null) actionMode.finish(); // Close CAB if user cancels dialog
+                    dialog.cancel();
+                });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
     }
 
     @OnClick(R.id.fab)
@@ -357,6 +514,21 @@ public class ConnectionsActivity extends AppCompatActivity implements
         overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
 
         Utilities.logFirebaseEventWithNoParams("FAB New Connection");
+    }
+
+    // Implementation for ConnectionsActivityMVP.View callback
+    @Override
+    public void onBatchTagOperationCompleted(String message, boolean success) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+        if (actionMode != null) {
+            actionMode.finish(); // Finish CAB after operation
+        }
+        if (success) {
+            // Refresh the connections list to reflect tag changes if necessary
+            // For now, the main list doesn't show tags directly, so a full refresh might not be
+            // immediately visible there. DetailsActivity will refresh itself if opened.
+            // presenter.loadConnections(getSortByOption()); // Uncomment if list needs immediate visual update for tags
+        }
     }
 
     @Override
@@ -399,21 +571,24 @@ public class ConnectionsActivity extends AppCompatActivity implements
 
     @Override
     public void onBackPressed() {
-        closeNavigationMenu();
-        if (!isBackBtnPressedOnce) {
-            Toast.makeText(this, R.string.press_back_to_exit, Toast.LENGTH_SHORT).show();
-            isBackBtnPressedOnce = true;
-
-            // if user doesn't press back btn again within 5 sec...
-            new Timer().schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    isBackBtnPressedOnce = false;
-                }
-            }, 5000);
+        if (actionMode != null) {
+            actionMode.finish(); // This will trigger onDestroyActionMode where selections are cleared
         } else {
-            finish();
-            super.onBackPressed();
+            closeNavigationMenu(); // Original logic for drawer
+            if (!isBackBtnPressedOnce) {
+                Toast.makeText(this, R.string.press_back_to_exit, Toast.LENGTH_SHORT).show();
+                isBackBtnPressedOnce = true;
+
+                new Timer().schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        isBackBtnPressedOnce = false;
+                    }
+                }, 5000);
+            } else {
+                finish();
+                super.onBackPressed();
+            }
         }
     }
 
@@ -445,6 +620,10 @@ public class ConnectionsActivity extends AppCompatActivity implements
             menuItem -> {
                 switch (menuItem.getItemId()) {
                     case (R.id.nav_tags):
+                        // Prevent actions if in multi-select mode by checking actionMode
+                        if (actionMode != null) {
+                            return true; // Consume click
+                        }
                         Utilities.logFirebaseEventWithNoParams("Start Tags Activity");
 
                         closeNavigationMenu();
@@ -454,6 +633,7 @@ public class ConnectionsActivity extends AppCompatActivity implements
                         overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
                         break;
                     case (R.id.nav_invite):
+                        if (actionMode != null) return true;
                         Utilities.logFirebaseEventWithNoParams("Nav Invite Friends");
                         closeNavigationMenu();
                         Intent sendIntent = new Intent();
@@ -464,13 +644,22 @@ public class ConnectionsActivity extends AppCompatActivity implements
                         startActivity(shareIntent);
                         break;
                     case (R.id.nav_email_csv):
+                        if (actionMode != null) return true;
                         DialogUtils.askQuestionAndThenCancelable(ConnectionsActivity.this,
                                 getString(R.string.export_databse_title), getString(R.string.export_database_msg),
                                 getString(R.string.yes), getString(R.string.cancel), object -> exportAndEmailCsv(), null);
                         break;
                     case (R.id.nav_exit):
+                        if (actionMode != null) return true;
                         closeNavigationMenu();
                         showExitDialog();
+                        break;
+                    case (R.id.nav_settings):
+                        if (actionMode != null) return true;
+                        closeNavigationMenu();
+                        Intent settingsIntent = new Intent(getApplicationContext(), SettingsActivity.class);
+                        startActivity(settingsIntent);
+                        overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
                         break;
                     default:
                         break;

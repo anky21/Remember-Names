@@ -1,0 +1,48 @@
+<resources>
+    <!-- Dark Theme Overrides -->
+    <style name="AppTheme" parent="Theme.AppCompat.DayNight.DarkActionBar">
+        <item name="colorPrimary">@color/colorPrimaryDarkTheme</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item> <!-- Or a darker variant for dark theme if needed -->
+        <item name="colorAccent">@color/colorAccentDarkTheme</item>
+
+        <item name="android:windowBackground">@color/backgroundColorDarkTheme</item>
+        <item name="colorSurface">@color/surfaceColorDarkTheme</item>
+
+        <item name="android:textColorPrimary">@color/textColorPrimaryDarkTheme</item>
+        <item name="android:textColorSecondary">@color/textColorSecondaryDarkTheme</item>
+        <item name="android:textColor">@color/textColorPrimaryDarkTheme</item> <!-- Default text color -->
+
+        <!-- Specific text appearances if needed -->
+        <item name="textAppearanceHeadline6">@style/TextAppearance.AppCompat.Headline</item> <!-- Example, ensure it contrasts -->
+        <item name="textAppearanceSubtitle1">@style/TextAppearance.AppCompat.Subtitle1</item> <!-- Example, ensure it contrasts -->
+
+        <!-- Ensure icons and other elements are theme-aware -->
+        <item name="android:tint">?attr/colorAccent</item> <!-- Example for tinting icons -->
+    </style>
+
+    <style name="DetailsTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimaryDarkTheme</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item> <!-- Or a darker variant for dark theme -->
+        <item name="colorAccent">@color/colorAccentDarkTheme</item>
+
+        <item name="android:windowBackground">@color/backgroundColorDarkTheme</item>
+        <item name="colorSurface">@color/surfaceColorDarkTheme</item>
+
+        <item name="android:textColorPrimary">@color/textColorPrimaryDarkTheme</item>
+        <item name="android:textColorSecondary">@color/textColorSecondaryDarkTheme</item>
+        <item name="android:textColor">@color/textColorPrimaryDarkTheme</item> <!-- Default text color -->
+
+        <!-- Specific text appearances if needed -->
+        <item name="textAppearanceHeadline6">@style/TextAppearance.AppCompat.Headline</item>
+        <item name="textAppearanceSubtitle1">@style/TextAppearance.AppCompat.Subtitle1</item>
+
+        <item name="android:tint">?attr/colorAccent</item>
+    </style>
+
+    <!-- You might need to create dark versions of other custom styles from styles.xml if they have hardcoded light colors -->
+    <!-- For example, if DescriptionTvLabelStyle has hardcoded black text: -->
+    <style name="DescriptionTvLabelStyle" parent="DescriptionEtLabelStyle">
+        <item name="android:textColor">@color/textColorPrimaryDarkTheme</item>
+    </style>
+
+</resources>

@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center_horizontal"
-    android:background="@color/text_or_icons"
+    android:background="?attr/colorSurface"
     android:orientation="vertical"
     android:padding="@dimen/margin_16dp">
 
@@ -15,7 +15,7 @@
         <TextView
             style="@style/DescriptionEtLabelStyle"
             android:text="@string/name"
-            android:textColor="@color/colorPrimaryDark"/>
+            android:textColor="?attr/colorPrimary"/>
 
         <EditText
             android:id="@+id/first_name_et"
@@ -38,7 +38,7 @@
         <TextView
             style="@style/DescriptionEtLabelStyle"
             android:text="@string/tags"
-            android:textColor="@color/colorPrimaryDark"/>
+            android:textColor="?attr/colorPrimary"/>
 
         <include layout="@layout/tags_view" />
 
@@ -79,7 +79,7 @@
         <TextView
             style="@style/DescriptionEtLabelStyle"
             android:text="@string/what_is_special"
-            android:textColor="@color/colorPrimaryDark"/>
+            android:textColor="?attr/colorPrimary"/>
 
         <EditText
             android:id="@+id/feature_et"

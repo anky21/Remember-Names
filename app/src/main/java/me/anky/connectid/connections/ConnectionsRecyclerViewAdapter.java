@@ -4,10 +4,12 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.graphics.Color;
 import android.net.Uri;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
+import android.util.SparseBooleanArray;
+
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,19 +37,32 @@ public class ConnectionsRecyclerViewAdapter extends
     private LayoutInflater inflater;
     private Context context;
     private RecyclerViewClickListener clickListener;
+    private MultiSelectListener multiSelectListener;
     private boolean searchMode;
     private String searchKeyword;
+    private SparseBooleanArray selectedItems;
+    private boolean isMultiSelectEnabled = false;
+
 
     public interface RecyclerViewClickListener {
-        void onItemClick(View view, int position);
+        void onItemClick(View view, int databaseId, int position); // Added position
     }
 
-    public ConnectionsRecyclerViewAdapter(Context context, List<ConnectidConnection> connections, boolean searchMode, RecyclerViewClickListener clickListener) {
+    public interface MultiSelectListener {
+        void onMultiSelectStart();
+        void onItemSelectedStateChanged();
+        void onMultiSelectEnd();
+    }
+
+    public ConnectionsRecyclerViewAdapter(Context context, List<ConnectidConnection> connections,
+                                        RecyclerViewClickListener clickListener, MultiSelectListener multiSelectListener) {
         this.inflater = LayoutInflater.from(context);
         this.connections = connections;
-        this.searchMode = searchMode;
         this.clickListener = clickListener;
+        this.multiSelectListener = multiSelectListener;
+        this.selectedItems = new SparseBooleanArray();
         this.searchKeyword = "";
+        this.searchMode = false; // Default searchMode to false
     }
 
     public void setNewData(boolean searchMode, String searchKeyword) {
@@ -71,11 +86,11 @@ public class ConnectionsRecyclerViewAdapter extends
 
     @Override
     public void onBindViewHolder(ConnectionsRecyclerViewAdapter.ViewHolder holder, final int position) {
-
-        String firstName = connections.get(position).getFirstName();
-        String lastName = connections.get(position).getLastName();
-        String feature = connections.get(position).getFeature();
-        String imageName = connections.get(position).getImageName();
+        ConnectidConnection currentConnection = connections.get(position);
+        String firstName = currentConnection.getFirstName();
+        String lastName = currentConnection.getLastName();
+        String feature = currentConnection.getFeature();
+        String imageName = currentConnection.getImageName();
 
         ContextWrapper cw = new ContextWrapper(context);
         // path to /data/data/yourapp/app_data/imageDir
@@ -89,15 +104,71 @@ public class ConnectionsRecyclerViewAdapter extends
         holder.listNameTv.setText(name);
         holder.listFeatureTv.setText(feature);
 
-        holder.container.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int databaseId = connections.get(position).getDatabaseId();
-                clickListener.onItemClick(v, databaseId);
+        // Visual indication of selection
+        holder.itemView.setActivated(selectedItems.get(position, false));
+
+        holder.container.setOnClickListener(v -> {
+            if (isMultiSelectEnabled) {
+                toggleSelection(holder.getAdapterPosition());
+                multiSelectListener.onItemSelectedStateChanged();
+            } else {
+                if (clickListener != null) {
+                    clickListener.onItemClick(v, currentConnection.getDatabaseId(), holder.getAdapterPosition());
+                }
             }
         });
 
+        holder.container.setOnLongClickListener(v -> {
+            if (!isMultiSelectEnabled) {
+                isMultiSelectEnabled = true;
+                multiSelectListener.onMultiSelectStart();
+            }
+            toggleSelection(holder.getAdapterPosition());
+            multiSelectListener.onItemSelectedStateChanged();
+            return true;
+        });
+
         highlightSearchKeyword(holder, name, feature);
+    }
+
+    public void toggleSelection(int position) {
+        if (selectedItems.get(position, false)) {
+            selectedItems.delete(position);
+        } else {
+            selectedItems.put(position, true);
+        }
+        notifyItemChanged(position);
+    }
+
+    public void clearSelections() {
+        isMultiSelectEnabled = false;
+        selectedItems.clear();
+        notifyDataSetChanged(); // Or iterate and notifyItemChanged for previously selected items
+        multiSelectListener.onMultiSelectEnd();
+    }
+
+    public int getSelectedItemCount() {
+        return selectedItems.size();
+    }
+
+    public List<Integer> getSelectedItems() {
+        List<Integer> items = new ArrayList<>(selectedItems.size());
+        for (int i = 0; i < selectedItems.size(); i++) {
+            items.add(connections.get(selectedItems.keyAt(i)).getDatabaseId());
+        }
+        return items;
+    }
+
+    public boolean isMultiSelectEnabled() {
+        return isMultiSelectEnabled;
+    }
+
+    public void setMultiSelectEnabled(boolean enabled) {
+        this.isMultiSelectEnabled = enabled;
+        if (!enabled) {
+            selectedItems.clear(); // Ensure selections are cleared when mode is disabled externally
+            notifyDataSetChanged();
+        }
     }
 
     private void highlightSearchKeyword(ViewHolder holder, String name, String feature) {
@@ -179,13 +250,17 @@ public class ConnectionsRecyclerViewAdapter extends
                         || (item.getFeature() != null && item.getFeature().toLowerCase().contains(searchKeyword))
                         || (item.getDescription() != null && item.getDescription().toLowerCase().contains(searchKeyword))
                         || (item.getMeetVenue() != null && item.getMeetVenue().toLowerCase().contains(searchKeyword))
-                        || (item.getTags() != null && item.getTags().contains(searchKeyword))
+                        || (item.getTags() != null && item.getTags().contains(searchKeyword)) // Assuming tags is a simple string for now
                         || (item.getFirstName() != null && item.getFirstName().toLowerCase().contains(searchKeyword))
                         || (item.getLastName() != null && item.getLastName().toLowerCase().contains(searchKeyword))) {
                     connections.add(item);
                 }
             }
         }
+        // If in multi-select mode, preserve selections (this might need more sophisticated handling
+        // if filtering is allowed during multi-select, e.g., by re-evaluating selectedItems
+        // against the filtered list. For now, filter() might implicitly clear visual selections
+        // on items that are filtered out, which is acceptable for a first pass).
         notifyDataSetChanged();
     }
 }

@@ -33,4 +33,9 @@ public interface ConnectionsDataSource {
     void insertBulkTags(List<String> connectionTags, int databaseId);
 
     void insertBulkNewTags(List<String> connectionTags);
+
+    // Batch tagging operations
+    boolean batchAddTagToConnections(List<Integer> connectionIds, String tagName);
+
+    boolean batchRemoveTagFromConnections(List<Integer> connectionIds, String tagName);
 }
