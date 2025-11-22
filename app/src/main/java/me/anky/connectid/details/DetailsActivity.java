@@ -88,10 +88,15 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
         setContentView(R.layout.activity_details);
         ButterKnife.bind(this);
 
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
-
         ((ConnectidApplication) getApplication()).getApplicationComponent().inject(this);
+
+        // Only load banner ads if user is not ad-free
+        if (!ConnectidApplication.getAppInstance().getSubscriptionManager().isAdFree()) {
+            AdRequest adRequest = new AdRequest.Builder().build();
+            mAdView.loadAd(adRequest);
+        } else {
+            mAdView.setVisibility(View.GONE);
+        }
 
         // Set a Toolbar to act as the ActionBar for this Activity window
         setSupportActionBar(mToolbar);

@@ -5,6 +5,8 @@ import android.os.StrictMode;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
 
+import me.anky.connectid.subscription.SubscriptionManager;
+
 /**
  * Created by Anky An on 10/07/2017.
  * anky25@gmail.com
@@ -14,6 +16,8 @@ public class ConnectidApplication extends Application {
     private ApplicationComponent component;
     private FirebaseAnalytics mFirebaseAnalytics;
     static ConnectidApplication appInstance;
+
+    private SubscriptionManager subscriptionManager;
 
     public ConnectidApplication() {
         appInstance = this;
@@ -45,5 +49,12 @@ public class ConnectidApplication extends Application {
 
     public ApplicationComponent getApplicationComponent() {
         return component;
+    }
+
+    public SubscriptionManager getSubscriptionManager() {
+        if (subscriptionManager == null) {
+            subscriptionManager = new SubscriptionManager(this);
+        }
+        return subscriptionManager;
     }
 }

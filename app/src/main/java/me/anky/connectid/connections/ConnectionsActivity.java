@@ -23,6 +23,9 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
+import com.android.billingclient.api.BillingClient;
+import com.android.billingclient.api.BillingResult;
+import com.android.billingclient.api.Purchase;
 import com.google.android.gms.appinvite.AppInviteInvitation;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
@@ -61,6 +64,8 @@ import me.anky.connectid.details.DetailsActivity;
 import me.anky.connectid.edit.EditActivity;
 import me.anky.connectid.flashcards.FlashcardsActivity;
 import me.anky.connectid.root.ConnectidApplication;
+import me.anky.connectid.subscription.BillingManager;
+import me.anky.connectid.subscription.SubscriptionManager;
 import me.anky.connectid.tags.TagsActivity;
 
 public class ConnectionsActivity extends AppCompatActivity implements
@@ -109,26 +114,37 @@ public class ConnectionsActivity extends AppCompatActivity implements
     private int mSortByOption;
     private boolean isBackBtnPressedOnce = false;
 
+    private SubscriptionManager subscriptionManager;
+    private BillingManager billingManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
 
-        // Initialise google ads
-        new Thread(
-                () -> {
-                    // Initialize the Google Mobile Ads SDK on a background thread.
-                    MobileAds.initialize(this, initializationStatus -> {});
-                })
-                .start();
-
         ButterKnife.bind(this);
 
-        //load banner ads
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
-
         ((ConnectidApplication) getApplication()).getApplicationComponent().inject(this);
+
+        subscriptionManager = new SubscriptionManager(this);
+        billingManager = new BillingManager(this, subscriptionManager);
+        billingManager.startConnection();
+
+        // Initialise google ads only if user is not ad-free
+        if (!subscriptionManager.isAdFree()) {
+            new Thread(
+                    () -> {
+                        // Initialize the Google Mobile Ads SDK on a background thread.
+                        MobileAds.initialize(this, initializationStatus -> {});
+                    })
+                    .start();
+
+            //load banner ads
+            AdRequest adRequest = new AdRequest.Builder().build();
+            mAdView.loadAd(adRequest);
+        } else {
+            mAdView.setVisibility(View.GONE);
+        }
 
         mToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.open, R.string.close);
         mDrawerLayout.addDrawerListener(mToggle);
@@ -148,6 +164,16 @@ public class ConnectionsActivity extends AppCompatActivity implements
                     getResources().getColor(R.color.quiz_orange),
                     PorterDuff.Mode.SRC_IN
             );
+        }
+
+        // Reflect current subscription state in menu title
+        MenuItem adFreeItem = navMenu.findItem(R.id.nav_ad_free);
+        if (adFreeItem != null) {
+            if (subscriptionManager.isAdFree()) {
+                adFreeItem.setTitle(R.string.nav_ad_free_active);
+            } else {
+                adFreeItem.setTitle(R.string.nav_ad_free);
+            }
         }
 
         mNavigationView.setNavigationItemSelectedListener(navigationItemSelectedListener);
@@ -215,6 +241,9 @@ public class ConnectionsActivity extends AppCompatActivity implements
         presenter.unsubscribe();
         if (alertDialog != null && alertDialog.isShowing()) {
             alertDialog.dismiss();
+        }
+        if (billingManager != null) {
+            billingManager.destroy();
         }
     }
 
@@ -483,6 +512,14 @@ public class ConnectionsActivity extends AppCompatActivity implements
                         Utilities.logFirebaseEventWithNoParams("Nav Flashcards");
                         closeNavigationMenu();
                         presenter.onFlashcardsSelected();
+                        break;
+                    case (R.id.nav_ad_free):
+                        Utilities.logFirebaseEventWithNoParams("Nav Ad Free");
+                        closeNavigationMenu();
+                        // Launch purchase flow for ad-free subscription
+                        if (billingManager != null) {
+                            billingManager.launchAdFreePurchase(ConnectionsActivity.this);
+                        }
                         break;
                     case (R.id.nav_invite):
                         Utilities.logFirebaseEventWithNoParams("Nav Invite Friends");

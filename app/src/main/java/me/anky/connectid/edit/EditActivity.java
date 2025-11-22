@@ -473,7 +473,8 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
         editor.putInt(AD_ACTION_COUNT_KEY, adActionCount+1);
         editor.apply();
 
-        if(adActionCount != 0 && adActionCount % 5 == 0){
+        if (!me.anky.connectid.root.ConnectidApplication.getAppInstance().getSubscriptionManager().isAdFree()
+                && adActionCount != 0 && adActionCount % 5 == 0){
             AdRequest adRequest = new AdRequest.Builder().build();
             //ca-app-pub-9341383437171371/7023517119
             InterstitialAd.load(this,"ca-app-pub-5943597081127232/2388295197", adRequest,

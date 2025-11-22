@@ -87,6 +87,8 @@
     <string name="close" translatable="false">Close</string>
     <string name="nav_all_tags">All Tags</string>
     <string name="nav_flashcards">Flashcards</string>
+    <string name="nav_ad_free">Ad Free</string>
+    <string name="nav_ad_free_active">Ad Free (Active)</string>
     <string name="all_tags">All Tags:</string>
     <string name="nav_invite_friends">Invite Friends</string>
     <string name="nav_exit">Exit</string>

@@ -60,13 +60,17 @@ public class FlashcardsActivity extends AppCompatActivity {
             cardContainer.setAlpha(1f);
         }
 
-        // Initialise Google Mobile Ads on a background thread (same pattern as other screens)
-        new Thread(
-                () -> MobileAds.initialize(this, initializationStatus -> { }))
-                .start();
+        if (!me.anky.connectid.root.ConnectidApplication.getAppInstance().getSubscriptionManager().isAdFree()) {
+            // Initialise Google Mobile Ads on a background thread (same pattern as other screens)
+            new Thread(
+                    () -> MobileAds.initialize(this, initializationStatus -> { }))
+                    .start();
 
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
+            AdRequest adRequest = new AdRequest.Builder().build();
+            mAdView.loadAd(adRequest);
+        } else {
+            mAdView.setVisibility(View.GONE);
+        }
 
         flashcards = getIntent().getParcelableArrayListExtra(EXTRA_FLASHCARDS);
         if (flashcards == null || flashcards.isEmpty()) {
