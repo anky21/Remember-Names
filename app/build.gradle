@@ -12,6 +12,7 @@ def keystoreProperties = new Properties()
 keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
 android {
+    compileSdk 35
     signingConfigs {
         config {
             keyAlias keystoreProperties['keyAlias']
@@ -20,13 +21,12 @@ android {
             storePassword keystoreProperties['storePassword']
         }
     }
-    compileSdk 34
     defaultConfig {
         applicationId "me.anky.connectid"
         minSdkVersion 21
-        targetSdkVersion 34
+        targetSdkVersion 35
         multiDexEnabled true
-        versionCode 27
+        versionCode 28
         versionName "2.4.4"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

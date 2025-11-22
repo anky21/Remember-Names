@@ -1,6 +1,7 @@
 package me.anky.connectid.tags;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,6 +21,7 @@ import javax.inject.Inject;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.MenuItemCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -60,16 +62,25 @@ public class TagsActivity extends AppCompatActivity implements TagsActivityMVP.V
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tags);
 
-        // Initialise google ads (same pattern as ConnectionsActivity)
-        new Thread(
-                () -> MobileAds.initialize(this, initializationStatus -> { }))
-                .start();
-
         ButterKnife.bind(this);
 
-        // Load banner ad
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
+        // Ensure a consistent blue status bar on this screen
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setStatusBarColor(
+                    ContextCompat.getColor(this, R.color.colorPrimaryDark));
+        }
+
+        // Only load banner ads if user is not ad-free
+        if (!ConnectidApplication.getAppInstance().getSubscriptionManager().isAdFree()) {
+            new Thread(
+                    () -> MobileAds.initialize(this, initializationStatus -> { }))
+                    .start();
+
+            AdRequest adRequest = new AdRequest.Builder().build();
+            mAdView.loadAd(adRequest);
+        } else {
+            mAdView.setVisibility(View.GONE);
+        }
 
         ((ConnectidApplication) getApplication()).getApplicationComponent().inject(this);
 

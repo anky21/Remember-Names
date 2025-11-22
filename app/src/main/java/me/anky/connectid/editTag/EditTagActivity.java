@@ -1,6 +1,7 @@
 package me.anky.connectid.editTag;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AppCompatActivity;
@@ -69,6 +70,12 @@ public class EditTagActivity extends AppCompatActivity implements EditTagActivit
         setContentView(R.layout.activity_edit_tag);
 
         ButterKnife.bind(this);
+
+        // Ensure a consistent blue status bar on this screen
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setStatusBarColor(
+                    ContextCompat.getColor(this, R.color.colorPrimaryDark));
+        }
 
         ((ConnectidApplication) getApplication()).getApplicationComponent().inject(this);
 

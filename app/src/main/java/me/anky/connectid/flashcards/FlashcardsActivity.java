@@ -3,6 +3,7 @@ package me.anky.connectid.flashcards;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -21,6 +22,7 @@ import java.util.ArrayList;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import me.anky.connectid.R;
 import me.anky.connectid.data.ConnectidConnection;
 
@@ -47,6 +49,12 @@ public class FlashcardsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_flashcards);
+
+        // Ensure a consistent blue status bar on this screen
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setStatusBarColor(
+                    ContextCompat.getColor(this, R.color.colorPrimaryDark));
+        }
 
         imageView = findViewById(R.id.flashcard_image);
         nameTextView = findViewById(R.id.flashcard_name);

@@ -116,6 +116,7 @@ public class ConnectionsActivity extends AppCompatActivity implements
 
     private SubscriptionManager subscriptionManager;
     private BillingManager billingManager;
+    private boolean hasLoadedBannerAd = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,23 +129,9 @@ public class ConnectionsActivity extends AppCompatActivity implements
 
         subscriptionManager = new SubscriptionManager(this);
         billingManager = new BillingManager(this, subscriptionManager);
+        billingManager.setBillingUpdatesListener(isAdFree ->
+                runOnUiThread(() -> updateAdFreeUi(isAdFree)));
         billingManager.startConnection();
-
-        // Initialise google ads only if user is not ad-free
-        if (!subscriptionManager.isAdFree()) {
-            new Thread(
-                    () -> {
-                        // Initialize the Google Mobile Ads SDK on a background thread.
-                        MobileAds.initialize(this, initializationStatus -> {});
-                    })
-                    .start();
-
-            //load banner ads
-            AdRequest adRequest = new AdRequest.Builder().build();
-            mAdView.loadAd(adRequest);
-        } else {
-            mAdView.setVisibility(View.GONE);
-        }
 
         mToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.open, R.string.close);
         mDrawerLayout.addDrawerListener(mToggle);
@@ -166,15 +153,8 @@ public class ConnectionsActivity extends AppCompatActivity implements
             );
         }
 
-        // Reflect current subscription state in menu title
-        MenuItem adFreeItem = navMenu.findItem(R.id.nav_ad_free);
-        if (adFreeItem != null) {
-            if (subscriptionManager.isAdFree()) {
-                adFreeItem.setTitle(R.string.nav_ad_free_active);
-            } else {
-                adFreeItem.setTitle(R.string.nav_ad_free);
-            }
-        }
+        // Initial ad/menu state based on cached subscription flag
+        updateAdFreeUi(subscriptionManager.isAdFree());
 
         mNavigationView.setNavigationItemSelectedListener(navigationItemSelectedListener);
 
@@ -245,6 +225,47 @@ public class ConnectionsActivity extends AppCompatActivity implements
         if (billingManager != null) {
             billingManager.destroy();
         }
+    }
+
+    private void updateAdFreeUi(boolean isAdFree) {
+        if (mNavigationView != null) {
+            Menu navMenu = mNavigationView.getMenu();
+            if (navMenu != null) {
+                MenuItem adFreeItem = navMenu.findItem(R.id.nav_ad_free);
+                if (adFreeItem != null) {
+                    adFreeItem.setTitle(isAdFree ? R.string.nav_ad_free_active : R.string.nav_ad_free);
+                }
+            }
+        }
+
+        if (mAdView == null) {
+            return;
+        }
+
+        if (isAdFree) {
+            mAdView.setVisibility(View.GONE);
+        } else {
+            mAdView.setVisibility(View.VISIBLE);
+            ensureBannerAdLoaded();
+        }
+    }
+
+    private void ensureBannerAdLoaded() {
+        if (hasLoadedBannerAd) {
+            return;
+        }
+        hasLoadedBannerAd = true;
+
+        new Thread(
+                () -> {
+                    // Initialize the Google Mobile Ads SDK on a background thread.
+                    MobileAds.initialize(this, initializationStatus -> {});
+                })
+                .start();
+
+        // Load banner ad
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
     }
 
     @Override

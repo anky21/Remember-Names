@@ -129,4 +129,16 @@
     <!--    ca-app-pub-9341383437171371/9246355770-->
     <string name="ad_unit_id_banner">ca-app-pub-5943597081127232/3001666575</string>
 
+    <!-- Billing / subscription messages -->
+    <string name="billing_setup_failed">Billing setup failed: %1$s</string>
+    <string name="billing_service_disconnected">Billing service disconnected. Some features may be unavailable for a short time.</string>
+    <string name="billing_query_purchases_failed">Could not check your subscription status: %1$s</string>
+    <string name="billing_product_details_failed">Could not load subscription details: %1$s</string>
+    <string name="billing_product_not_found">Subscription product not found. Please try again later.</string>
+    <string name="billing_initializing">Preparing billing, please try again in a moment…</string>
+    <string name="billing_loading_product">Loading subscription details, please try again in a moment…</string>
+    <string name="billing_no_offer_details">No subscription offers are currently available. Please try again later.</string>
+    <string name="billing_purchase_failed">Purchase failed: %1$s</string>
+    <string name="billing_acknowledge_failed">There was a problem completing your purchase: %1$s</string>
+
 </resources>

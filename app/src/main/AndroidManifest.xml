@@ -59,23 +59,27 @@
 
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
-            android:theme="@style/Base.Theme.AppCompat" />
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".editTag.EditTagActivity"
             android:label="@string/edit_tags"
             android:parentActivityName=".edit.EditActivity"
+            android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
             android:name=".tags.TagsActivity"
             android:label="@string/activity_label_tags"
-            android:parentActivityName=".connections.ConnectionsActivity" />
+            android:parentActivityName=".connections.ConnectionsActivity"
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".selectedConnections.SelectedConnectionsActivity"
-            android:parentActivityName=".tags.TagsActivity" />
+            android:parentActivityName=".tags.TagsActivity"
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".flashcards.FlashcardsActivity"
             android:label="@string/activity_label_flashcards"
-            android:parentActivityName=".connections.ConnectionsActivity" />
+            android:parentActivityName=".connections.ConnectionsActivity"
+            android:theme="@style/AppTheme" />
 
         <service android:name="service.FcmService"
             android:exported="true">
