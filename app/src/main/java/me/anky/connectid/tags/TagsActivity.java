@@ -2,11 +2,14 @@ package me.anky.connectid.tags;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -27,6 +30,7 @@ public class TagsActivity extends AppCompatActivity implements TagsActivityMVP.V
     private final static String TAG = "TagsActivity";
 
     public List<ConnectionTag> data = new ArrayList<>();
+    private boolean sortAscending = true;
 
     @BindView(R.id.all_tags_recyclerview)
     RecyclerView recyclerView;
@@ -47,7 +51,8 @@ public class TagsActivity extends AppCompatActivity implements TagsActivityMVP.V
 
         ((ConnectidApplication) getApplication()).getApplicationComponent().inject(this);
 
-        adapter = new TagsRecyclerViewAdapter(this, data, this);
+        // Use a separate list instance inside the adapter so sorting doesn't clear our local data
+        adapter = new TagsRecyclerViewAdapter(this, new ArrayList<ConnectionTag>(), this);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
@@ -63,12 +68,26 @@ public class TagsActivity extends AppCompatActivity implements TagsActivityMVP.V
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_tags_sortby, menu);
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
             case android.R.id.home:
                 onBackPressed();
                 overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
+                return true;
+            case R.id.sort_tags_a_z:
+                sortAscending = true;
+                sortAndDisplayTags();
+                return true;
+            case R.id.sort_tags_z_a:
+                sortAscending = false;
+                sortAndDisplayTags();
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -86,7 +105,11 @@ public class TagsActivity extends AppCompatActivity implements TagsActivityMVP.V
         emptyView.setVisibility(View.GONE);
         recyclerView.setVisibility(View.VISIBLE);
 
-        adapter.setTags(allTags);
+        data.clear();
+        if (allTags != null) {
+            data.addAll(allTags);
+        }
+        sortAndDisplayTags();
     }
 
     @Override
@@ -99,10 +122,15 @@ public class TagsActivity extends AppCompatActivity implements TagsActivityMVP.V
     public void displayNoTags() {
         emptyView.setVisibility(View.VISIBLE);
         recyclerView.setVisibility(View.GONE);
+        data.clear();
+        adapter.setTags(data);
     }
 
     @Override
     public void onItemClick(View view, int position) {
+        if (position < 0 || position >= data.size()) {
+            return;
+        }
         ConnectionTag connectionTag = data.get(position);
 
         Intent selectedConnectionsIntent = new Intent(TagsActivity.this, SelectedConnectionsActivity.class);
@@ -110,5 +138,24 @@ public class TagsActivity extends AppCompatActivity implements TagsActivityMVP.V
         selectedConnectionsIntent.putExtra("tag", connectionTag.getTag());
         startActivity(selectedConnectionsIntent);
         overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+    }
+
+    private void sortAndDisplayTags() {
+        if (data == null || data.isEmpty()) {
+            adapter.setTags(data);
+            return;
+        }
+
+        Collections.sort(data, new Comparator<ConnectionTag>() {
+            @Override
+            public int compare(ConnectionTag o1, ConnectionTag o2) {
+                String t1 = o1.getTag() != null ? o1.getTag().toLowerCase() : "";
+                String t2 = o2.getTag() != null ? o2.getTag().toLowerCase() : "";
+                int result = t1.compareTo(t2);
+                return sortAscending ? result : -result;
+            }
+        });
+
+        adapter.setTags(data);
     }
 }

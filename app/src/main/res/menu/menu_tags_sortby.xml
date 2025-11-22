@@ -1,0 +1,16 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/sort_tags_a_z"
+        android:orderInCategory="10"
+        android:title="@string/tags_a_z"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/sort_tags_z_a"
+        android:orderInCategory="20"
+        android:title="@string/tags_z_a"
+        app:showAsAction="never" />
+
+</menu>
