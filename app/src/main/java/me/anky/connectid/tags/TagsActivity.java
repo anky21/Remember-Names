@@ -7,6 +7,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -43,6 +47,9 @@ public class TagsActivity extends AppCompatActivity implements TagsActivityMVP.V
     @BindView(R.id.empty_view)
     LinearLayout emptyView;
 
+    @BindView(R.id.adView)
+    AdView mAdView;
+
     TagsRecyclerViewAdapter adapter;
 
     @Inject
@@ -52,7 +59,17 @@ public class TagsActivity extends AppCompatActivity implements TagsActivityMVP.V
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tags);
+
+        // Initialise google ads (same pattern as ConnectionsActivity)
+        new Thread(
+                () -> MobileAds.initialize(this, initializationStatus -> { }))
+                .start();
+
         ButterKnife.bind(this);
+
+        // Load banner ad
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
 
         ((ConnectidApplication) getApplication()).getApplicationComponent().inject(this);
 
