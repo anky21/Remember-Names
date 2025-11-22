@@ -72,6 +72,10 @@
         <activity
             android:name=".selectedConnections.SelectedConnectionsActivity"
             android:parentActivityName=".tags.TagsActivity" />
+        <activity
+            android:name=".flashcards.FlashcardsActivity"
+            android:label="@string/activity_label_flashcards"
+            android:parentActivityName=".connections.ConnectionsActivity" />
 
         <service android:name="service.FcmService"
             android:exported="true">

@@ -86,10 +86,20 @@
     <string name="open" translatable="false">Open</string>
     <string name="close" translatable="false">Close</string>
     <string name="nav_all_tags">All Tags</string>
+    <string name="nav_flashcards">Flashcards</string>
     <string name="all_tags">All Tags:</string>
     <string name="nav_invite_friends">Invite Friends</string>
     <string name="nav_exit">Exit</string>
     <string name="search">Search</string>
+
+    <!-- Flashcards -->
+    <string name="activity_label_flashcards">Flashcards</string>
+    <string name="flashcards_not_enough_images">Add at least two profiles with photos to use Flashcards.</string>
+    <string name="flashcards_next">Next</string>
+    <string name="flashcards_hint">Tap the image to reveal the contact name and details.</string>
+    <string name="flashcards_end_of_game_message">You have reached the end of your flashcards. Do you want to keep going?</string>
+    <string name="flashcards_continue">Continue</string>
+    <string name="flashcards_exit">Exit</string>
     <string name="newest_first_default">Newest first (default)</string>
     <string name="oldest_first">Oldest first</string>
     <string name="first_name_a_z"><![CDATA[First name A->Z]]></string>

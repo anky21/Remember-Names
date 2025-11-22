@@ -1,5 +1,7 @@
 package me.anky.connectid.connections;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -59,6 +61,45 @@ public class ConnectionsActivityPresenter implements ConnectionsActivityMVP.Pres
                         });
 
         // Add this subscription to the RxJava cleanup composite
+        compositeDisposable.add(disposableSingleObserver);
+    }
+
+    @Override
+    public void onFlashcardsSelected() {
+        int option = view.getSortByOption();
+        DisposableSingleObserver<List<ConnectidConnection>> disposableSingleObserver =
+                connectionsDataSource.getConnections(option)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeWith(new DisposableSingleObserver<List<ConnectidConnection>>() {
+                            @Override
+                            public void onSuccess(@NonNull List<ConnectidConnection> connections) {
+                                List<ConnectidConnection> withImages = new ArrayList<>();
+                                for (ConnectidConnection connection : connections) {
+                                    String imageName = connection.getImageName();
+                                    if (imageName != null && !"blank_profile.jpg".equals(imageName)) {
+                                        withImages.add(connection);
+                                    }
+                                }
+
+                                if (withImages.size() < 2) {
+                                    view.showFlashcardsNotEnoughProfilesError();
+                                } else {
+                                    Collections.shuffle(withImages);
+                                    if (withImages.size() > 10) {
+                                        withImages = withImages.subList(0, 10);
+                                    }
+                                    view.startFlashcardsGame(withImages);
+                                }
+                            }
+
+                            @Override
+                            public void onError(@NonNull Throwable e) {
+                                view.showFlashcardsNotEnoughProfilesError();
+                                Utilities.logFirebaseError("error_load_connections", TAG + ".onFlashcardsSelected", e.getMessage());
+                            }
+                        });
+
         compositeDisposable.add(disposableSingleObserver);
     }
 

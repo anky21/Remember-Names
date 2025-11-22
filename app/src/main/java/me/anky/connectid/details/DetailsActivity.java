@@ -260,18 +260,30 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
             mTagsTv.setText(mTags);
         }
 
-        ContextWrapper cw = new ContextWrapper(getApplicationContext());
-        // path to /data/data/yourapp/app_data/imageDir
-        File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
-        String path = directory.getAbsolutePath() + "/" + imageName;
-
         RequestOptions myOptions = new RequestOptions()
-                .centerCrop();
+                .centerCrop()
+                .placeholder(R.drawable.blank_profile_round)
+                .error(R.drawable.blank_profile_round);
 
-        Glide.with(this)
-                .applyDefaultRequestOptions(myOptions)
-                .load(Uri.fromFile(new File(path)))
-                .into(mPortraitIv);
+        // When there is no real stored image (or the placeholder name is used), show the
+        // bundled default portrait drawable instead of loading from internal storage.
+        if (imageName == null || imageName.equals("") || imageName.equals("blank_profile.jpg")) {
+            Glide.with(this)
+                    .applyDefaultRequestOptions(myOptions)
+                    .load(R.drawable.blank_profile_round)
+                    .into(mPortraitIv);
+        } else {
+            ContextWrapper cw = new ContextWrapper(getApplicationContext());
+            // path to /data/data/yourapp/app_data/imageDir
+            File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
+            String path = directory.getAbsolutePath() + "/" + imageName;
+            File imageFile = new File(path);
+
+            Glide.with(this)
+                    .applyDefaultRequestOptions(myOptions)
+                    .load(Uri.fromFile(imageFile))
+                    .into(mPortraitIv);
+        }
 
         mMeetVenueTv.setText(mMeetVenue);
         mAppearanceTv.setText(mAppearance);

@@ -204,17 +204,31 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
 
             mFirstNameEt.setText(mFirstName);
             mLastNameEt.setText(mLastName);
-            ContextWrapper cw = new ContextWrapper(getApplicationContext());
-            // path to /data/data/yourapp/app_data/imageDir
-            File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
-            String path = directory.getAbsolutePath() + "/" + mImageName;
-            RequestOptions myOptions = new RequestOptions()
-                    .centerCrop();
 
-            Glide.with(this)
-                    .applyDefaultRequestOptions(myOptions)
-                    .load(Uri.fromFile(new File(path)))
-                    .into(mPortraitIv);
+            RequestOptions myOptions = new RequestOptions()
+                    .centerCrop()
+                    .placeholder(R.drawable.blank_profile_round)
+                    .error(R.drawable.blank_profile_round);
+
+            // For existing connections with no stored image (or only the placeholder name),
+            // show the bundled default portrait instead of trying to load from internal storage.
+            if (mImageName == null || mImageName.equals("") || mImageName.equals("blank_profile.jpg")) {
+                Glide.with(this)
+                        .applyDefaultRequestOptions(myOptions)
+                        .load(R.drawable.blank_profile_round)
+                        .into(mPortraitIv);
+            } else {
+                ContextWrapper cw = new ContextWrapper(getApplicationContext());
+                // path to /data/data/yourapp/app_data/imageDir
+                File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
+                String path = directory.getAbsolutePath() + "/" + mImageName;
+                File imageFile = new File(path);
+
+                Glide.with(this)
+                        .applyDefaultRequestOptions(myOptions)
+                        .load(Uri.fromFile(imageFile))
+                        .into(mPortraitIv);
+            }
             mMeetVenueEt.setText(mMeetVenue);
             mAppearanceEt.setText(mAppearance);
             mFeatureEt.setText(mFeature);

@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -58,6 +59,7 @@ import me.anky.connectid.data.SharedPrefsHelper;
 import me.anky.connectid.data.source.local.generated.ConnectidDatabase;
 import me.anky.connectid.details.DetailsActivity;
 import me.anky.connectid.edit.EditActivity;
+import me.anky.connectid.flashcards.FlashcardsActivity;
 import me.anky.connectid.root.ConnectidApplication;
 import me.anky.connectid.tags.TagsActivity;
 
@@ -135,7 +137,18 @@ public class ConnectionsActivity extends AppCompatActivity implements
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
+        // Disable global tint so each icon keeps its own colors
         mNavigationView.setItemIconTintList(null);
+
+        // Specifically tint the flashcards icon to quiz_orange
+        Menu navMenu = mNavigationView.getMenu();
+        MenuItem flashcardsItem = navMenu.findItem(R.id.nav_flashcards);
+        if (flashcardsItem != null && flashcardsItem.getIcon() != null) {
+            flashcardsItem.getIcon().mutate().setColorFilter(
+                    getResources().getColor(R.color.quiz_orange),
+                    PorterDuff.Mode.SRC_IN
+            );
+        }
 
         mNavigationView.setNavigationItemSelectedListener(navigationItemSelectedListener);
 
@@ -441,6 +454,19 @@ public class ConnectionsActivity extends AppCompatActivity implements
         alertDialog = builder.show();
     }
 
+    @Override
+    public void startFlashcardsGame(List<ConnectidConnection> flashcards) {
+        Intent intent = new Intent(this, FlashcardsActivity.class);
+        intent.putParcelableArrayListExtra("flashcards", new ArrayList<>(flashcards));
+        startActivity(intent);
+        overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+    }
+
+    @Override
+    public void showFlashcardsNotEnoughProfilesError() {
+        Toast.makeText(this, R.string.flashcards_not_enough_images, Toast.LENGTH_SHORT).show();
+    }
+
     private NavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
             menuItem -> {
                 switch (menuItem.getItemId()) {
@@ -452,6 +478,11 @@ public class ConnectionsActivity extends AppCompatActivity implements
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
                         overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+                        break;
+                    case (R.id.nav_flashcards):
+                        Utilities.logFirebaseEventWithNoParams("Nav Flashcards");
+                        closeNavigationMenu();
+                        presenter.onFlashcardsSelected();
                         break;
                     case (R.id.nav_invite):
                         Utilities.logFirebaseEventWithNoParams("Nav Invite Friends");

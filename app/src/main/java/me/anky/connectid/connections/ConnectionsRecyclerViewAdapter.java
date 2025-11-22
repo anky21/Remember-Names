@@ -77,14 +77,29 @@ public class ConnectionsRecyclerViewAdapter extends
         String feature = connections.get(position).getFeature();
         String imageName = connections.get(position).getImageName();
 
-        ContextWrapper cw = new ContextWrapper(context);
-        // path to /data/data/yourapp/app_data/imageDir
-        File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
-        String path = directory.getAbsolutePath() + "/" + imageName;
-        Glide.with(context)
-                .load(Uri.fromFile(new File(path)))
-                .apply(RequestOptions.circleCropTransform())
-                .into(holder.listItemIv);
+        // If there is no saved image name (or it's the default placeholder), fall back to the
+        // bundled default drawable instead of trying to load from internal storage.
+        if (imageName == null || imageName.equals("") || imageName.equals("blank_profile.jpg")) {
+            Glide.with(context)
+                    .load(R.drawable.blank_profile_round)
+                    .apply(RequestOptions.circleCropTransform())
+                    .into(holder.listItemIv);
+        } else {
+            ContextWrapper cw = new ContextWrapper(context);
+            // path to /data/data/yourapp/app_data/imageDir
+            File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
+            String path = directory.getAbsolutePath() + "/" + imageName;
+            File imageFile = new File(path);
+
+            RequestOptions options = RequestOptions.circleCropTransform()
+                    .placeholder(R.drawable.blank_profile_round)
+                    .error(R.drawable.blank_profile_round);
+
+            Glide.with(context)
+                    .load(Uri.fromFile(imageFile))
+                    .apply(options)
+                    .into(holder.listItemIv);
+        }
         String name = firstName + " " + lastName;
         holder.listNameTv.setText(name);
         holder.listFeatureTv.setText(feature);

@@ -19,6 +19,10 @@ public interface ConnectionsActivityMVP {
         void closeNavigationMenu();
 
         void showExitDialog();
+
+        void startFlashcardsGame(List<ConnectidConnection> flashcards);
+
+        void showFlashcardsNotEnoughProfilesError();
     }
 
     interface Presenter {
@@ -28,6 +32,8 @@ public interface ConnectionsActivityMVP {
         void loadConnections(Integer integer);
 
         void handleSortByOptionChange();
+
+        void onFlashcardsSelected();
 
         void unsubscribe();
     }

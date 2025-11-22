@@ -7,6 +7,11 @@
         android:title="@string/nav_all_tags" />
 
     <item
+        android:id="@+id/nav_flashcards"
+        android:icon="@drawable/quiz"
+        android:title="@string/nav_flashcards" />
+
+    <item
         android:id="@+id/nav_invite"
         android:icon="@drawable/ic_invite_friends"
         android:title="@string/nav_invite_friends" />

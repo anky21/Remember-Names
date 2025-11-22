@@ -8,4 +8,5 @@
     <color name="linear_layout_background">#333</color>
     <color name="text_or_icons">#FFFFFF</color>
     <color name="color_light_primary">#B2DFDB</color>
+    <color name="quiz_orange">#FF9800</color>
 </resources>
