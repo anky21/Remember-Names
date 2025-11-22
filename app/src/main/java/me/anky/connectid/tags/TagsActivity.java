@@ -15,6 +15,8 @@ import java.util.List;
 import javax.inject.Inject;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
+import androidx.core.view.MenuItemCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
@@ -31,6 +33,9 @@ public class TagsActivity extends AppCompatActivity implements TagsActivityMVP.V
 
     public List<ConnectionTag> data = new ArrayList<>();
     private boolean sortAscending = true;
+
+    private MenuItem searchItem;
+    private SearchView searchView;
 
     @BindView(R.id.all_tags_recyclerview)
     RecyclerView recyclerView;
@@ -70,7 +75,12 @@ public class TagsActivity extends AppCompatActivity implements TagsActivityMVP.V
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_tags_sortby, menu);
-        return true;
+
+        searchItem = menu.findItem(R.id.action_search);
+        searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        searchView.setOnQueryTextListener(queryTextListener);
+
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -95,6 +105,10 @@ public class TagsActivity extends AppCompatActivity implements TagsActivityMVP.V
 
     @Override
     protected void onResume() {
+        if (searchView != null && !searchView.getQuery().equals("")) {
+            searchView.setQuery("", false);
+            searchView.setIconified(true);
+        }
         super.onResume();
         presenter.setView(this);
         presenter.loadTags();
@@ -139,6 +153,24 @@ public class TagsActivity extends AppCompatActivity implements TagsActivityMVP.V
         startActivity(selectedConnectionsIntent);
         overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
     }
+
+    private SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
+        @Override
+        public boolean onQueryTextSubmit(String query) {
+            return false;
+        }
+
+        @Override
+        public boolean onQueryTextChange(String newText) {
+            if (newText.length() == 0) {
+                adapter.setNewData(false, newText);
+            } else {
+                adapter.setNewData(true, newText);
+            }
+            adapter.filter();
+            return true;
+        }
+    };
 
     private void sortAndDisplayTags() {
         if (data == null || data.isEmpty()) {

@@ -2,6 +2,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/action_search"
+        android:title="@string/search"
+        app:actionViewClass="androidx.appcompat.widget.SearchView"
+        app:showAsAction="always"/>
+
+    <item
         android:id="@+id/sort_tags_a_z"
         android:orderInCategory="10"
         android:title="@string/tags_a_z"

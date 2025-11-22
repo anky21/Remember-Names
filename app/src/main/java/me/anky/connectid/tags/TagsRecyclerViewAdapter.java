@@ -23,9 +23,12 @@ import me.anky.connectid.data.ConnectionTag;
 
 public class TagsRecyclerViewAdapter extends RecyclerView.Adapter<TagsRecyclerViewAdapter.ViewHolder> {
     private List<ConnectionTag> tags = new ArrayList<>();
+    private List<ConnectionTag> tagsOriginal = new ArrayList<>();
     private LayoutInflater inflater;
     private Context context;
     private RecyclerViewClickListener clickListener;
+    private boolean searchMode;
+    private String searchKeyword;
 
     public interface RecyclerViewClickListener {
         void onItemClick(View view, int position);
@@ -34,7 +37,10 @@ public class TagsRecyclerViewAdapter extends RecyclerView.Adapter<TagsRecyclerVi
     public TagsRecyclerViewAdapter(Context context, List<ConnectionTag> tags, RecyclerViewClickListener clickListener) {
         this.inflater = LayoutInflater.from(context);
         this.tags = tags;
+        this.tagsOriginal = new ArrayList<>(tags);
         this.clickListener = clickListener;
+        this.searchKeyword = "";
+        this.searchMode = false;
     }
 
     @Override
@@ -74,6 +80,12 @@ public class TagsRecyclerViewAdapter extends RecyclerView.Adapter<TagsRecyclerVi
         }
     }
 
+    public void setNewData(boolean searchMode, String searchKeyword) {
+        this.searchMode = searchMode;
+        this.searchKeyword = searchKeyword;
+        notifyDataSetChanged();
+    }
+
     class ViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.tag_item_tv)
         TextView tagItemTv;
@@ -86,12 +98,31 @@ public class TagsRecyclerViewAdapter extends RecyclerView.Adapter<TagsRecyclerVi
 
     public void setTags(List<ConnectionTag> tags) {
         if (tags == null) {
-            tags = new ArrayList<>();
-            this.tags = tags;
+            this.tags = new ArrayList<>();
+            this.tagsOriginal = new ArrayList<>();
         } else {
             this.tags.clear();
             this.tags.addAll(tags);
+
+            this.tagsOriginal.clear();
+            this.tagsOriginal.addAll(tags);
+
             notifyDataSetChanged();
         }
+    }
+
+    public void filter() {
+        tags.clear();
+        if (searchKeyword == null || searchKeyword.isEmpty()) {
+            tags.addAll(tagsOriginal);
+        } else {
+            String lower = searchKeyword.toLowerCase();
+            for (ConnectionTag item : tagsOriginal) {
+                if (item.getTag() != null && item.getTag().toLowerCase().contains(lower)) {
+                    tags.add(item);
+                }
+            }
+        }
+        notifyDataSetChanged();
     }
 }
