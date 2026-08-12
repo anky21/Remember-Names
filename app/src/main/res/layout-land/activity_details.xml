@@ -22,10 +22,12 @@
                 android:id="@+id/toolbar_1"
                 android:layout_width="match_parent"
                 android:layout_height="?actionBarSize"
+                android:background="@color/colorPrimary"
                 android:elevation="@dimen/margin_4dp"
                 android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
                 app:layout_collapseMode="pin"
-                app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+                app:titleTextColor="@android:color/white">
 
             </androidx.appcompat.widget.Toolbar>
         </com.google.android.material.appbar.CollapsingToolbarLayout>

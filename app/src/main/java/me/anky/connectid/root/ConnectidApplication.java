@@ -7,14 +7,22 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsCompat;
+import androidx.core.view.insets.ColorProtection;
+import androidx.core.view.insets.ProtectionLayout;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
+
+import java.util.Collections;
 
 import me.anky.connectid.R;
 import me.anky.connectid.subscription.SubscriptionManager;
@@ -25,6 +33,7 @@ import me.anky.connectid.subscription.SubscriptionManager;
  */
 
 public class ConnectidApplication extends Application {
+    private static final String STATUS_BAR_PROTECTION_TAG = "status_bar_protection";
     private ApplicationComponent component;
     private FirebaseAnalytics mFirebaseAnalytics;
     static ConnectidApplication appInstance;
@@ -104,11 +113,17 @@ public class ConnectidApplication extends Application {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             try {
                 Window window = activity.getWindow();
+                int color = ContextCompat.getColor(activity, R.color.colorPrimaryDark);
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+                    addStatusBarProtection(activity, window, color);
+                    return;
+                }
+
                 window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
                 window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-                int color = ContextCompat.getColor(activity, R.color.colorPrimaryDark);
                 window.setStatusBarColor(color);
-                
+
                 // Force dark status bar icons on API 23+
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     View decorView = window.getDecorView();
@@ -121,5 +136,27 @@ public class ConnectidApplication extends Application {
                 android.util.Log.e("ConnectidApp", "Failed to set status bar color", e);
             }
         }
+    }
+
+    private void addStatusBarProtection(Activity activity, Window window, int color) {
+        WindowCompat.getInsetsController(window, window.getDecorView())
+                .setAppearanceLightStatusBars(false);
+
+        ViewGroup content = activity.findViewById(android.R.id.content);
+        if (content == null || content.findViewWithTag(STATUS_BAR_PROTECTION_TAG) != null) {
+            return;
+        }
+
+        ProtectionLayout protectionLayout = new ProtectionLayout(activity);
+        protectionLayout.setTag(STATUS_BAR_PROTECTION_TAG);
+        protectionLayout.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS);
+        protectionLayout.setProtections(Collections.singletonList(
+                new ColorProtection(WindowInsetsCompat.Side.TOP, color)
+        ));
+        content.addView(protectionLayout, new ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
+        ));
+        ViewCompat.requestApplyInsets(protectionLayout);
     }
 }
