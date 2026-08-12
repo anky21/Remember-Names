@@ -9,12 +9,11 @@ buildscript {
         // Firebase crashlytics
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.1.1'
+        classpath 'com.android.tools.build:gradle:8.13.1'
         classpath 'me.tatarka:gradle-retrolambda:3.6.1'
-        classpath 'com.google.gms:google-services:4.3.10'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.5.2'
-        classpath 'com.google.gms:google-services:4.3.15'
+        classpath 'com.google.firebase:firebase-crashlytics-gradle:3.0.4'
+        classpath 'com.google.gms:google-services:4.4.3'
 
         // Firebase crashlytics
 
@@ -28,10 +27,10 @@ allprojects {
         mavenCentral()
         google()
         jcenter()
-        maven { url 'https://jitpack.io' }
+        maven { url = 'https://jitpack.io' }
         // Firebase crashlytics
         maven {
-            url 'https://maven.google.com/'
+            url = 'https://maven.google.com/'
         }
     }
 }

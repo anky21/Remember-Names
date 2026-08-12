@@ -92,8 +92,9 @@ public class EditActivityPresenter implements EditActivityMVP.Presenter {
 
 //                                System.out.println("MVP presenter - " + "delivered new connection, resultCode " + resultCode);
 
-                                if (resultCode == -1) {
-                                    Utilities.logFirebaseError("error_update_connection", TAG + ".updateConnection", "databaseId is -1");
+                                if (resultCode <= 0) {
+                                    Utilities.logFirebaseError("error_update_connection", TAG + ".updateConnection",
+                                            "No connection was updated");
 
                                     view.displayError();
                                 } else {
@@ -105,6 +106,7 @@ public class EditActivityPresenter implements EditActivityMVP.Presenter {
                             public void onError(@NonNull Throwable e) {
 //                                System.out.println("MVP presenter - " + "something went seriously wrong");
                                 Utilities.logFirebaseError("error_update_connection", TAG + ".deliverNewConnection", e.getMessage());
+                                view.displayError();
                             }
                         });
 

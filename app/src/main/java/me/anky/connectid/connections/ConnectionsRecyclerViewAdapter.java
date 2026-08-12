@@ -70,7 +70,7 @@ public class ConnectionsRecyclerViewAdapter extends
     }
 
     @Override
-    public void onBindViewHolder(ConnectionsRecyclerViewAdapter.ViewHolder holder, final int position) {
+    public void onBindViewHolder(ConnectionsRecyclerViewAdapter.ViewHolder holder, int position) {
 
         String firstName = connections.get(position).getFirstName();
         String lastName = connections.get(position).getLastName();
@@ -107,7 +107,11 @@ public class ConnectionsRecyclerViewAdapter extends
         holder.container.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int databaseId = connections.get(position).getDatabaseId();
+                int adapterPosition = holder.getAdapterPosition();
+                if (adapterPosition == RecyclerView.NO_POSITION) {
+                    return;
+                }
+                int databaseId = connections.get(adapterPosition).getDatabaseId();
                 clickListener.onItemClick(v, databaseId);
             }
         });

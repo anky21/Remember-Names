@@ -19,9 +19,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.List;
-import java.util.Random;
+import java.util.UUID;
 
 import androidx.core.content.ContextCompat;
 import me.anky.connectid.data.source.local.ConnectidColumns;
@@ -33,8 +32,6 @@ import me.anky.connectid.root.ConnectidApplication;
  */
 
 public class Utilities {
-    private static final Random random = new Random();
-    private static final String CHARS = "abcdefghijkmnopqrstuvwxyz";
     public static final String SORTBY = "sortby";
     public static final int TAG_BASE_NUMBER = 1000;
     private static ConnectidApplication application;
@@ -53,38 +50,30 @@ public class Utilities {
         return bitmap;
     }
 
-    // Generate a 6 character token
+    // Generate a collision-resistant image name.
     public static String generateImageName() {
-        int length = 6;
-        StringBuilder token = new StringBuilder(length);
-        for (int i = 0; i < length; i++) {
-            token.append(CHARS.charAt(random.nextInt(CHARS.length())));
-        }
-        return token.toString() + ".jpg";
+        return UUID.randomUUID().toString() + ".jpg";
     }
 
     // Save Bitmap to internal storage
-    public static void saveToInternalStorage(Context context, Bitmap bitmapImage, String imageName) {
+    public static boolean saveToInternalStorage(Context context, Bitmap bitmapImage, String imageName) {
+        if (bitmapImage == null || imageName == null || imageName.length() == 0) {
+            return false;
+        }
+
         ContextWrapper cw = new ContextWrapper(context);
         // path to /data/data/yourapp/app_data/imageDir
         File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
         // Create imageDir
         File file = new File(directory, imageName);
 
-        FileOutputStream fos = null;
-        try {
-            fos = new FileOutputStream(file);
+        try (FileOutputStream fos = new FileOutputStream(file)) {
             // Use the compress method on the BitMap object to write image to the OutputStream
-            bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, fos);
+            return bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, fos);
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            try {
-                fos.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }
+        return false;
     }
 
     public static Bitmap resizeBitmap(Bitmap bitmap) {

@@ -14,6 +14,7 @@ import com.android.billingclient.api.BillingClient;
 import com.android.billingclient.api.BillingClientStateListener;
 import com.android.billingclient.api.BillingFlowParams;
 import com.android.billingclient.api.BillingResult;
+import com.android.billingclient.api.PendingPurchasesParams;
 import com.android.billingclient.api.ProductDetails;
 import com.android.billingclient.api.Purchase;
 import com.android.billingclient.api.PurchasesUpdatedListener;
@@ -61,7 +62,11 @@ public class BillingManager implements PurchasesUpdatedListener {
     private void buildBillingClient() {
         billingClient = BillingClient.newBuilder(appContext)
                 .setListener(this)
-                .enablePendingPurchases()
+                .enablePendingPurchases(
+                        PendingPurchasesParams.newBuilder()
+                                .enableOneTimeProducts()
+                                .build()
+                )
                 .build();
     }
 
@@ -151,7 +156,7 @@ public class BillingManager implements PurchasesUpdatedListener {
                 .setProductList(products)
                 .build();
 
-        billingClient.queryProductDetailsAsync(params, (billingResult, productDetailsList) -> {
+        billingClient.queryProductDetailsAsync(params, (billingResult, queryProductDetailsResult) -> {
             if (billingResult.getResponseCode() != BillingClient.BillingResponseCode.OK) {
                 Log.w(TAG, "queryProductDetailsAsync failed: " + billingResult.getDebugMessage());
                 Toast.makeText(appContext,
@@ -161,6 +166,10 @@ public class BillingManager implements PurchasesUpdatedListener {
                 return;
             }
             boolean found = false;
+            List<ProductDetails> productDetailsList =
+                    queryProductDetailsResult != null
+                            ? queryProductDetailsResult.getProductDetailsList()
+                            : null;
             if (productDetailsList != null) {
                 for (ProductDetails details : productDetailsList) {
                     if (PRODUCT_ID_AD_FREE.equals(details.getProductId())) {

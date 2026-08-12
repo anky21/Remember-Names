@@ -21,6 +21,7 @@ import javax.inject.Inject;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
+import androidx.activity.OnBackPressedCallback;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.MenuItemCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -63,6 +64,7 @@ public class TagsActivity extends AppCompatActivity implements TagsActivityMVP.V
         setContentView(R.layout.activity_tags);
 
         ButterKnife.bind(this);
+        setupBackNavigation();
 
         // Ensure a consistent blue status bar on this screen
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -94,10 +96,14 @@ public class TagsActivity extends AppCompatActivity implements TagsActivityMVP.V
         recyclerView.addItemDecoration(dividerItemDecoration);
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
+    private void setupBackNavigation() {
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                finish();
+                overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
+            }
+        });
     }
 
     @Override
@@ -116,8 +122,7 @@ public class TagsActivity extends AppCompatActivity implements TagsActivityMVP.V
 
         switch (item.getItemId()) {
             case android.R.id.home:
-                onBackPressed();
-                overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
+                getOnBackPressedDispatcher().onBackPressed();
                 return true;
             case R.id.sort_tags_a_z:
                 sortAscending = true;

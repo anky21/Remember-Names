@@ -1,6 +1,8 @@
 package me.anky.connectid.connections;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Bitmap;
@@ -45,6 +47,9 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
+import androidx.activity.OnBackPressedCallback;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.core.view.MenuItemCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -108,6 +113,7 @@ public class ConnectionsActivity extends AppCompatActivity implements
     private static final int DETAILS_ACTIVITY_REQUEST = 100;
     private static final int NEW_CONNECTION_REQUEST = 200;
     private static final int REQUEST_INVITE = 0;
+    private static final int REQUEST_POST_NOTIFICATIONS = 300;
 
     boolean shouldScrollToBottom = false;
     boolean shouldScrollToTop = false;
@@ -124,6 +130,8 @@ public class ConnectionsActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_list);
 
         ButterKnife.bind(this);
+        setupBackNavigation();
+        requestNotificationPermission();
 
         ((ConnectidApplication) getApplication()).getApplicationComponent().inject(this);
 
@@ -175,6 +183,29 @@ public class ConnectionsActivity extends AppCompatActivity implements
                 DividerItemDecoration.VERTICAL_LIST);
         recyclerView.addItemDecoration(dividerItemDecoration);
         setScrollListener(recyclerView);
+    }
+
+    private void requestNotificationPermission() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU ||
+                ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+                        == PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+
+        ActivityCompat.requestPermissions(
+                this,
+                new String[]{Manifest.permission.POST_NOTIFICATIONS},
+                REQUEST_POST_NOTIFICATIONS
+        );
+    }
+
+    private void setupBackNavigation() {
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                handleBackNavigation();
+            }
+        });
     }
 
     @Override
@@ -460,8 +491,7 @@ public class ConnectionsActivity extends AppCompatActivity implements
         }
     }
 
-    @Override
-    public void onBackPressed() {
+    private void handleBackNavigation() {
         closeNavigationMenu();
         if (!isBackBtnPressedOnce) {
             Toast.makeText(this, R.string.press_back_to_exit, Toast.LENGTH_SHORT).show();
@@ -476,7 +506,6 @@ public class ConnectionsActivity extends AppCompatActivity implements
             }, 5000);
         } else {
             finish();
-            super.onBackPressed();
         }
     }
 

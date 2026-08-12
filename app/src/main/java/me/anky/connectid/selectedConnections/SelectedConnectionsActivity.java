@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import androidx.core.view.MenuItemCompat;
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -66,6 +67,7 @@ public class SelectedConnectionsActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_selected_connections);
         ButterKnife.bind(this);
+        setupBackNavigation();
 
         // Ensure a consistent blue status bar on this screen
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -143,10 +145,14 @@ public class SelectedConnectionsActivity extends AppCompatActivity implements
         presenter.unsubscribe();
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
+    private void setupBackNavigation() {
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                finish();
+                overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
+            }
+        });
     }
 
     @Override
@@ -154,8 +160,7 @@ public class SelectedConnectionsActivity extends AppCompatActivity implements
 
         switch (item.getItemId()) {
             case android.R.id.home:
-                onBackPressed();
-                overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
+                getOnBackPressedDispatcher().onBackPressed();
                 return true;
         }
         return super.onOptionsItemSelected(item);

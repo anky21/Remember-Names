@@ -1,9 +1,7 @@
 apply plugin: 'com.android.application'
 // Firebase crashlytics
 apply plugin: 'com.google.firebase.crashlytics'
-apply plugin: 'com.google.gms.google-services'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
 
 // Initialise the keystorePropertiesFile
 def keystorePropertiesFile = rootProject.file("keystore.properties")
@@ -12,7 +10,10 @@ def keystoreProperties = new Properties()
 keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
 android {
-    compileSdk 35
+    compileSdk 36
+    buildFeatures {
+        buildConfig = true
+    }
     signingConfigs {
         config {
             keyAlias keystoreProperties['keyAlias']
@@ -24,9 +25,9 @@ android {
     defaultConfig {
         applicationId "me.anky.connectid"
         minSdkVersion 21
-        targetSdkVersion 35
-        multiDexEnabled true
-        versionCode 28
+        targetSdkVersion 36
+        multiDexEnabled = true
+        versionCode 29
         versionName "2.4.4"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -43,23 +44,25 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.config
+            signingConfig = signingConfigs.config
         }
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-    namespace 'me.anky.connectid'
+    namespace = 'me.anky.connectid'
     lint {
-        abortOnError false
-        checkReleaseBuilds false
+        abortOnError = true
+        checkReleaseBuilds = true
+        // Translation coverage predates this compatibility update and is tracked separately.
+        disable 'MissingTranslation'
     }
 }
 
 repositories {
     maven {
-        url "https://s3.amazonaws.com/repo.commonsware.com"
+        url = "https://s3.amazonaws.com/repo.commonsware.com"
     }
 }
 
@@ -72,7 +75,7 @@ dependencies {
     def core_version = "1.7.0"
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "androidx.core:core:$core_version"
-    implementation 'com.android.billingclient:billing-ktx:6.2.1'
+    implementation 'com.android.billingclient:billing-ktx:8.0.0'
     implementation "androidx.appcompat:appcompat:${supportLibVersion}"
     implementation "com.google.android.material:material:1.0.0"
     implementation "androidx.recyclerview:recyclerview:1.0.0"
@@ -110,7 +113,9 @@ dependencies {
     implementation 'com.google.dagger:dagger:2.35'
     annotationProcessor "com.google.dagger:dagger-compiler:2.35"
 
-    implementation group: 'com.opencsv', name: 'opencsv', version: '4.1'
+    implementation(group: 'com.opencsv', name: 'opencsv', version: '4.1') {
+        exclude group: 'commons-logging', module: 'commons-logging'
+    }
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 }

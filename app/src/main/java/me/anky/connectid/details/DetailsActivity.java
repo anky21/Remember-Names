@@ -27,6 +27,7 @@ import javax.inject.Inject;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.activity.OnBackPressedCallback;
 import androidx.core.content.ContextCompat;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -89,6 +90,7 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details);
         ButterKnife.bind(this);
+        setupBackNavigation();
 
         // Ensure a consistent blue status bar on this screen
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -139,10 +141,14 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
         presenter.unsubscribe();
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
+    private void setupBackNavigation() {
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                finish();
+                overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
+            }
+        });
     }
 
     @Override
@@ -217,8 +223,7 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
                 break;
             case android.R.id.home:
 //                NavUtils.navigateUpFromSameTask(this);
-                onBackPressed();
-                overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
+                getOnBackPressedDispatcher().onBackPressed();
                 return true;
         }
         return super.onOptionsItemSelected(item);

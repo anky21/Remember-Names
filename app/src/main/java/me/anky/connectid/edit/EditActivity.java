@@ -37,6 +37,7 @@ import java.util.concurrent.Callable;
 import javax.inject.Inject;
 
 import androidx.annotation.NonNull;
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -87,6 +88,8 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
     private int mDatabaseId = -1;
     //Boolean flag that keeps track of whether the connection has been edited (true) or not (false)
     private boolean mConnectionHasChanged = false;
+    private boolean mPhotoHasChanged = false;
+    private String mImageNamePendingDeletion;
     private static final int EDIT_TAG_ACTIVITY_REQUEST = 317;
 
     private List<ConnectionTag> mAllTags;
@@ -180,6 +183,7 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit);
         ButterKnife.bind(this);
+        setupBackNavigation();
 
         // Ensure a consistent blue status bar on this screen
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -324,9 +328,6 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
                 }
                 // Save connection to database
                 saveConnection();
-                if (isExistingConnection){
-                    finish();
-                }
                 overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
                 return true;
             case android.R.id.home:
@@ -334,8 +335,7 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
                 // If the connection hasn't changed, continue with navigating up to parent activity
                 if (!mConnectionHasChanged) {
 //                    NavUtils.navigateUpFromSameTask(EditActivity.this);
-                    super.onBackPressed();
-                    overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
+                    getOnBackPressedDispatcher().onBackPressed();
                     return true;
                 }
 
@@ -358,12 +358,20 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
         return mTagsList;
     }
 
-    @Override
-    public void onBackPressed() {
+    private void setupBackNavigation() {
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                handleBackNavigation();
+            }
+        });
+    }
+
+    private void handleBackNavigation() {
         checkIfNameChanged();
         // Continue with handling back button press when there is no change
         if (!mConnectionHasChanged) {
-            super.onBackPressed();
+            finish();
             overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
             return;
         }
@@ -398,8 +406,12 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
         try {
             if (object instanceof Uri) {
                 Uri imageUri = (Uri) object;
-                InputStream imageStream = getContentResolver().openInputStream(imageUri);
-                mBitmap = BitmapFactory.decodeStream(imageStream);
+                try (InputStream imageStream = getContentResolver().openInputStream(imageUri)) {
+                    mBitmap = BitmapFactory.decodeStream(imageStream);
+                }
+                if (mBitmap == null) {
+                    throw new IllegalArgumentException("Unable to decode selected image");
+                }
                 mBitmap = resizeBitmap(mBitmap);
 
                 mImageName = Utilities.generateImageName();
@@ -408,6 +420,9 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
 
             } else {
                 mBitmap = (Bitmap) object;
+                if (mBitmap == null) {
+                    throw new IllegalArgumentException("Selected image is empty");
+                }
                 mBitmap = resizeBitmap(mBitmap);
                 mImageName = Utilities.generateImageName();
 
@@ -415,6 +430,7 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
             }
             // Connection is modified when image name is changed
             mConnectionHasChanged = true;
+            mPhotoHasChanged = true;
         } catch (Exception e) {
 //            Log.e(TAG, "error in changing photo");
             Utilities.logFirebaseError("error_change_photo", TAG + ".changePhoto", e.getMessage());
@@ -423,21 +439,27 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
 
     private void saveConnection() {
 
-        if (mOldImageName != null && !mOldImageName.equals("blank_profile.jpg")) {
-            ContextWrapper cw = new ContextWrapper(getApplicationContext());
-            File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
-            File oldImage = new File(directory, mOldImageName);
-            oldImage.delete();
-        }
-        if (!mImageName.equals("blank_profile.jpg")) {
-            Utilities.saveToInternalStorage(this, mBitmap, mImageName);
-        }
         // Check if first name is provided
         String firstName = mFirstNameEt.getText().toString().trim();
         if (firstName.equals("")) {
             Toast.makeText(this, R.string.first_name_required, Toast.LENGTH_SHORT).show();
             return;
         }
+
+        mImageNamePendingDeletion = null;
+        if (mPhotoHasChanged && isStoredImageName(mImageName)) {
+            boolean imageSaved = Utilities.saveToInternalStorage(this, mBitmap, mImageName);
+            if (!imageSaved) {
+                Utilities.logFirebaseError("error_save_photo", TAG + ".saveConnection", "Failed to save " + mImageName);
+                displayError();
+                return;
+            }
+
+            if (isStoredImageName(mOldImageName) && !mOldImageName.equals(mImageName)) {
+                mImageNamePendingDeletion = mOldImageName;
+            }
+        }
+
         String lastName = mLastNameEt.getText().toString().trim();
         String meetVenue = mMeetVenueEt.getText().toString().trim();
         String appearance = mAppearanceEt.getText().toString().trim();
@@ -508,6 +530,24 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
         }
     }
 
+    private boolean isStoredImageName(String imageName) {
+        return imageName != null && !imageName.equals("") && !imageName.equals("blank_profile.jpg");
+    }
+
+    private void deletePendingOldImage() {
+        if (!isStoredImageName(mImageNamePendingDeletion)) {
+            return;
+        }
+
+        ContextWrapper cw = new ContextWrapper(getApplicationContext());
+        File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
+        File oldImage = new File(directory, mImageNamePendingDeletion);
+        if (oldImage.exists() && !oldImage.delete()) {
+            Utilities.logFirebaseError("error_delete_old_photo", TAG + ".deletePendingOldImage", mImageNamePendingDeletion);
+        }
+        mImageNamePendingDeletion = null;
+    }
+
     @Override
     public Single<ConnectidConnection> getNewConnection() {
         return Single.fromCallable(new Callable<ConnectidConnection>() {
@@ -536,11 +576,19 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
 
     @Override
     public void displaySuccess(int id) {
-        if(!isExistingConnection){
-            mDatabaseId = id;
-        }
         Intent data = new Intent();
         setResult(RESULT_OK, data);
+
+        deletePendingOldImage();
+        mOldImageName = mImageName;
+        mPhotoHasChanged = false;
+
+        if(!isExistingConnection){
+            mDatabaseId = id;
+        } else {
+            finish();
+            overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
+        }
     }
 
     @Override
@@ -551,6 +599,15 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
     @Override
     public void displayError() {
 //        Log.i("MVP view", "displayError called - failed to insert into database");
+        if (mPhotoHasChanged && isStoredImageName(mImageName)) {
+            ContextWrapper cw = new ContextWrapper(getApplicationContext());
+            File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
+            File newImage = new File(directory, mImageName);
+            if (newImage.exists() && !newImage.delete()) {
+                Utilities.logFirebaseError("error_delete_failed_photo", TAG + ".displayError", mImageName);
+            }
+        }
+        Toast.makeText(this, R.string.data_load_error, Toast.LENGTH_SHORT).show();
     }
 
     private void showUnsavedChangesDialog() {

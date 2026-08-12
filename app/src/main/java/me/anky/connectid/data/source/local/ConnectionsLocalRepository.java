@@ -52,15 +52,15 @@ public class ConnectionsLocalRepository implements ConnectionsDataSource {
 
         if (cursor != null && cursor.getColumnCount() != 0) {
             if (cursor.moveToFirst()) {
-                String firstName = cursor.getString(cursor.getColumnIndex(ConnectidColumns.FIRST_NAME));
-                String lastName = cursor.getString(cursor.getColumnIndex(ConnectidColumns.LAST_NAME));
-                String imageName = cursor.getString(cursor.getColumnIndex(ConnectidColumns.IMAGE_NAME));
-                String meetVenue = cursor.getString(cursor.getColumnIndex(ConnectidColumns.MEET_WHERE));
-                String appearance = cursor.getString(cursor.getColumnIndex(ConnectidColumns.APPEARANCE));
-                String feature = cursor.getString(cursor.getColumnIndex(ConnectidColumns.FEATURE));
-                String commonFriends = cursor.getString(cursor.getColumnIndex(ConnectidColumns.COMMON_FRIENDS));
-                String description = cursor.getString(cursor.getColumnIndex(ConnectidColumns.DESCRIPTION));
-                String tags = cursor.getString(cursor.getColumnIndex(ConnectidColumns.TAGS));
+                String firstName = cursor.getString(cursor.getColumnIndexOrThrow(ConnectidColumns.FIRST_NAME));
+                String lastName = cursor.getString(cursor.getColumnIndexOrThrow(ConnectidColumns.LAST_NAME));
+                String imageName = cursor.getString(cursor.getColumnIndexOrThrow(ConnectidColumns.IMAGE_NAME));
+                String meetVenue = cursor.getString(cursor.getColumnIndexOrThrow(ConnectidColumns.MEET_WHERE));
+                String appearance = cursor.getString(cursor.getColumnIndexOrThrow(ConnectidColumns.APPEARANCE));
+                String feature = cursor.getString(cursor.getColumnIndexOrThrow(ConnectidColumns.FEATURE));
+                String commonFriends = cursor.getString(cursor.getColumnIndexOrThrow(ConnectidColumns.COMMON_FRIENDS));
+                String description = cursor.getString(cursor.getColumnIndexOrThrow(ConnectidColumns.DESCRIPTION));
+                String tags = cursor.getString(cursor.getColumnIndexOrThrow(ConnectidColumns.TAGS));
 
                 connection = new ConnectidConnection(data_id, firstName, lastName, imageName,
                         meetVenue, appearance, feature, commonFriends, description, tags);
@@ -86,16 +86,16 @@ public class ConnectionsLocalRepository implements ConnectionsDataSource {
         if (cursor != null && cursor.getCount() != 0) {
 
             while (cursor.moveToNext()) {
-                int databaseId = cursor.getInt(cursor.getColumnIndex(ConnectidColumns._ID));
-                String firstName = cursor.getString(cursor.getColumnIndex(ConnectidColumns.FIRST_NAME));
-                String lastName = cursor.getString(cursor.getColumnIndex(ConnectidColumns.LAST_NAME));
-                String imageName = cursor.getString(cursor.getColumnIndex(ConnectidColumns.IMAGE_NAME));
-                String meetVenue = cursor.getString(cursor.getColumnIndex(ConnectidColumns.MEET_WHERE));
-                String appearance = cursor.getString(cursor.getColumnIndex(ConnectidColumns.APPEARANCE));
-                String feature = cursor.getString(cursor.getColumnIndex(ConnectidColumns.FEATURE));
-                String commonFriends = cursor.getString(cursor.getColumnIndex(ConnectidColumns.COMMON_FRIENDS));
-                String description = cursor.getString(cursor.getColumnIndex(ConnectidColumns.DESCRIPTION));
-                String tags = cursor.getString(cursor.getColumnIndex(ConnectidColumns.TAGS));
+                int databaseId = cursor.getInt(cursor.getColumnIndexOrThrow(ConnectidColumns._ID));
+                String firstName = cursor.getString(cursor.getColumnIndexOrThrow(ConnectidColumns.FIRST_NAME));
+                String lastName = cursor.getString(cursor.getColumnIndexOrThrow(ConnectidColumns.LAST_NAME));
+                String imageName = cursor.getString(cursor.getColumnIndexOrThrow(ConnectidColumns.IMAGE_NAME));
+                String meetVenue = cursor.getString(cursor.getColumnIndexOrThrow(ConnectidColumns.MEET_WHERE));
+                String appearance = cursor.getString(cursor.getColumnIndexOrThrow(ConnectidColumns.APPEARANCE));
+                String feature = cursor.getString(cursor.getColumnIndexOrThrow(ConnectidColumns.FEATURE));
+                String commonFriends = cursor.getString(cursor.getColumnIndexOrThrow(ConnectidColumns.COMMON_FRIENDS));
+                String description = cursor.getString(cursor.getColumnIndexOrThrow(ConnectidColumns.DESCRIPTION));
+                String tags = cursor.getString(cursor.getColumnIndexOrThrow(ConnectidColumns.TAGS));
 
                 connections.add(new ConnectidConnection(databaseId, firstName, lastName, imageName,
                         meetVenue, appearance, feature, commonFriends, description, tags));
@@ -216,9 +216,9 @@ public class ConnectionsLocalRepository implements ConnectionsDataSource {
         if (cursor != null && cursor.getCount() != 0) {
 
             while (cursor.moveToNext()) {
-                int databaseId = cursor.getInt(cursor.getColumnIndex(TagsColumns._ID));
-                String tag = cursor.getString(cursor.getColumnIndex(TagsColumns.TAG));
-                String connectionIds = cursor.getString(cursor.getColumnIndex(TagsColumns.CONNECTION_IDS));
+                int databaseId = cursor.getInt(cursor.getColumnIndexOrThrow(TagsColumns._ID));
+                String tag = cursor.getString(cursor.getColumnIndexOrThrow(TagsColumns.TAG));
+                String connectionIds = cursor.getString(cursor.getColumnIndexOrThrow(TagsColumns.CONNECTION_IDS));
 
                 tags.add(new ConnectionTag(databaseId, tag, connectionIds));
             }
@@ -237,8 +237,8 @@ public class ConnectionsLocalRepository implements ConnectionsDataSource {
 
         if (cursor != null && cursor.getColumnCount() != 0) {
             if (cursor.moveToFirst()) {
-                String tag = cursor.getString(cursor.getColumnIndex(TagsColumns.TAG));
-                String connectionIds = cursor.getString(cursor.getColumnIndex(TagsColumns.CONNECTION_IDS));
+                String tag = cursor.getString(cursor.getColumnIndexOrThrow(TagsColumns.TAG));
+                String connectionIds = cursor.getString(cursor.getColumnIndexOrThrow(TagsColumns.CONNECTION_IDS));
 
                 connectionTag = new ConnectionTag(data_id, tag, connectionIds);
             }

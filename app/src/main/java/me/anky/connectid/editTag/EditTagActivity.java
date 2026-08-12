@@ -196,7 +196,7 @@ public class EditTagActivity extends AppCompatActivity implements EditTagActivit
                 finish();
                 return true;
             case android.R.id.home:
-                super.onBackPressed();
+                getOnBackPressedDispatcher().onBackPressed();
                 return true;
         }
 
