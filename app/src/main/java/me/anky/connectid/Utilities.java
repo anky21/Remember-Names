@@ -38,6 +38,8 @@ import me.anky.connectid.root.ConnectidApplication;
 
 public class Utilities {
     private static final int MAX_STORED_IMAGE_SIZE_PX = 2048;
+    private static final String IMAGE_DIRECTORY = "imageDir";
+    private static final String PREVIEW_SUFFIX = "_preview.jpg";
     public static final String SORTBY = "sortby";
     public static final int TAG_BASE_NUMBER = 1000;
     private static ConnectidApplication application;
@@ -69,7 +71,7 @@ public class Utilities {
 
         ContextWrapper cw = new ContextWrapper(context);
         // path to /data/data/yourapp/app_data/imageDir
-        File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
+        File directory = cw.getDir(IMAGE_DIRECTORY, Context.MODE_PRIVATE);
         // Create imageDir
         File file = new File(directory, imageName);
 
@@ -137,6 +139,27 @@ public class Utilities {
             oriented.recycle();
         }
         return resized;
+    }
+
+    public static File getContactImageFile(Context context, String imageName) {
+        ContextWrapper cw = new ContextWrapper(context.getApplicationContext());
+        return new File(cw.getDir(IMAGE_DIRECTORY, Context.MODE_PRIVATE), imageName);
+    }
+
+    public static File getContactPreviewFile(Context context, String imageName) {
+        return new File(getContactImageFile(context, imageName).getParentFile(),
+                getContactPreviewImageName(imageName));
+    }
+
+    public static File getBestContactPreviewFile(Context context, String imageName) {
+        File previewFile = getContactPreviewFile(context, imageName);
+        return previewFile.exists() ? previewFile : getContactImageFile(context, imageName);
+    }
+
+    public static String getContactPreviewImageName(String imageName) {
+        int extensionStart = imageName.lastIndexOf('.');
+        String baseName = extensionStart > 0 ? imageName.substring(0, extensionStart) : imageName;
+        return baseName + PREVIEW_SUFFIX;
     }
 
     private static Bitmap decodeStream(Context context, Uri imageUri,

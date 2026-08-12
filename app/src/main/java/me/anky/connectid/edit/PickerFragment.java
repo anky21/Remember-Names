@@ -18,8 +18,14 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.TextView;
 
+import com.canhub.cropper.CropImageContract;
+import com.canhub.cropper.CropImageContractOptions;
+import com.canhub.cropper.CropImageOptions;
+import com.canhub.cropper.CropImageView;
+
 import java.io.File;
 
+import androidx.activity.result.ActivityResultLauncher;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -35,11 +41,24 @@ public class PickerFragment extends DialogFragment {
     private static final int TAKE_PHOTO = 101;
     private Uri imageUri;
     private static final String EXTRA_FILENAME = "me.anky.connectid.EXTRA_FILENAME";
+    private static final String EXTRA_ORIGINAL_URI = "me.anky.connectid.EXTRA_ORIGINAL_URI";
     private static final String FILENAME = "profile.jpeg";
     private static final String AUTHORITY = "me.anky.connectid.provider";
     private static final String PHOTOS = "photos";
     private File output = null;
     private Bundle mSavedInstanceState;
+    private Uri mOriginalImageUri;
+
+    private final ActivityResultLauncher<CropImageContractOptions> cropImage =
+            registerForActivityResult(new CropImageContract(), result -> {
+                if (result.isSuccessful() && result.getUriContent() != null
+                        && mOriginalImageUri != null) {
+                    deliverSelectedPhoto(mOriginalImageUri, result.getUriContent());
+                } else if (result.getError() != null) {
+                    Utilities.logFirebaseError("error_crop_image", TAG + ".cropImage",
+                            result.getError().getMessage());
+                }
+            });
 
     @BindView(R.id.pickImage_tv)
     TextView mPickImageTv;
@@ -55,6 +74,12 @@ public class PickerFragment extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         mSavedInstanceState = savedInstanceState;
+        if (savedInstanceState != null) {
+            String originalUri = savedInstanceState.getString(EXTRA_ORIGINAL_URI);
+            if (originalUri != null) {
+                mOriginalImageUri = Uri.parse(originalUri);
+            }
+        }
         View view = inflater.inflate(R.layout.fragment_picker, container, false);
         ButterKnife.bind(this, view);
 
@@ -75,6 +100,9 @@ public class PickerFragment extends DialogFragment {
         super.onSaveInstanceState(outState);
 
         outState.putSerializable(EXTRA_FILENAME, output);
+        if (mOriginalImageUri != null) {
+            outState.putString(EXTRA_ORIGINAL_URI, mOriginalImageUri.toString());
+        }
     }
 
     @OnClick(R.id.takeImage_tv)
@@ -136,24 +164,42 @@ public class PickerFragment extends DialogFragment {
         switch (requestCode) {
             case PICK_PHOTO:
                 if (resultCode == Activity.RESULT_OK && data != null) {
-                    deliverSelectedPhoto(data.getData());
+                    launchCrop(data.getData());
                 }
                 break;
             case TAKE_PHOTO:
                 if (resultCode == Activity.RESULT_OK) {
                     imageUri = FileProvider.getUriForFile(getActivity(), AUTHORITY, output);
-                    deliverSelectedPhoto(imageUri);
+                    launchCrop(imageUri);
                 }
                 break;
         }
     }
 
-    private void deliverSelectedPhoto(Uri imageUri) {
-        Activity activity = getActivity();
-        if (imageUri == null || !(activity instanceof EditActivity)) {
+    private void launchCrop(Uri imageUri) {
+        if (imageUri == null) {
             return;
         }
-        ((EditActivity) activity).changePhoto(imageUri);
+        mOriginalImageUri = imageUri;
+        CropImageOptions options = new CropImageOptions();
+        options.fixAspectRatio = true;
+        options.aspectRatioX = 4;
+        options.aspectRatioY = 3;
+        options.guidelines = CropImageView.Guidelines.ON;
+        options.outputCompressFormat = android.graphics.Bitmap.CompressFormat.JPEG;
+        options.outputCompressQuality = 95;
+        options.outputRequestWidth = 1600;
+        options.outputRequestHeight = 1200;
+        options.outputRequestSizeOptions = CropImageView.RequestSizeOptions.RESIZE_INSIDE;
+        cropImage.launch(new CropImageContractOptions(imageUri, options));
+    }
+
+    private void deliverSelectedPhoto(Uri originalImageUri, Uri previewImageUri) {
+        Activity activity = getActivity();
+        if (!(activity instanceof EditActivity)) {
+            return;
+        }
+        ((EditActivity) activity).changePhoto(originalImageUri, previewImageUri);
         dismissAllowingStateLoss();
     }
 }

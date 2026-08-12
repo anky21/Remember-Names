@@ -1,7 +1,6 @@
 package me.anky.connectid.connections;
 
 import android.content.Context;
-import android.content.ContextWrapper;
 import android.graphics.Color;
 import android.net.Uri;
 import androidx.recyclerview.widget.RecyclerView;
@@ -25,6 +24,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import me.anky.connectid.R;
+import me.anky.connectid.Utilities;
 import me.anky.connectid.data.ConnectidConnection;
 
 public class ConnectionsRecyclerViewAdapter extends
@@ -85,11 +85,7 @@ public class ConnectionsRecyclerViewAdapter extends
                     .apply(RequestOptions.circleCropTransform())
                     .into(holder.listItemIv);
         } else {
-            ContextWrapper cw = new ContextWrapper(context);
-            // path to /data/data/yourapp/app_data/imageDir
-            File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
-            String path = directory.getAbsolutePath() + "/" + imageName;
-            File imageFile = new File(path);
+            File imageFile = Utilities.getBestContactPreviewFile(context, imageName);
 
             RequestOptions options = RequestOptions.circleCropTransform()
                     .placeholder(R.drawable.blank_profile_round)

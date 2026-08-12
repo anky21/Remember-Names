@@ -1,7 +1,5 @@
 package me.anky.connectid.flashcards;
 
-import android.content.Context;
-import android.content.ContextWrapper;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -24,6 +22,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import me.anky.connectid.R;
+import me.anky.connectid.Utilities;
 import me.anky.connectid.data.ConnectidConnection;
 
 public class FlashcardsActivity extends AppCompatActivity {
@@ -124,12 +123,11 @@ public class FlashcardsActivity extends AppCompatActivity {
                 + ", imageName=" + imageName);
 
         if (imageName != null && !"blank_profile.jpg".equals(imageName)) {
-            ContextWrapper cw = new ContextWrapper(getApplicationContext());
-            File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
-            String path = directory.getAbsolutePath() + "/" + imageName;
-            File imageFile = new File(path);
+            File imageFile = Utilities.getBestContactPreviewFile(this, imageName);
 
-            Log.d(TAG, "Resolved image path=" + path + ", exists=" + imageFile.exists() + ", length=" + (imageFile.exists() ? imageFile.length() : 0));
+            Log.d(TAG, "Resolved image path=" + imageFile.getAbsolutePath()
+                    + ", exists=" + imageFile.exists()
+                    + ", length=" + (imageFile.exists() ? imageFile.length() : 0));
 
             RequestOptions options = new RequestOptions()
                     .centerCrop()

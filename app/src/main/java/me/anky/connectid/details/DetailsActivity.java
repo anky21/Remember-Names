@@ -1,7 +1,5 @@
 package me.anky.connectid.details;
 
-import android.content.Context;
-import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -56,6 +54,7 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
     private String mCommonFriends;
     private String mDescription;
     private String mTags;
+    private String mImageName;
     private File mPortraitImageFile;
 
     @BindView(R.id.toolbar_1)
@@ -287,6 +286,7 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
             getSupportActionBar().setTitle(mFirstName + " " + mLastName);
         }
         String imageName = connection.getImageName();
+        mImageName = imageName;
         mMeetVenue = connection.getMeetVenue();
         mAppearance = connection.getAppearance();
         mFeature = connection.getFeature();
@@ -313,16 +313,13 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
                     .load(R.drawable.blank_profile_round)
                     .into(mPortraitIv);
         } else {
-            ContextWrapper cw = new ContextWrapper(getApplicationContext());
-            // path to /data/data/yourapp/app_data/imageDir
-            File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
-            String path = directory.getAbsolutePath() + "/" + imageName;
-            File imageFile = new File(path);
+            File imageFile = Utilities.getContactImageFile(this, imageName);
+            File previewFile = Utilities.getBestContactPreviewFile(this, imageName);
             mPortraitImageFile = imageFile.exists() ? imageFile : null;
 
             Glide.with(this)
                     .applyDefaultRequestOptions(myOptions)
-                    .load(Uri.fromFile(imageFile))
+                    .load(Uri.fromFile(previewFile))
                     .into(mPortraitIv);
         }
 
@@ -377,6 +374,18 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
 
     @Override
     public void displaySuccess() {
+
+        if (mPortraitImageFile != null && mPortraitImageFile.exists()
+                && !mPortraitImageFile.delete()) {
+            Utilities.logFirebaseError("error_delete_photo", TAG + ".displaySuccess", mImageName);
+        }
+        if (mImageName != null && !mImageName.equals("")
+                && !mImageName.equals("blank_profile.jpg")) {
+            File previewFile = Utilities.getContactPreviewFile(this, mImageName);
+            if (previewFile.exists() && !previewFile.delete()) {
+                Utilities.logFirebaseError("error_delete_preview", TAG + ".displaySuccess", mImageName);
+            }
+        }
 
         Toast.makeText(this, R.string.delete_success_msg, Toast.LENGTH_SHORT).show();
 

@@ -1,7 +1,5 @@
 package me.anky.connectid.edit;
 
-import android.content.Context;
-import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -54,8 +52,6 @@ import me.anky.connectid.editTag.EditTagActivity;
 import me.anky.connectid.events.SetToUpdateTagTable;
 import me.anky.connectid.root.ConnectidApplication;
 
-import static me.anky.connectid.Utilities.resizeBitmap;
-
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.FullScreenContentCallback;
 import com.google.android.gms.ads.LoadAdError;
@@ -69,6 +65,7 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
     private final static String TAG = EditActivity.class.getSimpleName();
 
     private Bitmap mBitmap;
+    private Bitmap mPreviewBitmap;
     private String mOldImageName;
     private String mImageName = "blank_profile.jpg";
     private String mFirstName = "";
@@ -228,11 +225,7 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
                         .load(R.drawable.blank_profile_round)
                         .into(mPortraitIv);
             } else {
-                ContextWrapper cw = new ContextWrapper(getApplicationContext());
-                // path to /data/data/yourapp/app_data/imageDir
-                File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
-                String path = directory.getAbsolutePath() + "/" + mImageName;
-                File imageFile = new File(path);
+                File imageFile = Utilities.getBestContactPreviewFile(this, mImageName);
 
                 Glide.with(this)
                         .applyDefaultRequestOptions(myOptions)
@@ -400,26 +393,13 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
         overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
     }
 
-    public void changePhoto(Object object) {
+    public void changePhoto(Uri originalImageUri, Uri previewImageUri) {
         try {
-            if (object instanceof Uri) {
-                Uri imageUri = (Uri) object;
-                mBitmap = Utilities.decodeContactPhoto(this, imageUri);
+            mBitmap = Utilities.decodeContactPhoto(this, originalImageUri);
+            mPreviewBitmap = Utilities.decodeContactPhoto(this, previewImageUri);
+            mImageName = Utilities.generateImageName();
+            mPortraitIv.setImageBitmap(mPreviewBitmap);
 
-                mImageName = Utilities.generateImageName();
-
-                mPortraitIv.setImageBitmap(mBitmap);
-
-            } else {
-                mBitmap = (Bitmap) object;
-                if (mBitmap == null) {
-                    throw new IllegalArgumentException("Selected image is empty");
-                }
-                mBitmap = resizeBitmap(mBitmap);
-                mImageName = Utilities.generateImageName();
-
-                mPortraitIv.setImageBitmap(mBitmap);
-            }
             // Connection is modified when image name is changed
             mConnectionHasChanged = true;
             mPhotoHasChanged = true;
@@ -441,7 +421,10 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
         mImageNamePendingDeletion = null;
         if (mPhotoHasChanged && isStoredImageName(mImageName)) {
             boolean imageSaved = Utilities.saveToInternalStorage(this, mBitmap, mImageName);
-            if (!imageSaved) {
+            boolean previewSaved = imageSaved && Utilities.saveToInternalStorage(
+                    this, mPreviewBitmap, Utilities.getContactPreviewImageName(mImageName));
+            if (!previewSaved) {
+                deleteImageFiles(mImageName);
                 Utilities.logFirebaseError("error_save_photo", TAG + ".saveConnection", "Failed to save " + mImageName);
                 displayError();
                 return;
@@ -531,13 +514,19 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
             return;
         }
 
-        ContextWrapper cw = new ContextWrapper(getApplicationContext());
-        File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
-        File oldImage = new File(directory, mImageNamePendingDeletion);
-        if (oldImage.exists() && !oldImage.delete()) {
-            Utilities.logFirebaseError("error_delete_old_photo", TAG + ".deletePendingOldImage", mImageNamePendingDeletion);
-        }
+        deleteImageFiles(mImageNamePendingDeletion);
         mImageNamePendingDeletion = null;
+    }
+
+    private void deleteImageFiles(String imageName) {
+        File imageFile = Utilities.getContactImageFile(this, imageName);
+        File previewFile = Utilities.getContactPreviewFile(this, imageName);
+        if (imageFile.exists() && !imageFile.delete()) {
+            Utilities.logFirebaseError("error_delete_photo", TAG + ".deleteImageFiles", imageName);
+        }
+        if (previewFile.exists() && !previewFile.delete()) {
+            Utilities.logFirebaseError("error_delete_preview", TAG + ".deleteImageFiles", imageName);
+        }
     }
 
     @Override
@@ -592,12 +581,7 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
     public void displayError() {
 //        Log.i("MVP view", "displayError called - failed to insert into database");
         if (mPhotoHasChanged && isStoredImageName(mImageName)) {
-            ContextWrapper cw = new ContextWrapper(getApplicationContext());
-            File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
-            File newImage = new File(directory, mImageName);
-            if (newImage.exists() && !newImage.delete()) {
-                Utilities.logFirebaseError("error_delete_failed_photo", TAG + ".displayError", mImageName);
-            }
+            deleteImageFiles(mImageName);
         }
         Toast.makeText(this, R.string.data_load_error, Toast.LENGTH_SHORT).show();
     }
