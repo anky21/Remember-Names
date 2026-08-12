@@ -114,6 +114,8 @@
     <!-- Content descriptions-->
     <string name="image_of_the_connection">image of the connection</string>
     <string name="icon_of_a_camera">icon of a camera</string>
+    <string name="fullscreen_contact_photo">Full-screen contact photo</string>
+    <string name="close_fullscreen_photo">Close full-screen photo</string>
     <string name="image_for_no_connections">image shown when there is no connections</string>
     <string name="image_shown_for_tag_with_no_connections">image shown when this tag has no connections</string>
     <string name="image_shown_for_no_tags">image shown when there are no tags.</string>

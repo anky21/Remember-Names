@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.Target;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
@@ -38,6 +39,7 @@ import me.anky.connectid.Utilities;
 import me.anky.connectid.data.ConnectidConnection;
 import me.anky.connectid.edit.EditActivity;
 import me.anky.connectid.root.ConnectidApplication;
+import io.getstream.photoview.PhotoView;
 
 public class DetailsActivity extends AppCompatActivity implements DetailsActivityMVP.View {
     private final static String TAG = "DetailsActivity";
@@ -54,12 +56,22 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
     private String mCommonFriends;
     private String mDescription;
     private String mTags;
+    private File mPortraitImageFile;
 
     @BindView(R.id.toolbar_1)
     Toolbar mToolbar;
 
     @BindView(R.id.portrait_iv)
     ImageView mPortraitIv;
+
+    @BindView(R.id.fullscreen_photo_overlay)
+    View mFullscreenPhotoOverlay;
+
+    @BindView(R.id.fullscreen_photo)
+    PhotoView mFullscreenPhoto;
+
+    @BindView(R.id.close_fullscreen_photo)
+    ImageView mCloseFullscreenPhoto;
 
     @BindView(R.id.meet_venue_tv)
     TextView mMeetVenueTv;
@@ -117,6 +129,11 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
 
         intent = getIntent();
         databaseId = intent.getIntExtra("id", 0);
+
+        mPortraitIv.setOnClickListener(view -> showFullscreenPhoto());
+        mCloseFullscreenPhoto.setOnClickListener(view -> hideFullscreenPhoto());
+        mFullscreenPhotoOverlay.setOnClickListener(view -> hideFullscreenPhoto());
+        mFullscreenPhoto.setOnClickListener(view -> { });
     }
 
     @Override
@@ -145,6 +162,10 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
+                if (mFullscreenPhotoOverlay.getVisibility() == View.VISIBLE) {
+                    hideFullscreenPhoto();
+                    return;
+                }
                 finish();
                 overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
             }
@@ -286,6 +307,7 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
         // When there is no real stored image (or the placeholder name is used), show the
         // bundled default portrait drawable instead of loading from internal storage.
         if (imageName == null || imageName.equals("") || imageName.equals("blank_profile.jpg")) {
+            mPortraitImageFile = null;
             Glide.with(this)
                     .applyDefaultRequestOptions(myOptions)
                     .load(R.drawable.blank_profile_round)
@@ -296,6 +318,7 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
             File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
             String path = directory.getAbsolutePath() + "/" + imageName;
             File imageFile = new File(path);
+            mPortraitImageFile = imageFile.exists() ? imageFile : null;
 
             Glide.with(this)
                     .applyDefaultRequestOptions(myOptions)
@@ -308,6 +331,29 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
         mFeatureTv.setText(mFeature);
         mCommonFriendsTv.setText(mCommonFriends);
         mDescriptionTv.setText(mDescription);
+    }
+
+    private void showFullscreenPhoto() {
+        if (mPortraitImageFile == null) {
+            return;
+        }
+
+        Glide.with(this)
+                .applyDefaultRequestOptions(new RequestOptions()
+                        .dontTransform()
+                        .override(Target.SIZE_ORIGINAL))
+                .load(mPortraitImageFile)
+                .into(mFullscreenPhoto);
+        mFullscreenPhoto.setScale(1f, false);
+        mFullscreenPhotoOverlay.setVisibility(View.VISIBLE);
+    }
+
+    private void hideFullscreenPhoto() {
+        if (mFullscreenPhotoOverlay.getVisibility() != View.VISIBLE) {
+            return;
+        }
+        mFullscreenPhoto.setScale(1f, false);
+        mFullscreenPhotoOverlay.setVisibility(View.GONE);
     }
 
     @Override

@@ -1,7 +1,6 @@
 package me.anky.connectid.edit;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.content.ClipData;
 import android.content.Intent;
@@ -10,25 +9,14 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.core.content.FileProvider;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.TextView;
-
-//import com.theartofdev.edmodo.cropper.CropImage;
-import com.canhub.cropper.CropImageContract;
-import com.canhub.cropper.CropImageContractOptions;
-import com.canhub.cropper.CropImageOptions;
-import com.canhub.cropper.CropImageView.Guidelines;
-import android.graphics.Bitmap;
 
 import java.io.File;
 
@@ -38,8 +26,6 @@ import butterknife.OnClick;
 import me.anky.connectid.R;
 import me.anky.connectid.Utilities;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -54,22 +40,6 @@ public class PickerFragment extends DialogFragment {
     private static final String PHOTOS = "photos";
     private File output = null;
     private Bundle mSavedInstanceState;
-
-    private ActivityResultLauncher cropImage = registerForActivityResult(new CropImageContract(), result -> {
-        if (result.isSuccessful()) {
-            // Use the cropped image URI.
-            Uri croppedImageUri = result.getUriContent();
-            //String croppedImageFilePath = result.getUriFilePath(this.getContext(), true); // optional usage
-            // Process the cropped image URI as needed.
-            ((EditActivity) getActivity()).changePhoto(croppedImageUri);
-            getDialog().dismiss();
-
-        } else {
-            // An error occurred.
-            Exception exception = result.getError();
-            // Handle the error.
-        }
-    });
 
     @BindView(R.id.pickImage_tv)
     TextView mPickImageTv;
@@ -165,37 +135,25 @@ public class PickerFragment extends DialogFragment {
 
         switch (requestCode) {
             case PICK_PHOTO:
-                if (resultCode == Activity.RESULT_OK) {
-                    Uri uri = data.getData();
-                    cropImageIntent(uri);
+                if (resultCode == Activity.RESULT_OK && data != null) {
+                    deliverSelectedPhoto(data.getData());
                 }
                 break;
             case TAKE_PHOTO:
                 if (resultCode == Activity.RESULT_OK) {
                     imageUri = FileProvider.getUriForFile(getActivity(), AUTHORITY, output);
-                    cropImageIntent(imageUri);
+                    deliverSelectedPhoto(imageUri);
                 }
                 break;
-//            case CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE:
-//                CropImage.ActivityResult result = CropImage.getActivityResult(data);
-//                if (resultCode == Activity.RESULT_OK) {
-//                    Uri resultUri = result.getUri();
-//                    ((EditActivity) getActivity()).changePhoto(resultUri);
-//                    getDialog().dismiss();
-//                } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
-//                    Exception error = result.getError();
-//                    Log.d(TAG, error.toString());
-//                }
         }
     }
 
-    private void cropImageIntent(Uri imageUri){
-//        CropImage.activity(uri)
-//                .setAllowFlipping(false)
-//                .setAllowCounterRotation(true)
-//                .setAspectRatio(1,1)
-//                .start(getActivity(), this);
-        cropImage.launch(new CropImageContractOptions(imageUri, new CropImageOptions()));
-
+    private void deliverSelectedPhoto(Uri imageUri) {
+        Activity activity = getActivity();
+        if (imageUri == null || !(activity instanceof EditActivity)) {
+            return;
+        }
+        ((EditActivity) activity).changePhoto(imageUri);
+        dismissAllowingStateLoss();
     }
 }

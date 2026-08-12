@@ -5,7 +5,6 @@ import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -28,7 +27,6 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -406,13 +404,7 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
         try {
             if (object instanceof Uri) {
                 Uri imageUri = (Uri) object;
-                try (InputStream imageStream = getContentResolver().openInputStream(imageUri)) {
-                    mBitmap = BitmapFactory.decodeStream(imageStream);
-                }
-                if (mBitmap == null) {
-                    throw new IllegalArgumentException("Unable to decode selected image");
-                }
-                mBitmap = resizeBitmap(mBitmap);
+                mBitmap = Utilities.decodeContactPhoto(this, imageUri);
 
                 mImageName = Utilities.generateImageName();
 

@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -19,10 +21,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.UUID;
 
 import androidx.core.content.ContextCompat;
+import androidx.exifinterface.media.ExifInterface;
 import me.anky.connectid.data.source.local.ConnectidColumns;
 import me.anky.connectid.root.ConnectidApplication;
 
@@ -32,6 +37,7 @@ import me.anky.connectid.root.ConnectidApplication;
  */
 
 public class Utilities {
+    private static final int MAX_STORED_IMAGE_SIZE_PX = 2048;
     public static final String SORTBY = "sortby";
     public static final int TAG_BASE_NUMBER = 1000;
     private static ConnectidApplication application;
@@ -68,8 +74,7 @@ public class Utilities {
         File file = new File(directory, imageName);
 
         try (FileOutputStream fos = new FileOutputStream(file)) {
-            // Use the compress method on the BitMap object to write image to the OutputStream
-            return bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, fos);
+            return bitmapImage.compress(Bitmap.CompressFormat.JPEG, 95, fos);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -81,7 +86,7 @@ public class Utilities {
         int originalWidth = bitmap.getWidth();
         int originalHeight = bitmap.getHeight();
 
-        final int desiredSize = 600;
+        final int desiredSize = MAX_STORED_IMAGE_SIZE_PX;
         int maximumSize = Math.max(originalHeight, originalWidth);
 
         if (maximumSize > desiredSize) {
@@ -91,6 +96,90 @@ public class Utilities {
             bitmap = Bitmap.createScaledBitmap(bitmap, newWidth, newHeight, true);
         }
         return bitmap;
+    }
+
+    public static Bitmap decodeContactPhoto(Context context, Uri imageUri) throws IOException {
+        int orientation = ExifInterface.ORIENTATION_NORMAL;
+        try (InputStream exifStream = context.getContentResolver().openInputStream(imageUri)) {
+            if (exifStream != null) {
+                orientation = new ExifInterface(exifStream).getAttributeInt(
+                        ExifInterface.TAG_ORIENTATION,
+                        ExifInterface.ORIENTATION_NORMAL);
+            }
+        } catch (IOException ignored) {
+            // Some providers do not expose EXIF metadata; the image can still be decoded.
+        }
+
+        BitmapFactory.Options bounds = new BitmapFactory.Options();
+        bounds.inJustDecodeBounds = true;
+        decodeStream(context, imageUri, bounds);
+        if (bounds.outWidth <= 0 || bounds.outHeight <= 0) {
+            throw new IOException("Unable to read selected image dimensions");
+        }
+
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        int maximumDimension = Math.max(bounds.outWidth, bounds.outHeight);
+        options.inSampleSize = Math.max(1,
+                (int) Math.ceil(maximumDimension / (MAX_STORED_IMAGE_SIZE_PX * 1.5d)));
+
+        Bitmap decoded = decodeStream(context, imageUri, options);
+        if (decoded == null) {
+            throw new IOException("Unable to decode selected image");
+        }
+
+        Bitmap oriented = applyExifOrientation(decoded, orientation);
+        if (oriented != decoded) {
+            decoded.recycle();
+        }
+
+        Bitmap resized = resizeBitmap(oriented);
+        if (resized != oriented) {
+            oriented.recycle();
+        }
+        return resized;
+    }
+
+    private static Bitmap decodeStream(Context context, Uri imageUri,
+                                       BitmapFactory.Options options) throws IOException {
+        try (InputStream imageStream = context.getContentResolver().openInputStream(imageUri)) {
+            if (imageStream == null) {
+                throw new IOException("Unable to open selected image");
+            }
+            return BitmapFactory.decodeStream(imageStream, null, options);
+        }
+    }
+
+    private static Bitmap applyExifOrientation(Bitmap bitmap, int orientation) {
+        Matrix matrix = new Matrix();
+        switch (orientation) {
+            case ExifInterface.ORIENTATION_FLIP_HORIZONTAL:
+                matrix.setScale(-1f, 1f);
+                break;
+            case ExifInterface.ORIENTATION_ROTATE_180:
+                matrix.setRotate(180f);
+                break;
+            case ExifInterface.ORIENTATION_FLIP_VERTICAL:
+                matrix.setRotate(180f);
+                matrix.postScale(-1f, 1f);
+                break;
+            case ExifInterface.ORIENTATION_TRANSPOSE:
+                matrix.setRotate(90f);
+                matrix.postScale(-1f, 1f);
+                break;
+            case ExifInterface.ORIENTATION_ROTATE_90:
+                matrix.setRotate(90f);
+                break;
+            case ExifInterface.ORIENTATION_TRANSVERSE:
+                matrix.setRotate(-90f);
+                matrix.postScale(-1f, 1f);
+                break;
+            case ExifInterface.ORIENTATION_ROTATE_270:
+                matrix.setRotate(-90f);
+                break;
+            default:
+                return bitmap;
+        }
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
     }
 
     // Sort by options in MainActivity

@@ -72,4 +72,33 @@
         android:layout_marginBottom="66dp"
         android:onClick="launchEditActivity"
         android:src="@drawable/ic_edit" />
+
+    <FrameLayout
+        android:id="@+id/fullscreen_photo_overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/black"
+        android:clickable="true"
+        android:elevation="16dp"
+        android:focusable="true"
+        android:visibility="gone">
+
+        <io.getstream.photoview.PhotoView
+            android:id="@+id/fullscreen_photo"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="@string/fullscreen_contact_photo"
+            android:scaleType="fitCenter" />
+
+        <ImageView
+            android:id="@+id/close_fullscreen_photo"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="top|end"
+            android:layout_margin="8dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/close_fullscreen_photo"
+            android:padding="12dp"
+            android:src="@drawable/ic_close_white" />
+    </FrameLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
