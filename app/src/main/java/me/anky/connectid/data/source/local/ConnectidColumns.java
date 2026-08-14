@@ -47,4 +47,29 @@ public interface ConnectidColumns {
     @DataType(DataType.Type.TEXT)
     @DefaultValue("null")
     String TAGS = "tags";
+
+    @DataType(DataType.Type.INTEGER)
+    @NotNull
+    @DefaultValue("0")
+    String FLASHCARD_BOX = "flashcard_box";
+
+    @DataType(DataType.Type.INTEGER)
+    @NotNull
+    @DefaultValue("0")
+    String FLASHCARD_LAST_REVIEWED = "flashcard_last_reviewed";
+
+    @DataType(DataType.Type.INTEGER)
+    @NotNull
+    @DefaultValue("0")
+    String FLASHCARD_NEXT_REVIEW = "flashcard_next_review";
+
+    @DataType(DataType.Type.INTEGER)
+    @NotNull
+    @DefaultValue("0")
+    String FLASHCARD_ATTEMPTS = "flashcard_attempts";
+
+    @DataType(DataType.Type.INTEGER)
+    @NotNull
+    @DefaultValue("0")
+    String FLASHCARD_CORRECT = "flashcard_correct";
 }

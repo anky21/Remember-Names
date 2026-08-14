@@ -14,6 +14,11 @@ public class ConnectidConnection implements Parcelable {
     private String commonFriends;
     private String description;
     private String tags;
+    private int flashcardBox;
+    private long flashcardLastReviewed;
+    private long flashcardNextReview;
+    private int flashcardAttempts;
+    private int flashcardCorrect;
 
     public ConnectidConnection(Parcel in) {
         databaseId = in.readInt();
@@ -26,6 +31,11 @@ public class ConnectidConnection implements Parcelable {
         commonFriends = in.readString();
         description = in.readString();
         tags = in.readString();
+        flashcardBox = in.readInt();
+        flashcardLastReviewed = in.readLong();
+        flashcardNextReview = in.readLong();
+        flashcardAttempts = in.readInt();
+        flashcardCorrect = in.readInt();
     }
 
     public ConnectidConnection(String firstName, String lastName, String imageName, String meetVenue,
@@ -149,6 +159,46 @@ public class ConnectidConnection implements Parcelable {
         this.tags = tags;
     }
 
+    public int getFlashcardBox() {
+        return flashcardBox;
+    }
+
+    public void setFlashcardBox(int flashcardBox) {
+        this.flashcardBox = flashcardBox;
+    }
+
+    public long getFlashcardLastReviewed() {
+        return flashcardLastReviewed;
+    }
+
+    public void setFlashcardLastReviewed(long flashcardLastReviewed) {
+        this.flashcardLastReviewed = flashcardLastReviewed;
+    }
+
+    public long getFlashcardNextReview() {
+        return flashcardNextReview;
+    }
+
+    public void setFlashcardNextReview(long flashcardNextReview) {
+        this.flashcardNextReview = flashcardNextReview;
+    }
+
+    public int getFlashcardAttempts() {
+        return flashcardAttempts;
+    }
+
+    public void setFlashcardAttempts(int flashcardAttempts) {
+        this.flashcardAttempts = flashcardAttempts;
+    }
+
+    public int getFlashcardCorrect() {
+        return flashcardCorrect;
+    }
+
+    public void setFlashcardCorrect(int flashcardCorrect) {
+        this.flashcardCorrect = flashcardCorrect;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -166,6 +216,11 @@ public class ConnectidConnection implements Parcelable {
         dest.writeString(commonFriends);
         dest.writeString(description);
         dest.writeString(tags);
+        dest.writeInt(flashcardBox);
+        dest.writeLong(flashcardLastReviewed);
+        dest.writeLong(flashcardNextReview);
+        dest.writeInt(flashcardAttempts);
+        dest.writeInt(flashcardCorrect);
     }
 
     public static final Parcelable.Creator<ConnectidConnection> CREATOR =

@@ -20,6 +20,8 @@ public interface ConnectionsDataSource {
 
     int updateConnectionWithTags(ConnectidConnection connection);
 
+    int updateFlashcardProgress(ConnectidConnection connection);
+
     Single<List<ConnectionTag>> getTags();
 
     Single<ConnectionTag> getOneTag(int data_id);

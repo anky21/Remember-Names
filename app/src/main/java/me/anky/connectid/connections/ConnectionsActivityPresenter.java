@@ -14,6 +14,7 @@ import io.reactivex.schedulers.Schedulers;
 import me.anky.connectid.Utilities;
 import me.anky.connectid.data.ConnectidConnection;
 import me.anky.connectid.data.ConnectionsDataSource;
+import me.anky.connectid.flashcards.FlashcardSessionSelector;
 
 public class ConnectionsActivityPresenter implements ConnectionsActivityMVP.Presenter {
     private final static String TAG = "ConnectionsActivityPresenter";
@@ -77,7 +78,9 @@ public class ConnectionsActivityPresenter implements ConnectionsActivityMVP.Pres
                                 List<ConnectidConnection> withImages = new ArrayList<>();
                                 for (ConnectidConnection connection : connections) {
                                     String imageName = connection.getImageName();
-                                    if (imageName != null && !"blank_profile.jpg".equals(imageName)) {
+                                    if (imageName != null
+                                            && !imageName.trim().isEmpty()
+                                            && !"blank_profile.jpg".equals(imageName)) {
                                         withImages.add(connection);
                                     }
                                 }
@@ -85,11 +88,11 @@ public class ConnectionsActivityPresenter implements ConnectionsActivityMVP.Pres
                                 if (withImages.size() < 2) {
                                     view.showFlashcardsNotEnoughProfilesError();
                                 } else {
-                                    Collections.shuffle(withImages);
-                                    if (withImages.size() > 10) {
-                                        withImages = withImages.subList(0, 10);
-                                    }
-                                    view.startFlashcardsGame(withImages);
+                                    ArrayList<ConnectidConnection> selected =
+                                            FlashcardSessionSelector.select(
+                                                    withImages, System.currentTimeMillis(), 10);
+                                    Collections.shuffle(selected);
+                                    view.startFlashcardsGame(selected);
                                 }
                             }
 

@@ -17,9 +17,6 @@ import me.anky.connectid.data.ConnectionsDataSource;
 
 public class ConnectionsLocalRepository implements ConnectionsDataSource {
 
-    private final List<ConnectidConnection> connections = new ArrayList<>();
-    private ConnectidConnection connection;
-
     private final List<ConnectionTag> tags = new ArrayList<>();
     private ConnectionTag connectionTag;
 
@@ -31,76 +28,58 @@ public class ConnectionsLocalRepository implements ConnectionsDataSource {
 
     @Override
     public Single<List<ConnectidConnection>> getConnections(int menuOption) {
-        prepareConnectionsList(menuOption);
-
-        return Single.fromCallable(new Callable<List<ConnectidConnection>>() {
-            @Override
-            public List<ConnectidConnection> call() throws Exception {
-
-                System.out.println("Thread db: " + Thread.currentThread().getId());
-
-                return connections;
-            }
-        });
+        return Single.fromCallable(() -> loadConnections(menuOption));
     }
 
     @Override
     public Single<ConnectidConnection> getOneConnection(int data_id) {
-        Uri uri = ConnectidProvider.Connections.withId(data_id);
-
-        Cursor cursor = context.getContentResolver().query(uri, null, null, null, null);
-
-        if (cursor != null && cursor.getColumnCount() != 0) {
-            if (cursor.moveToFirst()) {
-                String firstName = cursor.getString(cursor.getColumnIndexOrThrow(ConnectidColumns.FIRST_NAME));
-                String lastName = cursor.getString(cursor.getColumnIndexOrThrow(ConnectidColumns.LAST_NAME));
-                String imageName = cursor.getString(cursor.getColumnIndexOrThrow(ConnectidColumns.IMAGE_NAME));
-                String meetVenue = cursor.getString(cursor.getColumnIndexOrThrow(ConnectidColumns.MEET_WHERE));
-                String appearance = cursor.getString(cursor.getColumnIndexOrThrow(ConnectidColumns.APPEARANCE));
-                String feature = cursor.getString(cursor.getColumnIndexOrThrow(ConnectidColumns.FEATURE));
-                String commonFriends = cursor.getString(cursor.getColumnIndexOrThrow(ConnectidColumns.COMMON_FRIENDS));
-                String description = cursor.getString(cursor.getColumnIndexOrThrow(ConnectidColumns.DESCRIPTION));
-                String tags = cursor.getString(cursor.getColumnIndexOrThrow(ConnectidColumns.TAGS));
-
-                connection = new ConnectidConnection(data_id, firstName, lastName, imageName,
-                        meetVenue, appearance, feature, commonFriends, description, tags);
-            }
-        }
-
-        if (cursor != null) {
-            cursor.close();
-        }
-
-        return Single.fromCallable(new Callable<ConnectidConnection>() {
-            @Override
-            public ConnectidConnection call() throws Exception {
-                return connection;
+        return Single.fromCallable(() -> {
+            Uri uri = ConnectidProvider.Connections.withId(data_id);
+            try (Cursor cursor = context.getContentResolver().query(
+                    uri, null, null, null, null)) {
+                if (cursor != null && cursor.moveToFirst()) {
+                    return readConnection(cursor);
+                }
+                throw new IllegalStateException("Connection not found: " + data_id);
             }
         });
     }
 
-    private void prepareConnectionsList(int menuOption) {
-        connections.clear();
-
-        Cursor cursor = getAllEntries(menuOption);
-        if (cursor != null && cursor.getCount() != 0) {
-
-            while (cursor.moveToNext()) {
-                int databaseId = cursor.getInt(cursor.getColumnIndexOrThrow(ConnectidColumns._ID));
-                String firstName = cursor.getString(cursor.getColumnIndexOrThrow(ConnectidColumns.FIRST_NAME));
-                String lastName = cursor.getString(cursor.getColumnIndexOrThrow(ConnectidColumns.LAST_NAME));
-                String imageName = cursor.getString(cursor.getColumnIndexOrThrow(ConnectidColumns.IMAGE_NAME));
-                String meetVenue = cursor.getString(cursor.getColumnIndexOrThrow(ConnectidColumns.MEET_WHERE));
-                String appearance = cursor.getString(cursor.getColumnIndexOrThrow(ConnectidColumns.APPEARANCE));
-                String feature = cursor.getString(cursor.getColumnIndexOrThrow(ConnectidColumns.FEATURE));
-                String commonFriends = cursor.getString(cursor.getColumnIndexOrThrow(ConnectidColumns.COMMON_FRIENDS));
-                String description = cursor.getString(cursor.getColumnIndexOrThrow(ConnectidColumns.DESCRIPTION));
-                String tags = cursor.getString(cursor.getColumnIndexOrThrow(ConnectidColumns.TAGS));
-
-                connections.add(new ConnectidConnection(databaseId, firstName, lastName, imageName,
-                        meetVenue, appearance, feature, commonFriends, description, tags));
+    private List<ConnectidConnection> loadConnections(int menuOption) {
+        List<ConnectidConnection> result = new ArrayList<>();
+        try (Cursor cursor = getAllEntries(menuOption)) {
+            if (cursor != null) {
+                while (cursor.moveToNext()) {
+                    result.add(readConnection(cursor));
+                }
             }
         }
+        return result;
+    }
+
+    private ConnectidConnection readConnection(Cursor cursor) {
+        ConnectidConnection result = new ConnectidConnection(
+                cursor.getInt(cursor.getColumnIndexOrThrow(ConnectidColumns._ID)),
+                cursor.getString(cursor.getColumnIndexOrThrow(ConnectidColumns.FIRST_NAME)),
+                cursor.getString(cursor.getColumnIndexOrThrow(ConnectidColumns.LAST_NAME)),
+                cursor.getString(cursor.getColumnIndexOrThrow(ConnectidColumns.IMAGE_NAME)),
+                cursor.getString(cursor.getColumnIndexOrThrow(ConnectidColumns.MEET_WHERE)),
+                cursor.getString(cursor.getColumnIndexOrThrow(ConnectidColumns.APPEARANCE)),
+                cursor.getString(cursor.getColumnIndexOrThrow(ConnectidColumns.FEATURE)),
+                cursor.getString(cursor.getColumnIndexOrThrow(ConnectidColumns.COMMON_FRIENDS)),
+                cursor.getString(cursor.getColumnIndexOrThrow(ConnectidColumns.DESCRIPTION)),
+                cursor.getString(cursor.getColumnIndexOrThrow(ConnectidColumns.TAGS)));
+        result.setFlashcardBox(cursor.getInt(
+                cursor.getColumnIndexOrThrow(ConnectidColumns.FLASHCARD_BOX)));
+        result.setFlashcardLastReviewed(cursor.getLong(
+                cursor.getColumnIndexOrThrow(ConnectidColumns.FLASHCARD_LAST_REVIEWED)));
+        result.setFlashcardNextReview(cursor.getLong(
+                cursor.getColumnIndexOrThrow(ConnectidColumns.FLASHCARD_NEXT_REVIEW)));
+        result.setFlashcardAttempts(cursor.getInt(
+                cursor.getColumnIndexOrThrow(ConnectidColumns.FLASHCARD_ATTEMPTS)));
+        result.setFlashcardCorrect(cursor.getInt(
+                cursor.getColumnIndexOrThrow(ConnectidColumns.FLASHCARD_CORRECT)));
+        return result;
     }
 
     private Cursor getAllEntries(int menOption) {
@@ -186,6 +165,22 @@ public class ConnectionsLocalRepository implements ConnectionsDataSource {
         contentValues.put(ConnectidColumns.DESCRIPTION, connection.getDescription());
         contentValues.put(ConnectidColumns.TAGS, connection.getTags());
 
+        return context.getContentResolver().update(uri, contentValues, null, null);
+    }
+
+    @Override
+    public int updateFlashcardProgress(ConnectidConnection connection) {
+        Uri uri = ConnectidProvider.Connections.withId(connection.getDatabaseId());
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(ConnectidColumns.FLASHCARD_BOX, connection.getFlashcardBox());
+        contentValues.put(ConnectidColumns.FLASHCARD_LAST_REVIEWED,
+                connection.getFlashcardLastReviewed());
+        contentValues.put(ConnectidColumns.FLASHCARD_NEXT_REVIEW,
+                connection.getFlashcardNextReview());
+        contentValues.put(ConnectidColumns.FLASHCARD_ATTEMPTS,
+                connection.getFlashcardAttempts());
+        contentValues.put(ConnectidColumns.FLASHCARD_CORRECT,
+                connection.getFlashcardCorrect());
         return context.getContentResolver().update(uri, contentValues, null, null);
     }
 

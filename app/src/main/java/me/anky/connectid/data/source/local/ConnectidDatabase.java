@@ -16,7 +16,7 @@ public final class ConnectidDatabase {
 
     private ConnectidDatabase(){}
 
-    public static final int VERSION = 2;
+    public static final int VERSION = 3;
 
     @Table(ConnectidColumns.class)
     public static final String CONNECTIONS = "connections";
@@ -32,12 +32,30 @@ public final class ConnectidDatabase {
     private static final String DATABASE_ALTER_CONNECTIONS = "ALTER TABLE "
             + CONNECTIONS + " ADD COLUMN " + TAGS + " string;";
 
+    private static final String[] FLASHCARD_PROGRESS_MIGRATIONS = {
+            "ALTER TABLE " + CONNECTIONS + " ADD COLUMN "
+                    + ConnectidColumns.FLASHCARD_BOX + " INTEGER NOT NULL DEFAULT 0;",
+            "ALTER TABLE " + CONNECTIONS + " ADD COLUMN "
+                    + ConnectidColumns.FLASHCARD_LAST_REVIEWED + " INTEGER NOT NULL DEFAULT 0;",
+            "ALTER TABLE " + CONNECTIONS + " ADD COLUMN "
+                    + ConnectidColumns.FLASHCARD_NEXT_REVIEW + " INTEGER NOT NULL DEFAULT 0;",
+            "ALTER TABLE " + CONNECTIONS + " ADD COLUMN "
+                    + ConnectidColumns.FLASHCARD_ATTEMPTS + " INTEGER NOT NULL DEFAULT 0;",
+            "ALTER TABLE " + CONNECTIONS + " ADD COLUMN "
+                    + ConnectidColumns.FLASHCARD_CORRECT + " INTEGER NOT NULL DEFAULT 0;"
+    };
+
     @OnUpgrade
     public static void onUpgrade(Context context, SQLiteDatabase db, int oldVersion,
                                  int newVersion) {
         if (oldVersion < 2) {
             db.execSQL(DATABASE_ALTER_CONNECTIONS);
             db.execSQL(DATABASE_CREATE_TAGS);
+        }
+        if (oldVersion < 3) {
+            for (String migration : FLASHCARD_PROGRESS_MIGRATIONS) {
+                db.execSQL(migration);
+            }
         }
     }
 }

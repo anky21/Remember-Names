@@ -3,89 +3,179 @@
     xmlns:ads="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp"
     android:fitsSystemWindows="true"
-    android:gravity="center_horizontal">
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:padding="16dp">
 
-    <!-- Main flashcard content -->
-    <LinearLayout
+    <TextView
+        android:id="@+id/flashcard_progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="14sp"
+        android:textStyle="bold" />
+
+    <ScrollView
         android:id="@+id/flashcard_content_container"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:orientation="vertical"
-        android:gravity="center_horizontal">
+        android:fillViewport="true">
 
-        <!-- Progress -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/flashcard_image"
+                android:layout_width="260dp"
+                android:layout_height="260dp"
+                android:contentDescription="@string/image_of_the_connection"
+                android:scaleType="centerCrop"
+                android:src="@drawable/blank_profile_round" />
+
+            <TextView
+                android:id="@+id/flashcard_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:gravity="center"
+                android:textColor="@android:color/black"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/flashcard_details"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="center"
+                android:lineSpacingExtra="4dp"
+                android:textColor="@android:color/black"
+                android:textSize="16sp"
+                android:visibility="gone" />
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/flashcard_results_container"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
+
         <TextView
-            android:id="@+id/flashcard_progress"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:textSize="14sp"
-            android:textColor="@color/colorPrimaryDark" />
+            android:text="@string/flashcards_results_title"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="24sp"
+            android:textStyle="bold" />
 
-        <!-- Flashcard image (front/back trigger) -->
-        <ImageView
-            android:id="@+id/flashcard_image"
-            android:layout_width="260dp"
-            android:layout_height="260dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/blank_profile_round"
-            android:contentDescription="@string/image_of_the_connection" />
-
-        <!-- Name shown on back of card -->
         <TextView
-            android:id="@+id/flashcard_name"
-            android:layout_width="wrap_content"
+            android:id="@+id/flashcard_results_summary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:gravity="center"
+            android:lineSpacingExtra="6dp"
+            android:textColor="@android:color/black"
+            android:textSize="18sp" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/flashcard_review_again_button"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:textColor="@android:color/black"
-            android:visibility="gone" />
+            android:backgroundTint="@color/colorPrimary"
+            android:text="@string/flashcards_review_again"
+            android:textColor="@color/text_or_icons" />
 
-        <!-- Additional details shown on back of card -->
-        <TextView
-            android:id="@+id/flashcard_details"
-            android:layout_width="wrap_content"
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/flashcard_done_button"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:textSize="16sp"
-            android:textColor="@android:color/black"
-            android:visibility="gone" />
-
+            android:backgroundTint="@color/colorPrimaryDark"
+            android:text="@string/flashcards_done"
+            android:textColor="@color/text_or_icons" />
     </LinearLayout>
 
-    <!-- Hint text above CTA -->
     <TextView
         android:id="@+id/flashcard_hint"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp"
+        android:gravity="center"
         android:text="@string/flashcards_hint"
-        android:textSize="14sp"
-        android:textColor="@color/colorPrimaryDark" />
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="14sp" />
 
-    <!-- CTA styled similar to other screens, at bottom above ad -->
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/flashcard_next_button"
+        android:id="@+id/flashcard_reveal_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="@string/flashcards_next"
-        android:textColor="@color/text_or_icons"
-        android:backgroundTint="@color/colorPrimary" />
+        android:backgroundTint="@color/colorPrimary"
+        android:text="@string/flashcards_reveal"
+        android:textColor="@color/text_or_icons" />
 
-    <!-- Ad below CTA -->
+    <LinearLayout
+        android:id="@+id/flashcard_rating_actions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:baselineAligned="false"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/flashcard_again_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="4dp"
+            android:layout_weight="1"
+            android:backgroundTint="@color/flashcard_again"
+            android:minWidth="0dp"
+            android:text="@string/flashcards_again"
+            android:textColor="@color/text_or_icons" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/flashcard_hard_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="4dp"
+            android:layout_marginStart="4dp"
+            android:layout_weight="1"
+            android:backgroundTint="@color/flashcard_hard"
+            android:minWidth="0dp"
+            android:text="@string/flashcards_hard"
+            android:textColor="@color/text_or_icons" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/flashcard_got_it_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_weight="1"
+            android:backgroundTint="@color/flashcard_got_it"
+            android:minWidth="0dp"
+            android:text="@string/flashcards_got_it"
+            android:textColor="@color/text_or_icons" />
+    </LinearLayout>
+
     <com.google.android.gms.ads.AdView
         android:id="@+id/adView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         android:layout_gravity="center_horizontal"
+        android:layout_marginTop="12dp"
         ads:adSize="BANNER"
         ads:adUnitId="@string/ad_unit_id_banner" />
 
