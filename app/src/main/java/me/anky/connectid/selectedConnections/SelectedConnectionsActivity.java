@@ -220,7 +220,7 @@ public class SelectedConnectionsActivity extends AppCompatActivity implements
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 presenter.deleteTag(tagId, mTag, data);
-                Utilities.logFirebaseEvents("Delete a tag", mTag);
+                Utilities.logFirebaseEventWithNoParams("tag_deleted");
             }
         });
         builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {

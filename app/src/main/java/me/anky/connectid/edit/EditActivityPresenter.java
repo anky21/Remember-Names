@@ -59,7 +59,7 @@ public class EditActivityPresenter implements EditActivityMVP.Presenter {
 
                                 if (databaseId == -1) {
                                     view.displayError();
-                                    Utilities.logFirebaseError("error_deliver_new_connection", TAG + ".deliverNewConnection", "databaseId is -1");
+                                    Utilities.logFirebaseError("error_deliver_new_connection", TAG + ".deliverNewConnection");
                                 } else {
                                     view.displaySuccess(databaseId);
                                 }
@@ -68,7 +68,7 @@ public class EditActivityPresenter implements EditActivityMVP.Presenter {
                             @Override
                             public void onError(@NonNull Throwable e) {
 //                                System.out.println("MVP presenter - " + "something went seriously wrong");
-                                Utilities.logFirebaseError("error_deliver_new_connection", TAG + ".deliverNewConnection", e.getMessage());
+                                Utilities.logFirebaseError("error_deliver_new_connection", TAG + ".deliverNewConnection");
                             }
                         });
 
@@ -93,8 +93,7 @@ public class EditActivityPresenter implements EditActivityMVP.Presenter {
 //                                System.out.println("MVP presenter - " + "delivered new connection, resultCode " + resultCode);
 
                                 if (resultCode <= 0) {
-                                    Utilities.logFirebaseError("error_update_connection", TAG + ".updateConnection",
-                                            "No connection was updated");
+                                    Utilities.logFirebaseError("error_update_connection", TAG + ".updateConnection");
 
                                     view.displayError();
                                 } else {
@@ -105,7 +104,7 @@ public class EditActivityPresenter implements EditActivityMVP.Presenter {
                             @Override
                             public void onError(@NonNull Throwable e) {
 //                                System.out.println("MVP presenter - " + "something went seriously wrong");
-                                Utilities.logFirebaseError("error_update_connection", TAG + ".deliverNewConnection", e.getMessage());
+                                Utilities.logFirebaseError("error_update_connection", TAG + ".deliverNewConnection");
                                 view.displayError();
                             }
                         });
@@ -127,7 +126,7 @@ public class EditActivityPresenter implements EditActivityMVP.Presenter {
 
                             @Override
                             public void onError(Throwable e) {
-                                Utilities.logFirebaseError("error_load_tags", TAG + ".loadTags", e.getMessage());
+                                Utilities.logFirebaseError("error_load_tags", TAG + ".loadTags");
                             }
                         });
         compositeDisposable.add(disposableSingleTagsObserver);

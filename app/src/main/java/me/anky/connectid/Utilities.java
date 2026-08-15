@@ -320,29 +320,13 @@ public class Utilities {
      *
      * @param event Type of errors
      * @param origin Activity + class name
-     * @param msg Error message
      */
-    public static void logFirebaseError(String event, String origin, String msg) {
+    public static void logFirebaseError(String event, String origin) {
         application = ConnectidApplication.getAppInstance();
         mFirebaseAnalytics = application.getAnalyticsInstance();
 
         Bundle params = new Bundle();
         params.putString(FirebaseAnalytics.Param.ORIGIN, origin);
-        params.putString(FirebaseAnalytics.Param.ITEM_NAME, msg);
-        mFirebaseAnalytics.logEvent(event, params);
-    }
-
-    /**
-     *
-     * @param event Content of the events
-     * @param content Activity + class name
-     */
-    public static void logFirebaseEvents(String event, String content) {
-        application = ConnectidApplication.getAppInstance();
-        mFirebaseAnalytics = application.getAnalyticsInstance();
-
-        Bundle params = new Bundle();
-        params.putString(FirebaseAnalytics.Param.CONTENT, content);
         mFirebaseAnalytics.logEvent(event, params);
     }
 

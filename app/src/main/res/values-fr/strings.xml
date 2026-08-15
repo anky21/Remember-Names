@@ -38,10 +38,7 @@
     <string name="last_name">nom de famille</string>
     <string name="confirm_to_exit">Êtes-vous sûr de vouloir quitter?</string>
     <string name="press_back_to_exit">Cliquez à nouveau sur retour pour quitter</string>
-    <string name="invitation_title">Envoyer une invitation</string>
-    <string name="invitation_message">Cette appli est formidable, essayez-la!</string>
-    <string name="invitation_cta">Installer!</string>
-    <string name="send_failed">L\'envoi d\'invitations a échoué</string>
+    <string name="invite_share_message">Bonjour. Cette application vous aide à mémoriser les noms et à organiser vos contacts. Vous pouvez la télécharger ici : %1$s</string>
     <string name="activity_label_tags">Mots-clés</string>
     <string name="no_connection_tag">Aucune connexion pour ce mot-clé</string>
     <string name="selected_connections_activity_title">Mot-clé - %s</string>

@@ -10,6 +10,7 @@ import me.anky.connectid.details.DetailsActivity;
 import me.anky.connectid.edit.EditActivity;
 import me.anky.connectid.editTag.EditTagActivity;
 import me.anky.connectid.flashcards.FlashcardsActivity;
+import me.anky.connectid.flashcards.FlashcardSetupActivity;
 import me.anky.connectid.selectedConnections.SelectedConnectionsActivity;
 import me.anky.connectid.tags.TagsActivity;
 
@@ -39,6 +40,8 @@ public interface ApplicationComponent {
     void inject(SelectedConnectionsActivity selectedConnectionsActivity);
 
     void inject(FlashcardsActivity flashcardsActivity);
+
+    void inject(FlashcardSetupActivity flashcardSetupActivity);
 
     SharedPrefsHelper getPreferenceHelper();
 }

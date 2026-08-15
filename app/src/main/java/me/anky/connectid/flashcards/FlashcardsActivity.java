@@ -55,6 +55,7 @@ public class FlashcardsActivity extends AppCompatActivity {
     private int gotItCount;
     private boolean isShowingBack;
     private boolean resultsVisible;
+    private FlashcardProgressStore progressStore;
 
     private ImageView imageView;
     private TextView nameTextView;
@@ -74,6 +75,8 @@ public class FlashcardsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         ConnectidApplication.getAppInstance().getApplicationComponent().inject(this);
         setContentView(R.layout.activity_flashcards);
+        progressStore = new FlashcardProgressStore(
+                getSharedPreferences("shared-prefs", MODE_PRIVATE));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().setStatusBarColor(
@@ -282,6 +285,7 @@ public class FlashcardsActivity extends AppCompatActivity {
                 rating);
         applyReviewResult(connection, result);
         persistProgress(connection);
+        progressStore.recordReview();
 
         if (rating == FlashcardRating.AGAIN) {
             againCount++;
@@ -319,7 +323,7 @@ public class FlashcardsActivity extends AppCompatActivity {
                 }
             } catch (RuntimeException error) {
                 Utilities.logFirebaseError("error_save_flashcard_progress",
-                        "FlashcardsActivity.persistProgress", error.getMessage());
+                        "FlashcardsActivity.persistProgress");
                 showSaveError();
             }
         });

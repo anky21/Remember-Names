@@ -7,6 +7,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <!-- <uses-permission android:name="android.permission.MEDIA_CONTENT_CONTROL"></uses-permission> -->
     <application
@@ -78,6 +79,21 @@
             android:label="@string/activity_label_flashcards"
             android:parentActivityName=".connections.ConnectionsActivity"
             android:theme="@style/AppTheme" />
+        <activity
+            android:name=".flashcards.FlashcardSetupActivity"
+            android:exported="false"
+            android:label="@string/activity_label_flashcards"
+            android:parentActivityName=".connections.ConnectionsActivity"
+            android:theme="@style/AppTheme" />
+
+        <receiver
+            android:name=".flashcards.FlashcardReminderReceiver"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
 
         <service android:name="service.FcmService"
             android:exported="false">
@@ -85,19 +101,6 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-
-        <activity android:name=".DeepLinkActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW"/>
-
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
-
-                <data android:host="c9479.app.goo.gl" android:scheme="http"/>
-                <data android:host="c9479.app.goo.gl" android:scheme="https"/>
-            </intent-filter>
-        </activity>
 
         <provider
             android:name="androidx.core.content.FileProvider"

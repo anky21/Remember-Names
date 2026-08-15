@@ -373,7 +373,7 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
 
     @OnClick(R.id.edit_portrait_iv)
     public void changePortraitPhoto() {
-        Utilities.logFirebaseEventWithNoParams("Change portrait photo");
+        Utilities.logFirebaseEventWithNoParams("profile_photo_change_started");
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         PickerFragment newFragment = new PickerFragment();
         newFragment.show(ft, "dialog");
@@ -382,7 +382,7 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
 
     @OnClick(R.id.tags_linear_layout)
     public void launchEditTagActivity(View view) {
-        Utilities.logFirebaseEventWithNoParams("Launch edit tag act");
+        Utilities.logFirebaseEventWithNoParams("tag_editor_opened");
 
         Intent intent = new Intent(this, EditTagActivity.class);
         if (mDatabaseId != -1) {
@@ -405,7 +405,7 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
             mPhotoHasChanged = true;
         } catch (Exception e) {
 //            Log.e(TAG, "error in changing photo");
-            Utilities.logFirebaseError("error_change_photo", TAG + ".changePhoto", e.getMessage());
+            Utilities.logFirebaseError("error_change_photo", TAG + ".changePhoto");
         }
     }
 
@@ -425,7 +425,7 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
                     this, mPreviewBitmap, Utilities.getContactPreviewImageName(mImageName));
             if (!previewSaved) {
                 deleteImageFiles(mImageName);
-                Utilities.logFirebaseError("error_save_photo", TAG + ".saveConnection", "Failed to save " + mImageName);
+                Utilities.logFirebaseError("error_save_photo", TAG + ".saveConnection");
                 displayError();
                 return;
             }
@@ -522,10 +522,10 @@ public class EditActivity extends AppCompatActivity implements EditActivityMVP.V
         File imageFile = Utilities.getContactImageFile(this, imageName);
         File previewFile = Utilities.getContactPreviewFile(this, imageName);
         if (imageFile.exists() && !imageFile.delete()) {
-            Utilities.logFirebaseError("error_delete_photo", TAG + ".deleteImageFiles", imageName);
+            Utilities.logFirebaseError("error_delete_photo", TAG + ".deleteImageFiles");
         }
         if (previewFile.exists() && !previewFile.delete()) {
-            Utilities.logFirebaseError("error_delete_preview", TAG + ".deleteImageFiles", imageName);
+            Utilities.logFirebaseError("error_delete_preview", TAG + ".deleteImageFiles");
         }
     }
 

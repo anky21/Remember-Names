@@ -39,7 +39,7 @@ public class EditTagActivityPresenter implements EditTagActivityMVP.Presenter {
 
     @Override
     public void createNewTag(String input, List<String> connectionTags, List<ConnectionTag> allTags) {
-        Utilities.logFirebaseEvents("Create New Tag", input);
+        Utilities.logFirebaseEventWithNoParams("tag_created");
 
         int existingTagPosition = -1;
 
@@ -90,7 +90,7 @@ public class EditTagActivityPresenter implements EditTagActivityMVP.Presenter {
 
                             @Override
                             public void onError(Throwable e) {
-                                Utilities.logFirebaseError("error_load_tags", TAG + ".loadTags", e.getMessage());
+                                Utilities.logFirebaseError("error_load_tags", TAG + ".loadTags");
                             }
                         });
         compositeDisposable.add(disposableSingleObserver);

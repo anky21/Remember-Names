@@ -50,7 +50,7 @@ public class TagsActivityPresenter implements TagsActivityMVP.Presenter {
 
                             @Override
                             public void onError(Throwable e) {
-                                Utilities.logFirebaseError("error_load_tags", TAG + ".loadTags", e.getMessage());
+                                Utilities.logFirebaseError("error_load_tags", TAG + ".loadTags");
                             }
                         });
         compositeDisposable.add(disposableSingleObserver);

@@ -28,11 +28,8 @@ import com.google.android.gms.ads.MobileAds;
 import com.android.billingclient.api.BillingClient;
 import com.android.billingclient.api.BillingResult;
 import com.android.billingclient.api.Purchase;
-import com.google.android.gms.appinvite.AppInviteInvitation;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
-import com.google.firebase.appinvite.FirebaseAppInvite;
-import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
 
 import java.io.File;
 import java.io.IOException;
@@ -67,7 +64,7 @@ import me.anky.connectid.data.SharedPrefsHelper;
 import me.anky.connectid.data.source.local.generated.ConnectidDatabase;
 import me.anky.connectid.details.DetailsActivity;
 import me.anky.connectid.edit.EditActivity;
-import me.anky.connectid.flashcards.FlashcardsActivity;
+import me.anky.connectid.flashcards.FlashcardSetupActivity;
 import me.anky.connectid.root.ConnectidApplication;
 import me.anky.connectid.subscription.BillingManager;
 import me.anky.connectid.subscription.SubscriptionManager;
@@ -112,7 +109,6 @@ public class ConnectionsActivity extends AppCompatActivity implements
 
     private static final int DETAILS_ACTIVITY_REQUEST = 100;
     private static final int NEW_CONNECTION_REQUEST = 200;
-    private static final int REQUEST_INVITE = 0;
     private static final int REQUEST_POST_NOTIFICATIONS = 300;
 
     boolean shouldScrollToBottom = false;
@@ -341,41 +337,41 @@ public class ConnectionsActivity extends AppCompatActivity implements
                 closeNavigationMenu();
 
                 sharedPrefsHelper.put(Utilities.SORTBY, 1);
-                Utilities.logFirebaseEvents("Connections Sort Order", "new_first");
+                Utilities.logFirebaseEventWithNoParams("connections_sort_newest");
             }
             break;
             case R.id.sortby_date_old: {
                 closeNavigationMenu();
 
                 sharedPrefsHelper.put(Utilities.SORTBY, 2);
-                Utilities.logFirebaseEvents("Connections Sort Order", "old_first");
+                Utilities.logFirebaseEventWithNoParams("connections_sort_oldest");
             }
             break;
             case R.id.sortby_fname_a: {
                 closeNavigationMenu();
 
                 sharedPrefsHelper.put(Utilities.SORTBY, 3);
-                Utilities.logFirebaseEvents("Connections Sort Order", "first name a-z");
+                Utilities.logFirebaseEventWithNoParams("connections_sort_first_asc");
             }
             break;
             case R.id.sortby_fname_z: {
                 closeNavigationMenu();
 
                 sharedPrefsHelper.put(Utilities.SORTBY, 4);
-                Utilities.logFirebaseEvents("Connections Sort Order", "first name Z-A");
+                Utilities.logFirebaseEventWithNoParams("connections_sort_first_desc");
             }
             break;
             case R.id.sortby_lname_a: {
                 closeNavigationMenu();
 
                 sharedPrefsHelper.put(Utilities.SORTBY, 5);
-                Utilities.logFirebaseEvents("Connections Sort Order", "last name a-z");
+                Utilities.logFirebaseEventWithNoParams("connections_sort_last_asc");
             }
             break;
             case R.id.sortby_lname_z: {
                 closeNavigationMenu();
                 sharedPrefsHelper.put(Utilities.SORTBY, 6);
-                Utilities.logFirebaseEvents("Connections Sort Order", "last name Z-A");
+                Utilities.logFirebaseEventWithNoParams("connections_sort_last_desc");
             }
             break;
         }
@@ -450,7 +446,7 @@ public class ConnectionsActivity extends AppCompatActivity implements
         startActivityForResult(intent, NEW_CONNECTION_REQUEST);
         overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
 
-        Utilities.logFirebaseEventWithNoParams("FAB New Connection");
+        Utilities.logFirebaseEventWithNoParams("new_profile_started");
     }
 
     @Override
@@ -477,18 +473,6 @@ public class ConnectionsActivity extends AppCompatActivity implements
             }
         }
 
-        if (requestCode == REQUEST_INVITE) {
-            if (resultCode == RESULT_OK) {
-                // Get the invitation IDs of all sent messages
-                String[] ids = AppInviteInvitation.getInvitationIds(resultCode, data);
-                for (String id : ids) {
-//                    Log.d(TAG, "onActivityResult: sent invitation " + id);
-                    Utilities.logFirebaseEvents("Invite Result id", id);
-                }
-            } else {
-                Toast.makeText(this, getString(R.string.send_failed), Toast.LENGTH_SHORT).show();
-            }
-        }
     }
 
     private void handleBackNavigation() {
@@ -535,8 +519,7 @@ public class ConnectionsActivity extends AppCompatActivity implements
 
     @Override
     public void startFlashcardsGame(List<ConnectidConnection> flashcards) {
-        Intent intent = new Intent(this, FlashcardsActivity.class);
-        intent.putParcelableArrayListExtra("flashcards", new ArrayList<>(flashcards));
+        Intent intent = new Intent(this, FlashcardSetupActivity.class);
         startActivity(intent);
         overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
     }
@@ -550,7 +533,7 @@ public class ConnectionsActivity extends AppCompatActivity implements
             menuItem -> {
                 switch (menuItem.getItemId()) {
                     case (R.id.nav_tags):
-                        Utilities.logFirebaseEventWithNoParams("Start Tags Activity");
+                        Utilities.logFirebaseEventWithNoParams("tags_opened");
 
                         closeNavigationMenu();
                         Intent intent = new Intent(getApplicationContext(), TagsActivity.class);
@@ -559,12 +542,13 @@ public class ConnectionsActivity extends AppCompatActivity implements
                         overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
                         break;
                     case (R.id.nav_flashcards):
-                        Utilities.logFirebaseEventWithNoParams("Nav Flashcards");
+                        Utilities.logFirebaseEventWithNoParams("flashcards_opened");
                         closeNavigationMenu();
-                        presenter.onFlashcardsSelected();
+                        startActivity(new Intent(this, FlashcardSetupActivity.class));
+                        overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
                         break;
                     case (R.id.nav_ad_free):
-                        Utilities.logFirebaseEventWithNoParams("Nav Ad Free");
+                        Utilities.logFirebaseEventWithNoParams("ad_free_opened");
                         closeNavigationMenu();
                         // Launch purchase flow for ad-free subscription
                         if (billingManager != null) {
@@ -572,13 +556,16 @@ public class ConnectionsActivity extends AppCompatActivity implements
                         }
                         break;
                     case (R.id.nav_invite):
-                        Utilities.logFirebaseEventWithNoParams("Nav Invite Friends");
+                        Utilities.logFirebaseEventWithNoParams("invite_started");
                         closeNavigationMenu();
                         Intent sendIntent = new Intent();
                         sendIntent.setAction(Intent.ACTION_SEND);
-                        sendIntent.putExtra(Intent.EXTRA_TEXT, "Hi. This app can help you remember people's names and organise your contacts. You can download it here: https://c9479.app.goo.gl/eNh4");
+                        sendIntent.putExtra(Intent.EXTRA_TEXT, getString(
+                                R.string.invite_share_message,
+                                getString(R.string.play_store_url)));
                         sendIntent.setType("text/plain");
-                        Intent shareIntent = Intent.createChooser(sendIntent, null);
+                        Intent shareIntent = Intent.createChooser(
+                                sendIntent, getString(R.string.nav_invite_friends));
                         startActivity(shareIntent);
                         break;
                     case (R.id.nav_email_csv):

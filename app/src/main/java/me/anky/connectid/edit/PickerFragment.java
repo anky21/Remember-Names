@@ -55,8 +55,7 @@ public class PickerFragment extends DialogFragment {
                         && mOriginalImageUri != null) {
                     deliverSelectedPhoto(mOriginalImageUri, result.getUriContent());
                 } else if (result.getError() != null) {
-                    Utilities.logFirebaseError("error_crop_image", TAG + ".cropImage",
-                            result.getError().getMessage());
+                    Utilities.logFirebaseError("error_crop_image", TAG + ".cropImage");
                 }
             });
 
@@ -107,7 +106,7 @@ public class PickerFragment extends DialogFragment {
 
     @OnClick(R.id.takeImage_tv)
     public void takeImage() {
-        Utilities.logFirebaseEvents("Get image", "take_image");
+        Utilities.logFirebaseEventWithNoParams("photo_camera_selected");
 
         if (mSavedInstanceState == null) {
             output = new File(new File(getActivity().getFilesDir(), PHOTOS), FILENAME);
@@ -136,7 +135,7 @@ public class PickerFragment extends DialogFragment {
             try {
                 startActivityForResult(i, TAKE_PHOTO);
             } catch (ActivityNotFoundException e) {
-                Utilities.logFirebaseError("error_take_image", TAG + ".takeImage", e.getMessage());
+                Utilities.logFirebaseError("error_take_image", TAG + ".takeImage");
             }
         } else {
             output = (File) mSavedInstanceState.getSerializable(EXTRA_FILENAME);
@@ -145,7 +144,7 @@ public class PickerFragment extends DialogFragment {
 
     @OnClick(R.id.pickImage_tv)
     public void pickImage() {
-        Utilities.logFirebaseEvents("Get image", "pick_image");
+        Utilities.logFirebaseEventWithNoParams("photo_library_selected");
 
         Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
         photoPickerIntent.setType("image/*");

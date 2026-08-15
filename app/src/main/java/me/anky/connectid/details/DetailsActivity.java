@@ -179,36 +179,29 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
 
     private Intent createShareIntent() {
         StringBuffer sb = new StringBuffer();
-        StringBuffer sbAnalytics = new StringBuffer();
         sb.append(getString(R.string.share_msg_1) + mFirstName);
-        sbAnalytics.append("First name: " + mFirstName);
         if (!mLastName.equals("")) {
             sb.append(getString(R.string.share_msg_7) + mLastName);
         }
         if (!mMeetVenue.equals("")) {
             sb.append(getString(R.string.share_msg_2) + mMeetVenue);
-            sbAnalytics.append(". We met at: " + mMeetVenue);
         }
 
         if (!mAppearance.equals("")) {
             sb.append(getString(R.string.share_msg_3) + mAppearance);
-            sbAnalytics.append(". Appearance: " + mAppearance);
         }
 
         if (!mFeature.equals("")) {
             sb.append(getString(R.string.share_msg_4) + mFeature);
-            sbAnalytics.append(". Feature: " + mFeature);
         }
 
         if (!mCommonFriends.equals("")) {
             sb.append(getString(R.string.share_msg_5) + mCommonFriends);
-            sbAnalytics.append(". Common friends: " + mCommonFriends);
         }
 
 
         if (!mDescription.equals("")) {
             sb.append(getString(R.string.share_msg_6) + mDescription);
-            sbAnalytics.append(". Description: " + mDescription);
         }
 
         int okUnicode = 0x1F44C;
@@ -221,7 +214,7 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
         intent.setType("text/plain");
         intent.putExtra(Intent.EXTRA_TEXT, shareMsg);
 
-        Utilities.logFirebaseEvents("Share profile msg", sbAnalytics.toString());
+        Utilities.logFirebaseEventWithNoParams("profile_shared");
 
         return intent;
     }
@@ -238,7 +231,7 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
                 break;
             case R.id.action_delete:
                 showDeleteDialog();
-                Utilities.logFirebaseEvents("Delete connection", "menu_button");
+                Utilities.logFirebaseEventWithNoParams("profile_delete_requested");
 
                 break;
             case android.R.id.home:
@@ -377,13 +370,13 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
 
         if (mPortraitImageFile != null && mPortraitImageFile.exists()
                 && !mPortraitImageFile.delete()) {
-            Utilities.logFirebaseError("error_delete_photo", TAG + ".displaySuccess", mImageName);
+            Utilities.logFirebaseError("error_delete_photo", TAG + ".displaySuccess");
         }
         if (mImageName != null && !mImageName.equals("")
                 && !mImageName.equals("blank_profile.jpg")) {
             File previewFile = Utilities.getContactPreviewFile(this, mImageName);
             if (previewFile.exists() && !previewFile.delete()) {
-                Utilities.logFirebaseError("error_delete_preview", TAG + ".displaySuccess", mImageName);
+                Utilities.logFirebaseError("error_delete_preview", TAG + ".displaySuccess");
             }
         }
 
@@ -397,7 +390,7 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
 
     @OnClick(R.id.edit_fab)
     public void launchEditActivity(View view) {
-        Utilities.logFirebaseEventWithNoParams("Click edit FAB");
+        Utilities.logFirebaseEventWithNoParams("profile_edit_started");
 
         Intent intent = new Intent(this, EditActivity.class);
         intent.putExtra("DETAILS", connection);
@@ -409,7 +402,7 @@ public class DetailsActivity extends AppCompatActivity implements DetailsActivit
     public void deleteConnection(View view) {
         showDeleteDialog();
 
-        Utilities.logFirebaseEvents("Delete connection", "bottom_button");
+        Utilities.logFirebaseEventWithNoParams("profile_delete_requested");
 
     }
 }

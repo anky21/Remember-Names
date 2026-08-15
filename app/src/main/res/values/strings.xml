@@ -60,12 +60,8 @@
     <string name="confirm_to_exit">Are you sure you want to exit?</string>
     <string name="press_back_to_exit">Press back once more to exit.</string>
 
-    <string name="invitation_title">Send An Invitation</string>
-    <string name="invitation_message">This app is terrific, check it out!</string>
-    <string name="invitation_deep_link" translatable="false">https://c9479.app.goo.gl/eNh4</string>
-    <string name="invitation_custom_image" translatable="false">https://lh3.googleusercontent.com/QvL60Mwpu1QUYRX2HZsi3Js8cq5jti9QHlqcrws-nzlGrWBp2mDSChF1z5E5J5sdTNI=w300</string>
-    <string name="invitation_cta">Install!</string>
-    <string name="send_failed">Sending invitations failed</string>
+    <string name="play_store_url" translatable="false">https://play.google.com/store/apps/details?id=me.anky.connectid</string>
+    <string name="invite_share_message">Hi. This app can help you remember people\'s names and organise your contacts. You can download it here: %1$s</string>
 
     <!-- TagsActivity -->
     <string name="activity_label_tags">Tags</string>
@@ -118,6 +114,32 @@
     <string name="flashcards_save_error">Could not save review progress.</string>
     <string name="flashcards_reveal_accessibility">Reveal the name on card %1$d</string>
     <string name="flashcards_revealed_accessibility">Name revealed: %1$s</string>
+    <string name="flashcards_today">Today</string>
+    <string name="flashcards_daily_progress">%1$d of %2$d reviews completed</string>
+    <string name="flashcards_streak_summary">Current streak: %1$d days | Best: %2$d days</string>
+    <string name="flashcards_daily_goal">Daily goal</string>
+    <string name="flashcards_mastery">Progress and mastery</string>
+    <string name="flashcards_due_metric">%1$d due</string>
+    <string name="flashcards_mastered_metric">%1$d/%2$d mastered</string>
+    <string name="flashcards_accuracy_metric">%1$d%% accuracy</string>
+    <string name="flashcards_mastery_breakdown">New: %1$d | Learning: %2$d | Mastered: %3$d</string>
+    <string name="flashcards_build_session">Build a session</string>
+    <string name="flashcards_deck">Deck</string>
+    <string name="flashcards_all_contacts">All contacts</string>
+    <string name="flashcards_session_length">Session length</string>
+    <string name="flashcards_session_5">5 cards</string>
+    <string name="flashcards_session_10">10 cards</string>
+    <string name="flashcards_session_20">20 cards</string>
+    <string name="flashcards_session_30">30 cards</string>
+    <string name="flashcards_deck_summary">%1$d contacts | %2$d due | %3$d in this session</string>
+    <string name="flashcards_start_session">Start session</string>
+    <string name="flashcards_not_enough_deck_images">This deck needs at least two contacts with photos.</string>
+    <string name="flashcards_reminders">Reminders</string>
+    <string name="flashcards_daily_reminder">Daily practice reminder</string>
+    <string name="flashcards_reminder_time">Reminder time: %1$s</string>
+    <string name="flashcards_reminder_title">Time to remember some names</string>
+    <string name="flashcards_reminder_message">A short review keeps your connections fresh.</string>
+    <string name="flashcards_reminder_permission_error">Notifications are disabled, so the reminder was not saved.</string>
     <string name="newest_first_default">Newest first (default)</string>
     <string name="oldest_first">Oldest first</string>
     <string name="first_name_a_z"><![CDATA[First name A->Z]]></string>

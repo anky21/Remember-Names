@@ -47,7 +47,7 @@ public class DetailsActivityPresenter implements DetailsActivityMVP.Presenter {
 
                             @Override
                             public void onError(@NonNull Throwable e) {
-                                Utilities.logFirebaseError("error_load_connection", TAG + ".loadConnection", e.getMessage());
+                                Utilities.logFirebaseError("error_load_connection", TAG + ".loadConnection");
                             }
                         });
         compositeDisposable.add(disposableConnectionSingleObserver);
@@ -76,7 +76,7 @@ public class DetailsActivityPresenter implements DetailsActivityMVP.Presenter {
                             @Override
                             public void onError(@NonNull Throwable e) {
 //                                System.out.println("MVP presenter - " + "something went seriously wrong");
-                                Utilities.logFirebaseError("error_delete_connection", TAG + ".deliverDatabaseIdtoDelete", e.getMessage());
+                                Utilities.logFirebaseError("error_delete_connection", TAG + ".deliverDatabaseIdtoDelete");
 
                             }
                         });
@@ -105,7 +105,7 @@ public class DetailsActivityPresenter implements DetailsActivityMVP.Presenter {
 
                             @Override
                             public void onError(Throwable e) {
-                                Utilities.logFirebaseError("error_update_tag_table", TAG + ".loadAndUpdateTagTable", e.getMessage());
+                                Utilities.logFirebaseError("error_update_tag_table", TAG + ".loadAndUpdateTagTable");
                             }
                         });
         compositeDisposable.add(disposableSingleTagsObserver);

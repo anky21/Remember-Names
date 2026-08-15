@@ -44,10 +44,7 @@
     <string name="last_name">apellido</string>
     <string name="confirm_to_exit">¿Seguro que quieres salir?</string>
     <string name="press_back_to_exit">Presiona atrás una vez más para salir.</string>
-    <string name="invitation_title">Envia una invitación</string>
-    <string name="invitation_message">Esta aplicación es excelente, ¡compruébalo!</string>
-    <string name="invitation_cta">¡Instalar!</string>
-    <string name="send_failed">Error al enviar las invitaciones</string>
+    <string name="invite_share_message">Hola. Esta aplicación te ayuda a recordar nombres y organizar tus contactos. Puedes descargarla aquí: %1$s</string>
     <string name="activity_label_tags">Tags</string>
     <string name="no_connection_tag">No hay conexiones para este tag.</string>
     <string name="selected_connections_activity_title">Tag - %s</string>

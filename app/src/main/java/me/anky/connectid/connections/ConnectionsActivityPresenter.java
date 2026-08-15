@@ -57,7 +57,7 @@ public class ConnectionsActivityPresenter implements ConnectionsActivityMVP.Pres
                             @Override
                             public void onError(@NonNull Throwable e) {
                                 view.displayError();
-                                Utilities.logFirebaseError("error_load_connections", TAG + ".loadConnections", e.getMessage());
+                                Utilities.logFirebaseError("error_load_connections", TAG + ".loadConnections");
                             }
                         });
 
@@ -99,7 +99,7 @@ public class ConnectionsActivityPresenter implements ConnectionsActivityMVP.Pres
                             @Override
                             public void onError(@NonNull Throwable e) {
                                 view.showFlashcardsNotEnoughProfilesError();
-                                Utilities.logFirebaseError("error_load_connections", TAG + ".onFlashcardsSelected", e.getMessage());
+                                Utilities.logFirebaseError("error_load_connections", TAG + ".onFlashcardsSelected");
                             }
                         });
 

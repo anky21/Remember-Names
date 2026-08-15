@@ -1,4 +1,4 @@
-<a href="https://c9479.app.goo.gl/eNh4"><img src="/demo/get_it_on_google_play.png" width="200" height="59" alt="Remember names on Google Play"></a>
+<a href="https://play.google.com/store/apps/details?id=me.anky.connectid"><img src="/demo/get_it_on_google_play.png" width="200" height="59" alt="Remember names on Google Play"></a>
 
 Remember Names
 ========
