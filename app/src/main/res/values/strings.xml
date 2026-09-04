@@ -22,6 +22,10 @@
     <string name="keep_editing">Keep Editing</string>
     <string name="first_name_required">First name is required.</string>
     <string name="delete_connection_dialog_msg">Are you sure you want to delete this profile?</string>
+    <string name="swipe_delete_title">Delete %1$s?</string>
+    <string name="swipe_delete_message">This profile and its stored photos will be permanently deleted.</string>
+    <string name="delete">Delete</string>
+    <string name="delete_error_msg">Could not delete this profile. Please try again.</string>
     <string name="delete_success_msg">A profile has been deleted!</string>
     <string name="share">Share</string>
 
@@ -161,8 +165,26 @@
     <string name="add_a_tag">Add a Tag</string>
     <string name="data_load_error">Error. Please try again later.</string>
     <string name="email_the_database">Email the Database</string>
-    <string name="export_databse_title">Export and Email the Database</string>
-    <string name="export_database_msg">Would you like to export the database and email it to yourself? You can then open it on your mobile device or a desktop.</string>
+    <string name="export_databse_title">Email Complete Backup</string>
+    <string name="export_database_msg">Create a ZIP backup containing your contacts, flashcard progress, tags, and contact photos?</string>
+    <string name="export_database_email_subject">Remember Names complete backup</string>
+    <string name="export_database_email_message">This ZIP contains your Remember Names database and contact photos. Keep it private and use Import Database in the app to restore it.</string>
+    <string name="export_database_chooser">Share Complete Backup</string>
+    <string name="export_database_failed_title">Could Not Create Backup</string>
+    <string name="export_database_failed_message">The complete backup could not be created. Check available storage and try again.</string>
+    <string name="import_the_database">Import Database</string>
+    <string name="import_database_title">Import Database Backup</string>
+    <string name="import_database_action">Import</string>
+    <string name="import_database_confirm">Import %1$d contacts? Your current contacts will be kept and exact duplicates will be skipped.</string>
+    <string name="import_database_archive_photos">This backup contains %1$d contact image files.</string>
+    <string name="import_database_csv_no_photos">This older CSV backup does not contain photo files.</string>
+    <string name="import_database_invalid_rows">%1$d incomplete rows will be ignored.</string>
+    <string name="import_database_no_contacts">No valid contacts were found in this backup.</string>
+    <string name="import_database_complete">Import Complete</string>
+    <string name="import_database_result">Imported: %1$d\nExisting matches: %2$d\nIncomplete rows skipped: %3$d\nContacts with photos restored: %4$d</string>
+    <string name="import_database_missing_photos">%1$d contacts used the default portrait because their original photo files were not available on this device.</string>
+    <string name="import_database_failed_title">Could Not Import Backup</string>
+    <string name="import_database_failed_message">Choose a ZIP or CSV file previously exported by Remember Names and try again.</string>
 
     <!-- Ad mob ids-->
     <string name="ad_mob_id">ca-app-pub-5943597081127232~7518699924</string>

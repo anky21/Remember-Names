@@ -10,6 +10,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.observers.DisposableSingleObserver;
+import io.reactivex.Single;
 import io.reactivex.schedulers.Schedulers;
 import me.anky.connectid.Utilities;
 import me.anky.connectid.data.ConnectidConnection;
@@ -110,6 +111,32 @@ public class ConnectionsActivityPresenter implements ConnectionsActivityMVP.Pres
     public void handleSortByOptionChange() {
         int option = view.getSortByOption();
         loadConnections(option);
+    }
+
+    @Override
+    public void deleteConnection(ConnectidConnection connection) {
+        DisposableSingleObserver<Integer> observer = Single.fromCallable(
+                        () -> connectionsDataSource.deleteConnection(connection.getDatabaseId()))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new DisposableSingleObserver<Integer>() {
+                    @Override
+                    public void onSuccess(Integer deletedRows) {
+                        if (deletedRows != null && deletedRows > 0) {
+                            view.displayConnectionDeleted(connection);
+                        } else {
+                            view.displayConnectionDeleteError(connection);
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable error) {
+                        view.displayConnectionDeleteError(connection);
+                        Utilities.logFirebaseError(
+                                "error_delete_connection", TAG + ".deleteConnection");
+                    }
+                });
+        compositeDisposable.add(observer);
     }
 
     @Override

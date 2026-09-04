@@ -33,6 +33,7 @@ import com.google.android.material.navigation.NavigationView;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -44,21 +45,30 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.activity.OnBackPressedCallback;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.core.view.MenuItemCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.reactivex.Single;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.schedulers.Schedulers;
 import me.anky.connectid.R;
 import me.anky.connectid.Utilities;
+import me.anky.connectid.Utils.BackupArchive;
+import me.anky.connectid.Utils.CsvBackupParser;
 import me.anky.connectid.Utils.DialogUtils;
-import me.anky.connectid.Utils.SqliteExporter;
+import me.anky.connectid.Utils.SqliteBackupImporter;
 import me.anky.connectid.data.ConnectidConnection;
 import me.anky.connectid.data.SharedPrefsHelper;
 import me.anky.connectid.data.source.local.generated.ConnectidDatabase;
@@ -119,10 +129,14 @@ public class ConnectionsActivity extends AppCompatActivity implements
     private SubscriptionManager subscriptionManager;
     private BillingManager billingManager;
     private boolean hasLoadedBannerAd = false;
+    private ActivityResultLauncher<String[]> importBackupLauncher;
+    private final CompositeDisposable importDisposables = new CompositeDisposable();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        importBackupLauncher = registerForActivityResult(
+                new ActivityResultContracts.OpenDocument(), this::inspectSelectedBackup);
         setContentView(R.layout.activity_list);
 
         ButterKnife.bind(this);
@@ -175,6 +189,7 @@ public class ConnectionsActivity extends AppCompatActivity implements
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
+        setupSwipeToDelete();
         RecyclerView.ItemDecoration dividerItemDecoration = new DividerItemDecoration(this,
                 DividerItemDecoration.VERTICAL_LIST);
         recyclerView.addItemDecoration(dividerItemDecoration);
@@ -252,6 +267,12 @@ public class ConnectionsActivity extends AppCompatActivity implements
         if (billingManager != null) {
             billingManager.destroy();
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        importDisposables.clear();
+        super.onDestroy();
     }
 
     private void updateAdFreeUi(boolean isAdFree) {
@@ -433,6 +454,19 @@ public class ConnectionsActivity extends AppCompatActivity implements
     }
 
     @Override
+    public void displayConnectionDeleted(ConnectidConnection connection) {
+        Utilities.logFirebaseEventWithNoParams("profile_deleted");
+        Toast.makeText(this, R.string.delete_success_msg, Toast.LENGTH_SHORT).show();
+        presenter.loadConnections(mSortByOption);
+    }
+
+    @Override
+    public void displayConnectionDeleteError(ConnectidConnection connection) {
+        adapter.restoreSwipedConnection(connection.getDatabaseId());
+        Toast.makeText(this, R.string.delete_error_msg, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
     public void onItemClick(View view, int id) {
         Intent intent = new Intent(this, DetailsActivity.class);
         intent.putExtra("id", id);
@@ -447,6 +481,45 @@ public class ConnectionsActivity extends AppCompatActivity implements
         overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
 
         Utilities.logFirebaseEventWithNoParams("new_profile_started");
+    }
+
+    private void setupSwipeToDelete() {
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(
+                new SwipeToDeleteCallback(this) {
+                    @Override
+                    public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                        int position = viewHolder.getAdapterPosition();
+                        ConnectidConnection connection = adapter.getConnectionAt(position);
+                        if (connection == null) {
+                            adapter.notifyDataSetChanged();
+                            return;
+                        }
+                        showSwipeDeleteConfirmation(connection);
+                    }
+                });
+        itemTouchHelper.attachToRecyclerView(recyclerView);
+    }
+
+    private void showSwipeDeleteConfirmation(ConnectidConnection connection) {
+        String firstName = connection.getFirstName() == null
+                ? "" : connection.getFirstName().trim();
+        String lastName = connection.getLastName() == null
+                ? "" : connection.getLastName().trim();
+        String displayName = (firstName + " " + lastName).trim();
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle(getString(R.string.swipe_delete_title, displayName))
+                .setMessage(R.string.swipe_delete_message)
+                .setPositiveButton(R.string.delete, (ignoredDialog, which) -> {
+                    Utilities.logFirebaseEventWithNoParams("profile_delete_requested");
+                    presenter.deleteConnection(connection);
+                })
+                .setNegativeButton(R.string.cancel,
+                        (ignoredDialog, which) -> adapter.restoreSwipedConnection(
+                                connection.getDatabaseId()))
+                .create();
+        dialog.setOnCancelListener(ignored -> adapter.restoreSwipedConnection(
+                connection.getDatabaseId()));
+        dialog.show();
     }
 
     @Override
@@ -571,7 +644,21 @@ public class ConnectionsActivity extends AppCompatActivity implements
                     case (R.id.nav_email_csv):
                         DialogUtils.askQuestionAndThenCancelable(ConnectionsActivity.this,
                                 getString(R.string.export_databse_title), getString(R.string.export_database_msg),
-                                getString(R.string.yes), getString(R.string.cancel), object -> exportAndEmailCsv(), null);
+                                getString(R.string.yes), getString(R.string.cancel),
+                                object -> exportAndEmailArchive(), null);
+                        break;
+                    case (R.id.nav_import_csv):
+                        closeNavigationMenu();
+                        Utilities.logFirebaseEventWithNoParams("backup_import_started");
+                        importBackupLauncher.launch(new String[]{
+                                "text/csv",
+                                "text/comma-separated-values",
+                                "text/plain",
+                                "application/vnd.ms-excel",
+                                "application/zip",
+                                "application/x-zip-compressed",
+                                "application/octet-stream"
+                        });
                         break;
                     case (R.id.nav_exit):
                         closeNavigationMenu();
@@ -583,33 +670,156 @@ public class ConnectionsActivity extends AppCompatActivity implements
                 return true;
             };
 
-    private void exportAndEmailCsv() {
-        SQLiteOpenHelper database = ConnectidDatabase.getInstance(ConnectionsActivity.this);
-        SQLiteDatabase db = database.getWritableDatabase();
-        try {
-            String csvPath = SqliteExporter.export(db, ConnectionsActivity.this);
-            Log.d(TAG, "csv path:" + csvPath);
-            if (csvPath != null && !csvPath.isEmpty()) {
-                File file = new File(csvPath);
-                Uri uri;
-                if (Build.VERSION.SDK_INT>24){
-                    uri = FileProvider.getUriForFile(this, "me.anky.connectid.fileprovider",file);
-                }else{
-                    uri = Uri.fromFile(file);
-                }
+    private void exportAndEmailArchive() {
+        closeNavigationMenu();
+        importDisposables.add(Single.fromCallable(() -> {
+                    SQLiteOpenHelper database = ConnectidDatabase.getInstance(this);
+                    SQLiteDatabase db = database.getWritableDatabase();
+                    return BackupArchive.export(db, getApplicationContext());
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(path -> shareBackupArchive(new File(path)), this::showExportError));
+    }
 
-                Intent emailIntent = new Intent(Intent.ACTION_SEND);
-                emailIntent.addFlags(
-                        Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                emailIntent.setType("text/plain");
-                emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Remember Names database backup");
-                emailIntent.putExtra(Intent.EXTRA_TEXT, "Thank you for using this app. \nYou can email this file to yourself or save it to your cloud drive. This file can be opened by Microsoft Excel.");
-                emailIntent.putExtra(Intent.EXTRA_STREAM, uri);
-                startActivity(Intent.createChooser(emailIntent, "Pick an Email provider"));
+    private void shareBackupArchive(File archive) {
+        Uri uri = FileProvider.getUriForFile(
+                this, "me.anky.connectid.fileprovider", archive);
+        Intent emailIntent = new Intent(Intent.ACTION_SEND);
+        emailIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        emailIntent.setType("application/zip");
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT,
+                getString(R.string.export_database_email_subject));
+        emailIntent.putExtra(Intent.EXTRA_TEXT,
+                getString(R.string.export_database_email_message));
+        emailIntent.putExtra(Intent.EXTRA_STREAM, uri);
+        Utilities.logFirebaseEventWithNoParams("backup_export_completed");
+        startActivity(Intent.createChooser(
+                emailIntent, getString(R.string.export_database_chooser)));
+    }
 
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+    private void showExportError(Throwable error) {
+        Log.e(TAG, "Database export failed", error);
+        Utilities.logFirebaseError("backup_export_failed", "ConnectionsActivity.exportBackup");
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.export_database_failed_title)
+                .setMessage(R.string.export_database_failed_message)
+                .setPositiveButton(android.R.string.ok, null)
+                .show();
+    }
+
+    private void inspectSelectedBackup(Uri uri) {
+        if (uri == null) {
+            return;
+        }
+        importDisposables.add(Single.fromCallable(() -> {
+                    try (InputStream stream = getContentResolver().openInputStream(uri)) {
+                        if (stream == null) {
+                            throw new IOException("Unable to open the selected file");
+                        }
+                        BackupArchive.Inspection inspection = BackupArchive.inspect(stream);
+                        return new SelectedBackup(uri, inspection);
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(this::confirmBackupImport, this::showImportError));
+    }
+
+    private void confirmBackupImport(SelectedBackup selectedBackup) {
+        CsvBackupParser.Backup backup = selectedBackup.inspection.getBackup();
+        int contactCount = backup.getContacts().size();
+        if (contactCount == 0) {
+            new AlertDialog.Builder(this)
+                    .setTitle(R.string.import_database_title)
+                    .setMessage(R.string.import_database_no_contacts)
+                    .setPositiveButton(android.R.string.ok, null)
+                    .show();
+            return;
+        }
+
+        String message = getString(R.string.import_database_confirm, contactCount);
+        if (selectedBackup.inspection.isArchive()) {
+            message += "\n\n" + getString(R.string.import_database_archive_photos,
+                    selectedBackup.inspection.getImageCount());
+        } else {
+            message += "\n\n" + getString(R.string.import_database_csv_no_photos);
+        }
+        if (backup.getRejectedContacts() > 0) {
+            message += "\n\n" + getString(
+                    R.string.import_database_invalid_rows, backup.getRejectedContacts());
+        }
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.import_database_title)
+                .setMessage(message)
+                .setPositiveButton(R.string.import_database_action,
+                        (dialog, which) -> performBackupImport(selectedBackup))
+                .setNegativeButton(R.string.cancel, null)
+                .show();
+    }
+
+    private void performBackupImport(SelectedBackup selectedBackup) {
+        importDisposables.add(Single.fromCallable(() -> {
+                    File stagingDirectory = new File(getCacheDir(),
+                            "backup_import_" + System.nanoTime());
+                    BackupArchive.Extraction extraction;
+                    try (InputStream stream = getContentResolver()
+                            .openInputStream(selectedBackup.uri)) {
+                        if (stream == null) {
+                            throw new IOException("Unable to open the selected file");
+                        }
+                        extraction = BackupArchive.extract(stream, stagingDirectory);
+                    }
+                    try {
+                        SQLiteOpenHelper helper = ConnectidDatabase.getInstance(this);
+                        return SqliteBackupImporter.importBackup(
+                                helper.getWritableDatabase(), getApplicationContext(),
+                                extraction.getBackup(), extraction.getImageDirectory());
+                    } finally {
+                        BackupArchive.deleteRecursively(stagingDirectory);
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(result -> {
+                    Utilities.logFirebaseEventWithNoParams("backup_import_completed");
+                    presenter.loadConnections(mSortByOption);
+                    showImportResult(result);
+                }, this::showImportError));
+    }
+
+    private void showImportResult(SqliteBackupImporter.ImportResult result) {
+        String message = getString(R.string.import_database_result,
+                result.getImported(), result.getSkipped(), result.getRejected(),
+                result.getRestoredPhotos());
+        if (result.getMissingPhotos() > 0) {
+            message += "\n\n" + getString(
+                    R.string.import_database_missing_photos, result.getMissingPhotos());
+        }
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.import_database_complete)
+                .setMessage(message)
+                .setPositiveButton(android.R.string.ok, null)
+                .show();
+    }
+
+    private void showImportError(Throwable error) {
+        Log.e(TAG, "Database import failed", error);
+        Utilities.logFirebaseError("backup_import_failed", "ConnectionsActivity.importBackup");
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.import_database_failed_title)
+                .setMessage(R.string.import_database_failed_message)
+                .setPositiveButton(android.R.string.ok, null)
+                .show();
+    }
+
+    private static final class SelectedBackup {
+        private final Uri uri;
+        private final BackupArchive.Inspection inspection;
+
+        private SelectedBackup(Uri uri, BackupArchive.Inspection inspection) {
+            this.uri = uri;
+            this.inspection = inspection;
         }
     }
 }

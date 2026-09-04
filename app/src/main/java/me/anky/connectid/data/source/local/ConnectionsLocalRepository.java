@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -120,8 +121,90 @@ public class ConnectionsLocalRepository implements ConnectionsDataSource {
     @Override
     public int deleteConnection(int databaseId) {
         Uri uri = ConnectidProvider.Connections.withId(databaseId);
+        String imageName = loadImageName(uri);
+        int deletedRows = context.getContentResolver().delete(uri, null, null);
+        if (deletedRows > 0) {
+            try {
+                removeConnectionFromTags(databaseId);
+            } catch (RuntimeException error) {
+                Utilities.logFirebaseError("error_cleanup_deleted_tags",
+                        "ConnectionsLocalRepository.deleteConnection");
+            }
+            try {
+                deleteUnusedImages(imageName);
+            } catch (RuntimeException error) {
+                Utilities.logFirebaseError("error_cleanup_deleted_photo",
+                        "ConnectionsLocalRepository.deleteConnection");
+            }
+        }
+        return deletedRows;
+    }
 
-        return context.getContentResolver().delete(uri, null, null);
+    private String loadImageName(Uri connectionUri) {
+        String[] columns = {ConnectidColumns.IMAGE_NAME};
+        try (Cursor cursor = context.getContentResolver().query(
+                connectionUri, columns, null, null, null)) {
+            if (cursor != null && cursor.moveToFirst() && !cursor.isNull(0)) {
+                return cursor.getString(0);
+            }
+        }
+        return null;
+    }
+
+    private void removeConnectionFromTags(int databaseId) {
+        List<ConnectionTag> changedTags = new ArrayList<>();
+        try (Cursor cursor = context.getContentResolver().query(
+                ConnectidProvider.Tags.CONTENT_URI, null, null, null, null)) {
+            if (cursor != null) {
+                while (cursor.moveToNext()) {
+                    int tagId = cursor.getInt(cursor.getColumnIndexOrThrow(TagsColumns._ID));
+                    String tag = cursor.getString(cursor.getColumnIndexOrThrow(TagsColumns.TAG));
+                    String oldIds = cursor.getString(
+                            cursor.getColumnIndexOrThrow(TagsColumns.CONNECTION_IDS));
+                    String newIds = ConnectionIdList.remove(oldIds, databaseId);
+                    if (!sameValue(oldIds, newIds)) {
+                        changedTags.add(new ConnectionTag(tagId, tag, newIds));
+                    }
+                }
+            }
+        }
+        for (ConnectionTag tag : changedTags) {
+            updateTag(tag);
+        }
+    }
+
+    private void deleteUnusedImages(String imageName) {
+        if (imageName == null || imageName.trim().isEmpty()
+                || "blank_profile.jpg".equals(imageName)
+                || !new File(imageName).getName().equals(imageName)) {
+            return;
+        }
+        String[] columns = {ConnectidColumns._ID};
+        try (Cursor cursor = context.getContentResolver().query(
+                ConnectidProvider.Connections.CONTENT_URI,
+                columns,
+                ConnectidColumns.IMAGE_NAME + " = ?",
+                new String[]{imageName},
+                null)) {
+            if (cursor != null && cursor.getCount() > 0) {
+                return;
+            }
+        }
+
+        File image = Utilities.getContactImageFile(context, imageName);
+        File preview = Utilities.getContactPreviewFile(context, imageName);
+        if (image.exists() && !image.delete()) {
+            Utilities.logFirebaseError("error_delete_photo",
+                    "ConnectionsLocalRepository.deleteUnusedImages");
+        }
+        if (preview.exists() && !preview.delete()) {
+            Utilities.logFirebaseError("error_delete_preview",
+                    "ConnectionsLocalRepository.deleteUnusedImages");
+        }
+    }
+
+    private static boolean sameValue(String first, String second) {
+        return first == null ? second == null : first.equals(second);
     }
 
     @Override

@@ -87,11 +87,9 @@ public class SqliteExporter {
         return tables;
     }
 
-    private static void writeCsv(File backupFile, SQLiteDatabase db, List<String> tables) {
-        CSVWriter csvWrite = null;
-        Cursor curCSV = null;
-        try {
-            csvWrite = new CSVWriter(new FileWriter(backupFile));
+    private static void writeCsv(File backupFile, SQLiteDatabase db, List<String> tables)
+            throws IOException {
+        try (CSVWriter csvWrite = new CSVWriter(new FileWriter(backupFile))) {
             writeSingleValue(csvWrite, DB_BACKUP_DB_VERSION_KEY + " = " + db.getVersion());
             for (String table : tables) {
                 // Don't write the sqlite sequence table
@@ -99,30 +97,18 @@ public class SqliteExporter {
                     continue;
 
                 writeSingleValue(csvWrite, table.toUpperCase());
-                curCSV = db.rawQuery("SELECT * FROM " + table, null);
-                csvWrite.writeNext(curCSV.getColumnNames());
-                while (curCSV.moveToNext()) {
-                    int columns = curCSV.getColumnCount();
-                    String[] columnArr = new String[columns];
-                    for (int i = 0; i < columns; i++) {
-                        columnArr[i] = curCSV.getString(i);
+                try (Cursor curCSV = db.rawQuery("SELECT * FROM " + table, null)) {
+                    csvWrite.writeNext(curCSV.getColumnNames());
+                    while (curCSV.moveToNext()) {
+                        int columns = curCSV.getColumnCount();
+                        String[] columnArr = new String[columns];
+                        for (int i = 0; i < columns; i++) {
+                            columnArr[i] = curCSV.getString(i);
+                        }
+                        csvWrite.writeNext(columnArr);
                     }
-                    csvWrite.writeNext(columnArr);
                 }
                 writeSingleValue(csvWrite, "");
-            }
-        } catch (Exception sqlEx) {
-//            Log.e(TAG, sqlEx.getMessage(), sqlEx);
-        } finally {
-            if (csvWrite != null) {
-                try {
-                    csvWrite.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (curCSV != null) {
-                curCSV.close();
             }
         }
     }

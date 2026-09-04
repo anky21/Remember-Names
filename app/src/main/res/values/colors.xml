@@ -12,4 +12,5 @@
     <color name="flashcard_again">#C62828</color>
     <color name="flashcard_hard">#E56A00</color>
     <color name="flashcard_got_it">#2E7D32</color>
+    <color name="swipe_delete">#C62828</color>
 </resources>

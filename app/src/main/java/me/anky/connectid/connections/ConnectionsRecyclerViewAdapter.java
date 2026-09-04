@@ -174,13 +174,32 @@ public class ConnectionsRecyclerViewAdapter extends
     // Updates the array, allowing for uninterrupted scrolling
     public void setConnections(List<ConnectidConnection> connections) {
         if (connections == null) {
-            connections = new ArrayList<>();
-            this.connections = connections;
+            this.connections = new ArrayList<>();
+            this.connectionsOriginal = new ArrayList<>();
+            notifyDataSetChanged();
         } else {
             this.connections.clear();
             this.connections.addAll(connections);
+            this.connectionsOriginal = new ArrayList<>(this.connections);
             notifyDataSetChanged();
         }
+    }
+
+    public ConnectidConnection getConnectionAt(int position) {
+        if (position < 0 || position >= connections.size()) {
+            return null;
+        }
+        return connections.get(position);
+    }
+
+    public void restoreSwipedConnection(int databaseId) {
+        for (int position = 0; position < connections.size(); position++) {
+            if (connections.get(position).getDatabaseId() == databaseId) {
+                notifyItemChanged(position);
+                return;
+            }
+        }
+        notifyDataSetChanged();
     }
 
     public void filter() {
